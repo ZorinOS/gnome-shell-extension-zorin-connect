@@ -1,0 +1,18 @@
+{
+    "extension-id": "zorin-connect",
+    "uuid": "zorin-connect@zorinos.com",
+    "name": "Zorin Connect",
+    "description": "Zorin Connect allows devices to securely share content like notifications or files and other features like SMS messaging and remote control.",
+    "version": @VERSION@,
+    "shell-version": [ "3.28", "3.30" ],
+    "libdir": "@GNOME_SHELL_LIBDIR@",
+    "localedir": "@LOCALEDIR@",
+    "gschemadir": "@GSCHEMADIR@",
+    "bin": {
+        "fusermount": "@FUSERMOUNT_PATH@",
+        "openssl": "@OPENSSL_PATH@",
+        "ssh_add": "@SSHADD_PATH@",
+        "ssh_keygen": "@SSHKEYGEN_PATH@",
+        "sshfs": "@SSHFS_PATH@"
+    }
+}

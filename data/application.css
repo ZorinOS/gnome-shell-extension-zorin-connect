@@ -1,0 +1,174 @@
+
+/**
+ * Chrome/Firefox buttons in Settings Window
+ */
+.badge-button {
+  border: 0px;
+  padding: 0px;
+  background: transparent;
+}
+
+
+/**
+ * Placeholders
+ */
+.placeholder {
+  background: @content_view_bg_color;
+  margin-bottom: 30px;
+}
+
+.placeholder-image {
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.placeholder-title {
+  font-size: larger;
+  font-weight: bold;
+  margin-bottom: 3px;
+  opacity: 0.5;
+}
+
+.placeholder-description {
+  font-size: smaller;
+  opacity: 0.5;
+}
+
+
+/**
+ * ZorinConnectContactChooser
+ */
+.contact-window {
+  border-top: 1px solid @borders;
+}
+
+.contact-list row {
+  padding: 0px;
+}
+
+
+/**
+ * ZorinConnectConversationWidget
+ */
+.message-window {
+  border-bottom: 1px solid @borders;
+}
+
+/**
+ * ZorinConnectMessagingWindow
+ */
+.message-list > label {
+  font-size: small;
+  margin-bottom: 1em;
+}
+
+.conversation-list {
+  background: @content_view_bg_color;
+}
+
+
+/**
+ * Incoming Message Bubbles (GtkLabel subclass)
+ */
+.message-in {
+  background: @theme_selected_bg_color;
+  color: @theme_selected_fg_color;
+  padding: 6px;
+  padding-right: 9px;
+  padding-left: 9px;
+}
+
+.message-in selection {
+  background-color: @theme_selected_fg_color;
+  color: @theme_selected_bg_color;
+}
+
+.message-in:dir(ltr) {
+  border-radius: 0.25em 1em 1em 0.25em;
+}
+
+.message-in:first-child:dir(ltr) {
+  border-top-left-radius: 1em;
+}
+
+.message-in:last-child:dir(ltr) {
+  border-bottom-left-radius: 1em;
+}
+
+.message-in:dir(rtl) {
+  border-radius: 1em 0.25em 0.25em 1em;
+}
+
+.message-in:first-child:dir(rtl) {
+  border-top-right-radius: 1em;
+}
+
+.message-in:last-child:dir(rtl) {
+  border-bottom-right-radius: 1em;
+}
+
+/**
+ * Must contrast with .message-in background
+ */
+.message-in *:link {
+  color: @theme_selected_fg_color;
+}
+
+
+/**
+ * Outgoing Message Bubbles (GtkLabel subclass)
+ */
+.message-out {
+  background: alpha(@theme_selected_bg_color, 0.2);
+  caret-color: currentColor;
+  -gtk-secondary-caret-color: currentColor;
+  padding: 6px;
+  padding-right: 6px;
+  padding-left: 9px;
+}
+
+.message-out selection {
+  background-color: @theme_selected_bg_color;
+  color: @theme_selected_fg_color;
+}
+
+.message-out:dir(ltr) {
+  border-right: 3px solid @theme_selected_bg_color;
+  border-radius: 1em 0.25em 0.25em 1em;
+}
+
+.message-out:first-child:dir(ltr) {
+  border-top-right-radius: 1em;
+}
+
+.message-out:last-child:dir(ltr) {
+  border-bottom-right-radius: 1em;
+}
+
+.message-out:dir(rtl) {
+  border-left: 3px solid @theme_selected_bg_color;
+  border-radius: 0.25em 1em 1em 0.25em;
+}
+
+.message-out:first-child:dir(rtl) {
+  border-top-left-radius: 1em;
+}
+
+.message-out:last-child:dir(rtl) {
+  border-bottom-left-radius: 1em;
+}
+
+/**
+ * Must contrast with .message-out background
+ */
+.message-out *:link {
+  color: @theme_fg_color;
+}
+
+/**
+ * Special case for pending messages
+ */
+.message-pending .message-out {
+  opacity: 0.5;
+}
+

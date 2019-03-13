@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="org.gnome.Shell.Extensions.ZorinConnect">
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect" path="/org/gnome/shell/extensions/zorin-connect/">
+    <!-- Extension Settings -->
+    <key name="show-indicators" type="b">
+      <default>false</default>
+    </key>
+
+    <!-- Service Settings -->
+    <key name="public-name" type="s">
+      <default>"-1"</default>
+    </key>
+    <key name="devices" type="as">
+      <default>[]</default>
+    </key>
+    <key name="donotdisturb" type="i">
+      <default>0</default>
+    </key>
+    <key name="debug" type="b">
+      <default>false</default>
+    </key>
+    <key name="discoverable" type="b">
+      <default>true</default>
+    </key>
+  </schema>
+
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Messaging" path="/org/gnome/shell/extensions/zorin-connect/messaging/">
+    <key name="window-position" type="(ii)">
+      <default>(0, 0)</default>
+    </key>
+    <key name="window-size" type="(ii)">
+      <default>(300, 300)</default>
+    </key>
+    <key name="window-maximized" type="b">
+      <default>false</default>
+    </key>
+  </schema>
+
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Preferences" path="/org/gnome/shell/extensions/zorin-connect/preferences/">
+    <key name="window-position" type="(ii)">
+      <default>(0, 0)</default>
+    </key>
+    <key name="window-size" type="(ii)">
+      <default>(640, 440)</default>
+    </key>
+    <key name="window-maximized" type="b">
+      <default>false</default>
+    </key>
+  </schema>
+
+  <!-- Device Settings -->
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Device">
+    <key name="certificate-pem" type="s">
+      <default>""</default>
+    </key>
+    <key name="id" type="s">
+      <default>""</default>
+    </key>
+    <key name="keybindings" type="a{ss}">
+      <default>{}</default>
+    </key>
+    <key name="menu-actions" type="as">
+      <default>["sms", "ring", "mount", "commands", "share"]</default>
+    </key>
+    <key name="name" type="s">
+      <default>""</default>
+    </key>
+    <key name="paired" type="b">
+      <default>false</default>
+    </key>
+    <key name="type" type="s">
+      <default>"unknown"</default>
+    </key>
+    <key name="incoming-capabilities" type="as">
+      <default>[]</default>
+    </key>
+    <key name="outgoing-capabilities" type="as">
+      <default>[]</default>
+    </key>
+    <key name="disabled-plugins" type="as">
+      <default>[]</default>
+    </key>
+    <key name="disabled-actions" type="as">
+      <default>[]</default>
+    </key>
+    <key name="supported-plugins" type="as">
+      <default>[]</default>
+    </key>
+    <key name="tcp-host" type="s">
+      <default>""</default>
+    </key>
+    <key name="tcp-port" type="u">
+      <default>1716</default>
+    </key>
+    <key name="bluetooth-host" type="s">
+      <default>""</default>
+    </key>
+    <key name="bluetooth-path" type="s">
+      <default>""</default>
+    </key>
+    <key name="last-connection" type="s">
+      <default>""</default>
+    </key>
+  </schema>
+
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.Battery">
+    <key name="send-statistics" type="b">
+      <default>false</default>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.Clipboard">
+    <key name="receive-content" type="b">
+      <default>false</default>
+    </key>
+    <key name="send-content" type="b">
+      <default>false</default>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.Contacts">
+    <key name="contacts-source" type="b">
+      <default>true</default>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.FindMyPhone"/>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.Mousepad">
+    <key name="share-control" type="b">
+      <default>true</default>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.MPRIS">
+    <key name="share-players" type="b">
+      <default>true</default>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.Notification">
+    <key name="send-notifications" type="b">
+      <default>true</default>
+    </key>
+    <key name="applications" type="s">
+      <default>'{}'</default>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.Ping"/>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.RunCommand">
+    <key name="command-list" type="a{sv}">
+      <default>{}</default>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.SFTP"/>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.Share"/>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.SMS">
+    <key name="legacy-sms" type="b">
+      <default>false</default>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.SystemVolume">
+    <key name="share-sinks" type="b">
+      <default>true</default>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.Telephony">
+    <key name="ringing-volume" type="s">
+      <default>"lower"</default>
+    </key>
+    <key name="ringing-pause" type="b">
+      <default>false</default>
+    </key>
+    <key name="talking-volume" type="s">
+      <default>"mute"</default>
+    </key>
+    <key name="talking-microphone" type="b">
+      <default>true</default>
+    </key>
+    <key name="talking-pause" type="b">
+      <default>true</default>
+    </key>
+  </schema>
+</schemalist>
+

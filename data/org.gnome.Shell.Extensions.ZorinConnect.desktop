@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Zorin Connect
+Exec=gapplication launch org.gnome.Shell.Extensions.ZorinConnect %U
+Terminal=false
+NoDisplay=true
+Icon=org.gnome.Shell.Extensions.ZorinConnect
+Categories=Network;
+MimeType=x-scheme-handler/sms;x-scheme-handler/tel;
+DBusActivatable=true
+X-GNOME-UsesNotifications=true
+

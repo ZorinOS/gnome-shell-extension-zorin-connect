@@ -1,0 +1,7 @@
+{
+    "name": "org.gnome.shell.extensions.zorin_connect",
+    "description": "Native messaging host for Zorin Connect WebExtension",
+    "path": "@EXTDATADIR@/service/nativeMessagingHost.js",
+    "type": "stdio",
+    "allowed_origins": [ "chrome-extension://nfcnjkekppjddipfnfbbohdocpgjnmee/" ]
+}

@@ -1,0 +1,2 @@
+# we depend on libglib2.0-bin which has gapplication
+desktop-command-not-in-package usr/share/applications/org.gnome.Shell.Extensions.ZorinConnect.desktop gapplication

@@ -1,0 +1,48 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "version": "5.4",
+  "homepage_url": "https://github.com/ZorinOS/gnome-shell-extension-zorin-connect",
+  "default_locale": "en",
+  "browser_action": {
+    "default_title": "__MSG_extensionName__",
+    "default_popup": "popup.html",
+    "default_icon": "images/toolbar-dark.svg",
+    "theme_icons": [
+      {
+        "dark": "images/toolbar-dark.svg",
+        "light": "images/toolbar-light.svg",
+        "size": 16
+      },
+      {
+        "dark": "images/toolbar-dark.svg",
+        "light": "images/toolbar-light.svg",
+        "size": 32
+      }
+    ]
+  },
+  "applications": {
+    "gecko": {
+      "id": "zorin-connect@zorinos.com"
+    }
+  },
+  "background": {
+    "page": "background.html"
+  },
+  "permissions": [
+    "nativeMessaging",
+    "tabs",
+    "contextMenus"
+  ],
+  "icons": {
+    "256": "images/zorin-connect.svg",
+    "128": "images/zorin-connect.svg",
+    "64": "images/zorin-connect.svg",
+    "48": "images/zorin-connect.svg",
+    "32": "images/zorin-connect.svg",
+    "24": "images/zorin-connect.svg",
+    "22": "images/zorin-connect.svg",
+    "16": "images/zorin-connect.svg"
+  }
+}

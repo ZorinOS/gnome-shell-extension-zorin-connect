@@ -1,0 +1,52 @@
+Source: gnome-shell-extension-zorin-connect
+Section: gnome
+Priority: optional
+Maintainer: Artyom Zorin <azorin@zoringroup.com>
+Build-Depends: debhelper (>= 10),
+               dh-translations,
+               meson (>= 0.40.1),
+               libglib2.0-dev-bin,
+               libglib2.0-dev,
+               libdbus-1-dev,
+               pkg-config
+Standards-Version: 4.1.1
+
+Package: gnome-shell-extension-zorin-connect
+Architecture: all
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         python3,
+         gjs,
+         gnome-shell,
+         gir1.2-clutter-1.0,
+         gir1.2-gdkpixbuf-2.0,
+         gir1.2-glib-2.0,
+         gir1.2-gtk-3.0,
+         libglib2.0-bin,
+Recommends: sshfs,
+            libfolks-eds25,
+            python-nautilus,
+            gir1.2-atspi-2.0,
+            gir1.2-gdata-0.0,
+            gir1.2-folks-0.6,
+            gir1.2-goa-1.0,
+            gir1.2-nautilus-3.0,
+            gir1.2-pango-1.0,
+            gir1.2-gsound-1.0,
+            gir1.2-upowerglib-1.0,
+Description: Connect your mobile device with your Zorin OS computer
+ This extension enables you to connect your phone or other devices to your
+ system, sending remote SMS, see phone calls, share notifications, send files.
+
+Package: gnome-shell-extension-zorin-connect-browsers
+Architecture: all
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         gnome-shell-extension-zorin-connect (= ${binary:Version}),
+Suggests: firefox | chromium-browser,
+Description: Browser support for Zorin Connect
+ This extension enables you to connect your phone or other devices to your
+ system, sending remote sms, see phone calls, share notifications, send files.
+ .
+ This package contains Chromium, Firefox and Chrome integration support to send
+ text via SMS or open links on your phone.

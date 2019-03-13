@@ -1,0 +1,154 @@
+
+/* Device Menu
+
+PopupMenu.PopupMenuSection.zorin-connect-device-section
+    PopupMenu.PopupMenuSection.zorin-connect-device-menu
+        PopupMenu.PopupSeparatorMenuItem
+            StLabel.zorin-connect-device-name
+            StBoxLayout.zorin-connect-device-battery
+        PopupMenu.PopupMenuSection
+            StBoxLayout.zorin-connect-list-box
+            StBoxLayout (Submenu Container)
+*/
+.zorin-connect-device-section {
+}
+
+/* Title Bar */
+.zorin-connect-device-name {
+    font-weight: bold;
+}
+
+.zorin-connect-device-menu .popup-separator-menu-item {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Battery Widget */
+.zorin-connect-device-battery {
+    spacing: 3px;
+}
+
+.zorin-connect-device-battery StLabel {
+    font-size: 0.75em;
+}
+
+.zorin-connect-device-battery StIcon {
+    icon-size: 16px;
+}
+
+/* List Box */
+.zorin-connect-list-box {
+}
+
+
+/* Device Panel Indicator
+
+PanelMenu.Button.zorin-connect-device-indicator
+    PopupMenu.PopupMenu
+        PopupMenu.PopupMenuSection.zorin-connect-device-menu
+            PopupMenu.PopupSeparatorMenuItem
+                StLabel.zorin-connect-device-name
+                StBoxLayout.zorin-connect-device-battery
+            PopupMenu.PopupMenuSection
+                StBoxLayout.zorin-connect-icon-box
+                StBoxLayout (Submenu Container)
+ */
+.zorin-connect-device-indicator {
+    -st-icon-style: symbolic;
+}
+
+/* Icon Box */
+.zorin-connect-icon-box {
+    margin: 0em 2em 0.5em;
+    spacing: 6px;
+}
+
+.zorin-connect-icon-button {
+    border: none;
+    border-radius: 16px;
+    padding: 8px;
+}
+
+.zorin-connect-icon-button:hover, .zorin-connect-icon-button:focus {
+    border: none;
+    padding: 8px;
+}
+
+
+/* Do Not Disturb Dialog
+
+ModalDialog.ModalDialog.zorin-connect-dnd-dialog
+    StBoxLayout.nm-dialog-header-hbox
+        StIcon.nm-dialog-header-icon
+        StBoxLayout
+            StLabel.nm-dialog-header
+            StLabel.nm-dialog-subheader
+    StBoxLayout.nm-dialog-content
+        StBoxLayout.zorin-connect-radio-list
+            StBoxLayout.zorin-connect-radio-button (Until you turn off...)
+                StButton.pager-button
+                    StIcon
+                StLabel
+            StBoxLayout.zorin-connect-radio-button (Until 00:00)
+                StButton.pager-button
+                    StIcon
+                StBoxLayout.zorin-connect-dnd-timer
+                    StLabel
+                    StButton.pager-button
+                        StIcon
+                    StButton.pager-button
+                        StIcon
+ */
+
+.zorin-connect-radio-list {
+    spacing: 0.25em;
+}
+
+.zorin-connect-radio-button {
+    spacing: 0.25em;
+}
+
+.zorin-connect-radio-button .pager-button {
+    /* fix for arc-theme */
+    color: inherit;
+}
+
+.zorin-connect-radio-button StIcon {
+    icon-size: 16px;
+}
+
+.zorin-connect-dnd-timer {
+    spacing: 0.25em;
+}
+
+/* Tooltip
+
+StBin.zorin-connect-tooltip (inherits from .osd-window)
+    StBoxLayout || [ Custom ClutterActor ]
+        StIcon
+        StLabel
+*/
+.zorin-connect-tooltip {
+    border-radius: 3px;
+    min-width: 0;
+    min-height: 0;
+    padding: 6px;
+}
+
+.zorin-connect-tooltip > StBoxLayout {
+    spacing: 6px;
+}
+
+.zorin-connect-tooltip StIcon {
+    icon-size: 16px;
+}
+
+.zorin-connect-tooltip StLabel {
+    font-weight: normal;
+    text-align: left;
+}
+
+.zorin-connect-tooltip StLabel:rtl {
+    text-align: right;
+}
+

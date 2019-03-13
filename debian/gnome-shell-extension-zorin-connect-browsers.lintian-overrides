@@ -1,0 +1,3 @@
+# Those files needs to be under /etc/opt for 3rd party google repo
+# Note: kept for informational purpose, even if the tag is not overridable
+dir-or-file-in-etc-opt

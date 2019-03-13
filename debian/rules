@@ -1,0 +1,21 @@
+#!/usr/bin/make -f
+#export DH_VERBOSE = 1
+
+%:
+	dh $@ --with translations
+
+override_dh_auto_configure:
+	# Use GNOME Shell libdir
+	dh_auto_configure -- \
+                --libdir=/usr/lib
+
+override_dh_auto_install:
+	dh_auto_install
+	cd debian/tmp/usr/share/gnome-shell/extensions/zorin-connect@zorinos.com/service/ ; \
+	chmod +x daemon.js nativeMessagingHost.js
+
+override_dh_fixperms:
+	dh_fixperms -Xusr/share/gnome-shell/extensions/zorin-connect@zorinos.com/service/daemon.js -Xusr/share/gnome-shell/extensions/zorin-connect@zorinos.com/service/nativeMessagingHost.js
+
+override_dh_missing:
+	dh_missing --fail-missing

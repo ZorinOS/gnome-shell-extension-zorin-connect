@@ -1,0 +1,61 @@
+gnome-shell-extension-zorin-connect (20.1.8) bionic; urgency=medium
+
+  * Updated browser action icons
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Tue, 12 Mar 2019 18:52:24 +0000
+
+gnome-shell-extension-zorin-connect (20.1.7) bionic; urgency=medium
+
+  * Updated Zorin Connect icons
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Tue, 12 Mar 2019 15:36:15 +0000
+
+gnome-shell-extension-zorin-connect (20.1.6) bionic; urgency=medium
+
+  * Updated connection for browser extension native messaging host
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Wed, 06 Mar 2019 16:44:19 +0000
+
+gnome-shell-extension-zorin-connect (20.1.5) bionic; urgency=medium
+
+  * Updated connection for browser extension native messaging host and
+    corrected typographical errors
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Wed, 06 Mar 2019 16:08:35 +0000
+
+gnome-shell-extension-zorin-connect (20.1.4) bionic; urgency=medium
+
+  * Removed Help links
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Tue, 05 Mar 2019 23:49:35 +0000
+
+gnome-shell-extension-zorin-connect (20.1.3) bionic; urgency=medium
+
+  * Fixed JS variable names
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Tue, 05 Mar 2019 23:26:54 +0000
+
+gnome-shell-extension-zorin-connect (20.1.2) bionic; urgency=medium
+
+  * Updated control file
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Tue, 05 Mar 2019 23:07:07 +0000
+
+gnome-shell-extension-zorin-connect (20.1.1) bionic; urgency=medium
+
+  * Updated debian/control file
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Tue, 05 Mar 2019 22:32:02 +0000
+
+gnome-shell-extension-zorin-connect (20.1) bionic; urgency=medium
+
+  * Based on upstream version as at commit
+    1f9ee60f921cd00e0be65913168dc48438ad3a92
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Tue, 05 Mar 2019 22:01:09 +0000
+
+gnome-shell-extension-zorin-connect (20) bionic; urgency=medium
+
+  * Initial packaging
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Mon, 25 Feb 2019 22:16:50 +0000
