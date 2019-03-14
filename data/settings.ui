@@ -437,8 +437,8 @@
                                 <property name="uri">https://play.google.com/store/apps/details?id=com.zorinos.zorin_connect</property>
                                 <child>
                                   <object class="GtkImage" id="mobile-app-image-play-store">
-                                    <property name="width_request">172</property>
-                                    <property name="height_request">60</property>
+                                    <property name="width_request">195</property>
+                                    <property name="height_request">58</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="resource">/org/gnome/Shell/Extensions/ZorinConnect/icons/play-store-badge.png</property>
@@ -447,6 +447,39 @@
                                 <child internal-child="accessible">
                                   <object class="AtkObject" id="mobile-app-button-play-store-atkobject">
                                     <property name="AtkObject::accessible-name">Play Store</property>
+                                    <property name="AtkObject::accessible-role">link</property>
+                                  </object>
+                                </child>
+                                <style>
+                                  <class name="badge-button"/>
+                                </style>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLinkButton" id="mobile-app-button-apk">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <property name="uri">https://zorinos.com/zc/</property>
+                                <child>
+                                  <object class="GtkImage" id="mobile-app-image-apk">
+                                    <property name="width_request">173</property>
+                                    <property name="height_request">58</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="resource">/org/gnome/Shell/Extensions/ZorinConnect/icons/apk-badge.png</property>
+                                  </object>
+                                </child>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="mobile-app-button-apk-atkobject">
+                                    <property name="AtkObject::accessible-name">Android APK app</property>
                                     <property name="AtkObject::accessible-role">link</property>
                                   </object>
                                 </child>

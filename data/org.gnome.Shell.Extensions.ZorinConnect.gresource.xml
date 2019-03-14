@@ -50,6 +50,7 @@
     <file compressed="true">chrome-badge.png</file>
 
     <!-- Mobile Application Badges -->
+    <file compressed="true">apk-badge.png</file>
     <file compressed="true">play-store-badge.png</file>
   </gresource>
   <gresource prefix="/org/gnome/Shell/Extensions/ZorinConnect/gtk">
