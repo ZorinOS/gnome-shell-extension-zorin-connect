@@ -1,4 +1,4 @@
-project('zorin-connect', 'c', version: '20', meson_version: '>= 0.45.0')
+project('zorin-connect', 'c', version: '21', meson_version: '>= 0.45.0')
 
 gnome = import('gnome')
 
@@ -32,6 +32,7 @@ extconfig.set('GNOME_SHELL_LIBDIR', gnome_shell_libdir)
 extconfig.set('LOCALEDIR', localedir)
 extconfig.set('EXTDATADIR', extdatadir)
 extconfig.set('GSCHEMADIR', gschemadir)
+extconfig.set('FFMPEG_PATH', get_option('ffmpeg_path'))
 extconfig.set('FUSERMOUNT_PATH', get_option('fusermount_path'))
 extconfig.set('OPENSSL_PATH', get_option('openssl_path'))
 extconfig.set('SSHADD_PATH', get_option('sshadd_path'))
@@ -51,18 +52,6 @@ run_target(
     ]
 )
 run_target(
-    'make-sfx',
-    command: [
-        find_program('env'),
-        'UUID=' + extuuid,
-        'DATADIR=' + datadir,
-        'LOCALEDIR=' + localedir,
-        'GSCHEMADIR=' + gschemadir,
-        'SFX=true',
-        'meson/mkzip.sh'
-    ]
-)
-run_target(
     'install-zip',
     command: [
         find_program('env'),
@@ -71,19 +60,6 @@ run_target(
         'LOCALEDIR=' + localedir,
         'GSCHEMADIR=' + gschemadir,
         'INSTALL=true',
-        'meson/mkzip.sh'
-    ]
-)
-run_target(
-    'install-sfx',
-    command: [
-        find_program('env'),
-        'UUID=' + extuuid,
-        'DATADIR=' + datadir,
-        'LOCALEDIR=' + localedir,
-        'GSCHEMADIR=' + gschemadir,
-        'INSTALL=true',
-        'SFX=true',
         'meson/mkzip.sh'
     ]
 )

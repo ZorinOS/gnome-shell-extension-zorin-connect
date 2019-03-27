@@ -1,3 +1,23 @@
+gnome-shell-extension-zorin-connect (21) bionic; urgency=medium
+
+  * Based on upstream version 21 as at commit
+    1387e662e5d21420feba6c813a2ebc9539b596c8
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Mon, 18 Mar 2019 11:07:54 +0000
+
+gnome-shell-extension-zorin-connect (20.2) bionic; urgency=medium
+
+  * Based on upstream version as at commit
+    779135539a9263aa76c944c83001c27b9844ecd0
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Sun, 17 Mar 2019 12:37:53 +0000
+
+gnome-shell-extension-zorin-connect (20.1.11) bionic; urgency=medium
+
+  * Updated position of Google Play link
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Thu, 14 Mar 2019 21:37:41 +0000
+
 gnome-shell-extension-zorin-connect (20.1.10) bionic; urgency=medium
 
   * Added Google Play link

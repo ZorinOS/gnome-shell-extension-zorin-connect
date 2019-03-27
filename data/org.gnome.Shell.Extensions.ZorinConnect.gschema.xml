@@ -8,7 +8,7 @@
 
     <!-- Service Settings -->
     <key name="public-name" type="s">
-      <default>"-1"</default>
+      <default>""</default>
     </key>
     <key name="devices" type="as">
       <default>[]</default>
@@ -138,6 +138,11 @@
     </key>
     <key name="applications" type="s">
       <default>'{}'</default>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.Photo">
+    <key name="share-camera" type="b">
+      <default>true</default>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.Ping"/>

@@ -4,11 +4,12 @@
     "name": "Zorin Connect",
     "description": "Zorin Connect allows devices to securely share content like notifications or files and other features like SMS messaging and remote control.",
     "version": @VERSION@,
-    "shell-version": [ "3.28", "3.30" ],
+    "shell-version": [ "3.28", "3.30", "3.32" ],
     "libdir": "@GNOME_SHELL_LIBDIR@",
     "localedir": "@LOCALEDIR@",
     "gschemadir": "@GSCHEMADIR@",
     "bin": {
+        "ffmpeg": "@FFMPEG_PATH@",
         "fusermount": "@FUSERMOUNT_PATH@",
         "openssl": "@OPENSSL_PATH@",
         "ssh_add": "@SSHADD_PATH@",

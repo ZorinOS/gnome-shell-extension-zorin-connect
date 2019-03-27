@@ -4,6 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
+const Config = imports.misc.config;
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
@@ -11,7 +12,8 @@ const AggregateMenu = Main.panel.statusArea.aggregateMenu;
 
 // Bootstrap
 window.zorin_connect = {
-    extdatadir: imports.misc.extensionUtils.getCurrentExtension().path
+    extdatadir: imports.misc.extensionUtils.getCurrentExtension().path,
+    shell_version: parseInt(Config.PACKAGE_VERSION.split('.')[1], 10)
 };
 imports.searchPath.unshift(zorin_connect.extdatadir);
 imports._zorin_connect;
@@ -35,7 +37,7 @@ function get_gicon(name) {
         get_gicon.theme = Gtk.IconTheme.get_default();
     }
 
-    if (imports.system.version < 15500 || get_gicon.theme.has_icon(name))
+    if (zorin_connect.shell_version <= 30 || get_gicon.theme.has_icon(name))
         return new Gio.ThemedIcon({name: name});
 
     if (!get_gicon.icons[name]) {

@@ -35,35 +35,6 @@ rm -rf _zip
 echo
 echo "Extension saved to ${ZIP_FILE}"
 
-# SELF EXTRACTOR
-if [ "$SFX" = true ]; then
-
-    SFX_CMD="\
-#!/bin/sh
-sed -e '1,/^exit$/d' \"\$0\" > /tmp/zorin-connect.zip
-
-if [ \"$(sha512sum ${ZIP_FILE} | cut -c -128)\" = \$(sha512sum /tmp/zorin-connect.zip | cut -c -128) ]; then
-    printf 'Installing...'
-
-    mkdir -p ~/.local/share/gnome-shell/extensions
-    rm -rf ~/.local/share/gnome-shell/extensions/zorin-connect@zorinos.com
-    unzip /tmp/zorin-connect.zip -d ~/.local/share/gnome-shell/extensions/zorin-connect@zorinos.com > /dev/null
-    rm /tmp/zorin-connect.zip
-
-    echo 'done'
-else
-    echo 'Error: Checksum mismatch. Please download the archive again.'
-fi
-
-exit"
-
-    echo "$SFX_CMD" > "${SFX_FILE}"
-    cat ${ZIP_FILE} >> "${SFX_FILE}"
-    chmod a+x ${SFX_FILE}
-
-    echo "Installer saved to $SFX_FILE"
-fi
-
 # INSTALL
 if [ "$INSTALL" = true ]; then
     EXTENSIONS_DIR="${HOME}/.local/share/gnome-shell/extensions"

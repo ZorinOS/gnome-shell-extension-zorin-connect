@@ -104,7 +104,7 @@ var Device = GObject.registerClass({
         // GSettings
         this.settings = new Gio.Settings({
             settings_schema: zorin_connect.gschema.lookup(UUID, true),
-            path: `/org/gnome/shell/extensions/zorin-connect/device/${deviceId}/`
+            path: '/org/gnome/shell/extensions/zorin-connect/device/' + deviceId + '/'
         });
 
         // Watch for plugins changes
