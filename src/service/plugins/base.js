@@ -20,29 +20,21 @@ var Plugin = GObject.registerClass({
         this._name = name;
         this._meta = imports.service.plugins[name].Metadata;
 
-        // Init GSettings
+        // GSettings
         this.settings = new Gio.Settings({
             settings_schema: zorin_connect.gschema.lookup(this._meta.id, false),
-            path: `${zorin_connect.settings.path}device/${device.id}/plugin/${name}/`
+            path: `${device.settings.path}plugin/${name}/`
         });
 
         // GActions
         this._gactions = [];
 
         if (this._meta.actions) {
-            // Register based on device capabilities, which shouldn't change
-            let deviceHandles = this.device.settings.get_strv('incoming-capabilities');
-            let deviceProvides = this.device.settings.get_strv('outgoing-capabilities');
-            let disabled = this.device.settings.get_strv('disabled-actions');
             let menu = this.device.settings.get_strv('menu-actions');
 
             for (let name in this._meta.actions) {
                 let meta = this._meta.actions[name];
-
-                if (meta.incoming.every(p => deviceProvides.includes(p)) &&
-                    meta.outgoing.every(p => deviceHandles.includes(p))) {
-                    this._registerAction(name, meta, menu, disabled);
-                }
+                this._registerAction(name, menu.indexOf(name), meta);
             }
         }
     }
@@ -59,63 +51,75 @@ var Plugin = GObject.registerClass({
         return Gio.Application.get_default();
     }
 
-    _activateAction(action, parameter) {
+    _activateAction(action, parameter = null) {
         try {
-            parameter = parameter ? parameter.full_unpack() : null;
+            if (parameter instanceof GLib.Variant) {
+                parameter = parameter.full_unpack();
+            }
 
             if (Array.isArray(parameter)) {
                 this[action.name].apply(this, parameter);
-            } else if (parameter) {
-                this[action.name].call(this, parameter);
             } else {
-                this[action.name].call(this);
+                this[action.name].call(this, parameter);
             }
         } catch (e) {
-            debug(e);
+            logError(e, action.name);
         }
     }
 
-    _registerAction(name, meta, menu, disabled) {
-        let action = new Gio.SimpleAction({
-            name: name,
-            parameter_type: meta.parameter_type,
-            state: new GLib.Variant('(ss)', [meta.label, meta.icon_name])
-        });
+    _registerAction(name, menuIndex, meta) {
+        try {
+            // Device Action
+            let action = new Gio.SimpleAction({
+                name: name,
+                parameter_type: meta.parameter_type,
+                enabled: false
+            });
+            action.connect('activate', this._activateAction.bind(this));
 
-        // Set the enabled state
-        action.set_enabled(this.device.connected && !disabled.includes(action.name));
+            this.device.add_action(action);
 
-        // Bind the activation
-        action.connect('activate', this._activateAction.bind(this));
+            // Menu
+            if (menuIndex > -1) {
+                this.device.addMenuAction(
+                    action,
+                    menuIndex,
+                    meta.label,
+                    meta.icon_name
+                );
+            }
 
-        this.device.add_action(action);
-
-        // Menu
-        let index = menu.indexOf(action.name);
-
-        if (index > -1) {
-            this.device.menu.add_action(action, index);
+            this._gactions.push(action);
+        } catch (e) {
+            logError(e, `${this.device.name}: ${this.name}`);
         }
-
-        this._gactions.push(action);
     }
 
     /**
      * This is called when a packet is received the plugin is a handler for
+     *
+     * @param {object} packet - A KDE Connect packet
      */
     handlePacket(packet) {
         throw new GObject.NotImplementedError();
     }
 
     /**
-     * These two methods are optional and called by the device in response to
-     * the connection state changing.
+     * These two methods are called by the device in response to the connection
+     * state changing.
      */
     connected() {
-        let disabled = this.device.settings.get_strv('disabled-actions');
+        // Enabled based on device capabilities, which might change
+        let incoming = this.device.settings.get_strv('incoming-capabilities');
+        let outgoing = this.device.settings.get_strv('outgoing-capabilities');
 
         for (let action of this._gactions) {
-            action.set_enabled(!disabled.includes(action.name));
+            let meta = this._meta.actions[action.name];
+
+            if (meta.incoming.every(type => outgoing.includes(type)) &&
+                meta.outgoing.every(type => incoming.includes(type))) {
+                action.set_enabled(true);
+            }
         }
     }
 
@@ -203,10 +207,11 @@ var Plugin = GObject.registerClass({
      * any dangling signal handlers.
      */
     destroy() {
-        this._gactions.map(action => {
-            this.device.menu.remove_action(`device.${action.name}`);
+        for (let action of this._gactions) {
+            this.device.removeMenuAction(`device.${action.name}`);
             this.device.remove_action(action.name);
-        });
+            action.run_dispose();
+        }
 
         // Write the cache to disk synchronously
         if (this.__cache_file && !this.__cache_lock) {
@@ -225,8 +230,8 @@ var Plugin = GObject.registerClass({
         }
 
         // Try to avoid any cyclic references from signal handlers
-        GObject.signal_handlers_destroy(this);
-        GObject.signal_handlers_destroy(this.settings);
+        this.settings.run_dispose();
+        this.run_dispose();
     }
 });
 

@@ -1,3 +1,42 @@
+gnome-shell-extension-zorin-connect (28.0.2) bionic; urgency=medium
+
+  * Updated full colour icon
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Mon, 02 Dec 2019 17:27:35 +0000
+
+gnome-shell-extension-zorin-connect (28.0.1) bionic; urgency=medium
+
+  * Added Play Store and F-Droid badges
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Sat, 30 Nov 2019 22:50:11 +0000
+
+gnome-shell-extension-zorin-connect (28) bionic; urgency=medium
+
+  * Based on upstream version 28 as at commit
+    3050a7878a1cf35a6cf9b648b9253b74c7cc1967
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Sat, 30 Nov 2019 21:44:43 +0000
+
+gnome-shell-extension-zorin-connect (24.1) bionic; urgency=medium
+
+  * Based on upstream commit 0abf2b0dcb00aa363518122ab4cd3efbe5cb2cc9
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Wed, 29 May 2019 13:59:05 +0100
+
+gnome-shell-extension-zorin-connect (24) bionic; urgency=medium
+
+  * Based on upstream version 24 as at commit
+    59c303f71984cea5cdef988cd949db169fdf80de
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Thu, 16 May 2019 23:23:31 +0100
+
+gnome-shell-extension-zorin-connect (23) bionic; urgency=medium
+
+  * Added F-Droid link and based on upstream version 23 as at commit
+    814f30b89fd58a0032b3a3db2ea7638afa56dee1
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Thu, 02 May 2019 18:28:21 +0100
+
 gnome-shell-extension-zorin-connect (21) bionic; urgency=medium
 
   * Based on upstream version 21 as at commit

@@ -18,6 +18,7 @@ var Metadata = {
     ],
     outgoingCapabilities: [
         'kdeconnect.notification',
+        'kdeconnect.notification.action',
         'kdeconnect.notification.reply',
         'kdeconnect.notification.request'
     ],
@@ -53,6 +54,14 @@ var Metadata = {
             parameter_type: new GLib.VariantType('a{sv}'),
             incoming: [],
             outgoing: ['kdeconnect.notification']
+        },
+        activateNotification: {
+            label: _('Activate Notification'),
+            icon_name: 'preferences-system-notifications-symbolic',
+
+            parameter_type: new GLib.VariantType('(ss)'),
+            incoming: [],
+            outgoing: ['kdeconnect.notification.action']
         }
     }
 };
@@ -97,7 +106,7 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'notification');
 
-        this._sms = {};
+        this._session = this.service.components.get('session');
     }
 
     handlePacket(packet) {
@@ -110,11 +119,11 @@ var Plugin = GObject.registerClass({
 
             // We don't support *incoming* replies (yet)
             case 'kdeconnect.notification.reply':
-                warning('Not implemented', packet.type);
+                debug(`Not implemented: ${packet.type}`);
                 return;
 
             default:
-                warning('Unknown notification packet', this.device.name);
+                debug(`Unknown notification packet: ${packet.type}`);
         }
     }
 
@@ -132,9 +141,9 @@ var Plugin = GObject.registerClass({
         if (packet.body.hasOwnProperty('isCancel')) {
             this.device.hideNotification(packet.body.id);
 
-        // A silent notification; process it so we can abort the transfer
-        } else if (packet.body.hasOwnProperty('silent')) {
-            this.silenceNotification(packet);
+        // A silent notification; silence it by aborting the icon transfer
+        } else if (packet.body.hasOwnProperty('silent') && packet.body.silent) {
+            this.device.rejectTransfer(packet);
 
         // A normal, remote notification
         } else {
@@ -172,7 +181,7 @@ var Plugin = GObject.registerClass({
                     break;
 
                 default:
-                    warning('Unknown notification type', this.device.name);
+                    debug(`Unknown notification type ${this.device.name}`);
             }
         }
     }
@@ -198,16 +207,12 @@ var Plugin = GObject.registerClass({
      */
     async _uploadIcon(packet, icon) {
         try {
-            // Normalize icon-name strings into GIcons
+            // Normalize strings into GIcons
             if (typeof icon === 'string') {
-                icon = new Gio.ThemedIcon({name: icon});
+                icon = Gio.Icon.new_for_string(icon);
             }
 
             switch (true) {
-                // TODO: Currently we skip icons for bluetooth connections
-                case (this.device.connection_type === 'bluetooth'):
-                    return this.device.sendPacket(packet);
-
                 // GBytesIcon
                 case (icon instanceof Gio.BytesIcon):
                     return this._uploadBytesIcon(packet, icon.get_bytes());
@@ -340,7 +345,10 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            debug(`(${notif.appName}) ${notif.title}: ${notif.text}`);
+            // Sending when the session is active is forbidden
+            if (this._session.active && !this.settings.get_boolean('send-active')) {
+                return;
+            }
 
             // TODO: revisit application notification settings
             let applications = JSON.parse(this.settings.get_string('applications'));
@@ -371,7 +379,6 @@ var Plugin = GObject.registerClass({
                 delete notif.icon;
 
                 let packet = {
-                    id: 0,
                     type: 'kdeconnect.notification',
                     body: notif
                 };
@@ -459,6 +466,7 @@ var Plugin = GObject.registerClass({
         try {
             // Set defaults
             let action = null;
+            let buttons = [];
             let id = packet.body.id;
             let title = packet.body.appName;
             let body = `${packet.body.title}: ${packet.body.text}`;
@@ -481,6 +489,17 @@ var Plugin = GObject.registerClass({
                 };
             }
 
+            // Check if the notification has actions
+            if (packet.body.actions) {
+                buttons = packet.body.actions.map(action => {
+                    return {
+                        label: action,
+                        action: 'activateNotification',
+                        parameter: new GLib.Variant('(ss)', [id, action])
+                    };
+                });
+            }
+
             switch (true) {
                 // Special case for Missed Calls
                 case packet.body.id.includes('MissedCall'):
@@ -498,8 +517,6 @@ var Plugin = GObject.registerClass({
                         parameter: new GLib.Variant('s', packet.body.title)
                     };
                     icon = icon || new Gio.ThemedIcon({name: 'sms-symbolic'});
-
-                    this._sms[packet.body.ticker] = packet.body.id;
                     break;
 
                 // Ignore 'appName' if it's the same as 'title'
@@ -517,35 +534,11 @@ var Plugin = GObject.registerClass({
                 title: title,
                 body: body,
                 icon: icon,
-                action: action
+                action: action,
+                buttons: buttons
             });
         } catch (e) {
             logError(e);
-        }
-    }
-
-    /**
-     * Handle a "silent" notification
-     *
-     * @param {kdeconnect.notification} packet - The notification packet
-     */
-    async silenceNotification(packet) {
-        try {
-            if (!packet.payloadTransferInfo) {
-                return null;
-            }
-
-            let transfer = this.device.createTransfer({
-                output_stream: null,
-                size: packet.payloadSize
-            });
-
-            // Since we've passed a bogus stream, this will abort the transfer
-            await transfer.download(
-                packet.payloadTransferInfo.port || packet.payloadTransferInfo.uuid
-            );
-        } catch (e) {
-            debug(e);
         }
     }
 
@@ -556,8 +549,6 @@ var Plugin = GObject.registerClass({
      * @param {string} id - The local notification id
      */
     withdrawNotification(id) {
-        debug(id);
-
         this.device.sendPacket({
             type: 'kdeconnect.notification',
             body: {
@@ -574,15 +565,6 @@ var Plugin = GObject.registerClass({
      * @param {string} id - The remote notification id
      */
     closeNotification(id) {
-        debug(id);
-
-        let tickerId = this._sms[id];
-
-        if (tickerId) {
-            delete this._sms[id];
-            id = tickerId;
-        }
-
         this.device.sendPacket({
             type: 'kdeconnect.notification.request',
             body: {cancel: id}
@@ -594,18 +576,20 @@ var Plugin = GObject.registerClass({
      *
      * @param {string} uuid - The requestReplyId for the repliable notification
      * @param {string} message - The message to reply with
-     * @param {object} notification - The original notification
+     * @param {object} notification - The original notification packet
      */
     replyNotification(uuid, message, notification) {
-        debug([uuid, message]);
-
-        // If the message has no content, we're being asked to open the dialog
-        if (message.length === 0) {
-            new NotificationUI.Dialog({
+        // If the message has no content, open a dialog for the user to add one
+        if (!message) {
+            let dialog = new NotificationUI.ReplyDialog({
                 device: this.device,
                 uuid: uuid,
-                notification: notification
+                notification: notification,
+                plugin: this
             });
+            dialog.present();
+
+        // Otherwise just send the reply
         } else {
             this.device.sendPacket({
                 type: 'kdeconnect.notification.reply',
@@ -615,6 +599,22 @@ var Plugin = GObject.registerClass({
                 }
             });
         }
+    }
+
+    /**
+     * Activate a remote notification action
+     *
+     * @param {string} id - The remote notification id
+     * @param {string} action - The notification action (label)
+     */
+    activateNotification(id, action) {
+        this.device.sendPacket({
+            type: 'kdeconnect.notification.action',
+            body: {
+                action: action,
+                key: id
+            }
+        });
     }
 
     /**

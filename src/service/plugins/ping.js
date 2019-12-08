@@ -38,8 +38,6 @@ var Plugin = GObject.registerClass({
     }
 
     handlePacket(packet) {
-        debug(packet);
-
         // Notification
         let notif = {
             title: this.device.name,
@@ -60,7 +58,6 @@ var Plugin = GObject.registerClass({
         debug(message);
 
         let packet = {
-            id: 0,
             type: 'kdeconnect.ping',
             body: {}
         };

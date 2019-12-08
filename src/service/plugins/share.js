@@ -66,13 +66,72 @@ var Plugin = GObject.registerClass({
         super._init(device, 'share');
     }
 
+    _ensureReceiveDirectory() {
+        let receiveDir = this.settings.get_string('receive-directory');
+
+        // Ensure a directory is set
+        if (!receiveDir) {
+            receiveDir = GLib.get_user_special_dir(
+                GLib.UserDirectory.DIRECTORY_DOWNLOAD
+            );
+
+            // Fallback to ~/Downloads
+            let homeDir = GLib.get_home_dir();
+
+            if (!receiveDir || receiveDir === homeDir) {
+                receiveDir = GLib.build_filenamev([homeDir, 'Downloads']);
+            }
+
+            this.settings.set_string('receive-directory', receiveDir);
+        }
+
+        // Ensure the directory exists
+        if (!GLib.file_test(receiveDir, GLib.FileTest.IS_DIR)) {
+            GLib.mkdir_with_parents(receiveDir, 448);
+        }
+
+        return receiveDir;
+    }
+
+    _getFile(filename) {
+        let dirpath = this._ensureReceiveDirectory();
+        let basepath = GLib.build_filenamev([dirpath, filename]);
+        let filepath = basepath;
+        let copyNum = 0;
+
+        while (GLib.file_test(filepath, GLib.FileTest.EXISTS)) {
+            copyNum += 1;
+            filepath = `${basepath} (${copyNum})`;
+        }
+
+        return Gio.File.new_for_path(filepath);
+    }
+
+    async _refuseFile(packet) {
+        try {
+            await this.device.rejectTransfer(packet);
+
+            this.device.showNotification({
+                id: `${Date.now()}`,
+                title: _('Transfer Failed'),
+                // TRANSLATORS: eg. Google Pixel is not allowed to upload files
+                body: _('%s is not allowed to upload files').format(
+                    this.device.name
+                ),
+                icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'})
+            });
+        } catch (e) {
+            logError(e, this.device.name);
+        }
+    }
+
     async _handleFile(packet) {
         let file, stream, success, transfer;
         let title, body, iconName;
         let buttons = [];
 
         try {
-            file = get_download_file(packet.body.filename);
+            file = this._getFile(packet.body.filename);
 
             stream = await new Promise((resolve, reject) => {
                 file.replace_async(null, false, 0, 0, null, (file, res) => {
@@ -92,7 +151,7 @@ var Plugin = GObject.registerClass({
             // Notify that we're about to start the transfer
             this.device.showNotification({
                 id: transfer.uuid,
-                title: _('Starting Transfer'),
+                title: _('Transferring File'),
                 // TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
                 body: _('Receiving “%s” from %s').format(
                     packet.body.filename,
@@ -112,7 +171,8 @@ var Plugin = GObject.registerClass({
 
             // We've been asked to open this directly
             if (success && packet.body.open) {
-                open_uri(file.get_uri());
+                let uri = file.get_uri();
+                Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
                 return;
             }
 
@@ -163,7 +223,8 @@ var Plugin = GObject.registerClass({
     }
 
     _handleUri(packet) {
-        open_uri(packet.body.url);
+        let uri = packet.body.url;
+        Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
     _handleText(packet) {
@@ -183,7 +244,11 @@ var Plugin = GObject.registerClass({
      */
     handlePacket(packet) {
         if (packet.body.hasOwnProperty('filename')) {
-            this._handleFile(packet);
+            if (this.settings.get_boolean('receive-files')) {
+                this._handleFile(packet);
+            } else {
+                this._refuseFile(packet);
+            }
         } else if (packet.body.hasOwnProperty('text')) {
             this._handleText(packet);
         } else if (packet.body.hasOwnProperty('url')) {
@@ -202,7 +267,7 @@ var Plugin = GObject.registerClass({
     /**
      * Share local file path or URI
      *
-     * @param {string} path - Local file path or file URI
+     * @param {string} path - Local file path or URI
      * @param {boolean} open - Whether the file should be opened after transfer
      */
     async shareFile(path, open = false) {
@@ -210,7 +275,7 @@ var Plugin = GObject.registerClass({
         let title, body, iconName;
 
         try {
-            if (path.startsWith('file://')) {
+            if (path.includes('://')) {
                 file = Gio.File.new_for_uri(path);
             } else {
                 file = Gio.File.new_for_path(path);
@@ -234,7 +299,7 @@ var Plugin = GObject.registerClass({
             // Notify that we're about to start the transfer
             this.device.showNotification({
                 id: transfer.uuid,
-                title: _('Starting Transfer'),
+                title: _('Transferring File'),
                 // TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
                 body: _('Sending “%s” to %s').format(
                     file.get_basename(),
@@ -282,7 +347,7 @@ var Plugin = GObject.registerClass({
                 icon: new Gio.ThemedIcon({name: iconName})
             });
         } catch (e) {
-            warning(e, this.device.name);
+            debug(e, this.device.name);
         }
     }
 

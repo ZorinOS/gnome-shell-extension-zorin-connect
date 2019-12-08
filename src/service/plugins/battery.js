@@ -146,10 +146,10 @@ var Plugin = GObject.registerClass({
     /**
      * Notify that the remote device considers the battery level low
      */
-    _notifyState() {
+    _batteryNotification(event, title, body, iconName) {
         let buttons = [];
 
-        // Offer the option to locate the device, if available
+        // Offer the option to ring the device, if available
         if (this.device.get_action_enabled('ring')) {
             buttons = [{
                 label: _('Ring'),
@@ -159,17 +159,48 @@ var Plugin = GObject.registerClass({
         }
 
         this.device.showNotification({
-            id: 'battery|threshold',
-            // TRANSLATORS: eg. Google Pixel: Battery is low
-            title: _('%s: Battery is low').format(this.device.name),
-            // TRANSLATORS: eg. 15% remaining
-            body: _('%d%% remaining').format(this.level),
-            icon: new Gio.ThemedIcon({name: 'battery-caution-symbolic'}),
+            id: `battery|${event}`,
+            title: title,
+            body: body,
+            icon: new Gio.ThemedIcon({name: iconName}),
             buttons: buttons
         });
 
         // Save the threshold level
         this._thresholdLevel = this.level;
+    }
+
+    _lowBatteryNotification() {
+        if (!this.settings.get_boolean('low-battery-notification')) {
+            return;
+        }
+
+        this._batteryNotification(
+            'battery|low',
+            // TRANSLATORS: eg. Google Pixel: Battery is low
+            _('%s: Battery is low').format(this.device.name),
+            // TRANSLATORS: eg. 15% remaining
+            _('%d%% remaining').format(this.level),
+            'battery-caution-symbolic'
+        );
+
+        // Save the threshold level
+        this._thresholdLevel = this.level;
+    }
+
+    _fullBatteryNotification() {
+        if (!this.settings.get_boolean('full-battery-notification')) {
+            return;
+        }
+
+        this._batteryNotification(
+            'battery|full',
+            // TRANSLATORS: eg. Google Pixel: Battery is full
+            _('%s: Battery is full').format(this.device.name),
+            // TRANSLATORS: when the battery is fully charged
+            _('Fully Charged'),
+            'battery-full-charged-symbolic'
+        );
     }
 
     /**
@@ -185,14 +216,24 @@ var Plugin = GObject.registerClass({
         if (this._level !== packet.body.currentCharge) {
             this._level = packet.body.currentCharge;
 
+            // If the level is above the threshold hide the notification
             if (this._level > this._thresholdLevel) {
-                this.device.hideNotification('battery|threshold');
+                this.device.hideNotification('battery|low');
+            }
+
+            // If the level just changed to full show a notification
+            if (this._level === 100) {
+                this._fullBatteryNotification();
+
+            // Otherwise hide it
+            } else {
+                this.device.hideNotification('battery|full');
             }
         }
 
         // Device considers the level low
         if (packet.body.thresholdEvent > 0) {
-            this._notifyState();
+            this._lowBatteryNotification();
         }
 
         this._updateEstimate();
@@ -205,7 +246,6 @@ var Plugin = GObject.registerClass({
      */
     _requestState() {
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.battery.request',
             body: {request: true}
         });
@@ -219,14 +259,18 @@ var Plugin = GObject.registerClass({
             return;
         }
 
-        this.device.sendPacket({
-            type: 'kdeconnect.battery',
-            body: {
-                currentCharge: this.service.upower.level,
-                isCharging: this.service.upower.charging,
-                thresholdEvent: this.service.upower.threshold
-            }
-        });
+        let upower = this.service.get('upower');
+
+        if (upower) {
+            this.device.sendPacket({
+                type: 'kdeconnect.battery',
+                body: {
+                    currentCharge: upower.level,
+                    isCharging: upower.charging,
+                    thresholdEvent: upower.threshold
+                }
+            });
+        }
     }
 
     /**
@@ -234,16 +278,18 @@ var Plugin = GObject.registerClass({
      */
     _monitorState() {
         try {
+            let upower = this.service.components.get('upower');
+            let incoming = this.device.settings.get_strv('incoming-capabilities');
+
             switch (true) {
-                // upower failed, already monitoring, no battery or no support
-                case (!this.service.upower):
+                case (!incoming.includes('kdeconnect.battery')):
                 case (this._upowerId > 0):
-                case (this.service.type !== 'laptop'):
-                case (!this.device.get_incoming_supported('battery')):
+                case (!upower):
+                case (!upower.is_present):
                     return;
             }
 
-            this._upowerId = this.service.upower.connect(
+            this._upowerId = upower.connect(
                 'changed',
                 this._sendState.bind(this)
             );
@@ -256,9 +302,18 @@ var Plugin = GObject.registerClass({
     }
 
     _unmonitorState() {
-        if (this._upowerId > 0) {
-            this.service.upower.disconnect(this._upowerId);
-            this._upowerId = 0;
+        try {
+            if (this._upowerId > 0) {
+                let upower = this.service.components.get('upower');
+
+                if (upower) {
+                    upower.disconnect(this._upowerId);
+                }
+
+                this._upowerId = 0;
+            }
+        } catch (e) {
+            logError(e, this.device.name);
         }
     }
 

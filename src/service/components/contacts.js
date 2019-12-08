@@ -59,7 +59,7 @@ var Store = GObject.registerClass({
             this.__cache_lock = true;
             await JSON.dump(this.__cache_data, this.__cache_file);
         } catch (e) {
-            warning(e);
+            debug(e);
         } finally {
             this.__cache_lock = false;
 
@@ -132,7 +132,7 @@ var Store = GObject.registerClass({
                             file.replace_contents_finish(res);
                             resolve(file.get_path());
                         } catch (e) {
-                            warning(e, 'Storing avatar');
+                            debug(e, 'Storing avatar');
                             resolve(undefined);
                         }
                     }
@@ -267,6 +267,30 @@ var Store = GObject.registerClass({
         }
     }
 
+    /**
+     * Lookup a contact for each address object in @addresses and return a
+     * dictionary of address (eg. phone number) to contact object.
+     *
+     * { "555-5555": { "name": "...", "numbers": [], ... } }
+     *
+     * @param {Array of object} addresses - A list of address objects
+     * @return {object} - A dictionary of phone numbers and contacts
+     */
+    lookupAddresses(addresses) {
+        let contacts = {};
+
+        // Lookup contacts for each address
+        for (let i = 0, len = addresses.length; i < len; i++) {
+            let address = addresses[i].address;
+
+            contacts[address] = this.query({
+                number: address
+            });
+        }
+
+        return contacts;
+    }
+
     async clear() {
         try {
             let contacts = this.contacts;
@@ -277,7 +301,7 @@ var Store = GObject.registerClass({
 
             await this.__cache_write();
         } catch (e) {
-            warning(e, 'Clearing contacts');
+            debug(e, 'Clearing contacts');
         }
     }
 
@@ -307,11 +331,11 @@ var Store = GObject.registerClass({
 
             await this.__cache_write();
         } catch (e) {
-            warning(e, 'Updating contacts');
+            debug(e, 'Updating contacts');
         }
     }
 
-    async _loadFolks() {
+    async fetch() {
         try {
             let folks = await new Promise((resolve, reject) => {
                 let proc = this._launcher.spawnv([
@@ -342,11 +366,14 @@ var Store = GObject.registerClass({
             debug(e, 'Loading folks');
         }
     }
+
+    destroy() {
+    }
 });
 
 
 /**
  * The service class for this component
  */
-var Service = Store;
+var Component = Store;
 

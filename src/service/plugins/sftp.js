@@ -51,20 +51,38 @@ var Plugin = GObject.registerClass({
             flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_MERGE
         });
 
-        this._directories = {};
-        this._gmount = null;
         this._mounting = false;
     }
 
-    get ip() {
-        // Always use the IP from the current connection
-        return this.device.settings.get_string('tcp-host');
+    get info() {
+        if (this._info === undefined) {
+            this._info = {
+                directories: {},
+                mount: null,
+                regex: null,
+                uri: null
+            };
+        }
+
+        return this._info;
     }
 
     handlePacket(packet) {
-        // Ensure we don't mount on top of an existing mount
-        if (packet.type === 'kdeconnect.sftp' && this._gmount === null) {
-            this._mount(packet.body);
+        if (packet.type === 'kdeconnect.sftp') {
+            // There was an error mounting the filesystem
+            if (packet.body.errorMessage) {
+                this.device.showNotification({
+                    id: 'sftp-error',
+                    title: `${this.device.name}: ${Metadata.label}`,
+                    body: packet.body.errorMessage,
+                    icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'}),
+                    priority: Gio.NotificationPriority.URGENT
+                });
+
+            // Ensure we don't mount on top of an existing mount
+            } else if (this.info.mount === null) {
+                this._mount(packet.body);
+            }
         }
     }
 
@@ -72,11 +90,11 @@ var Plugin = GObject.registerClass({
         super.connected();
 
         // Disable for all bluetooth connections
-        if (this.device.connection_type === 'bluetooth') {
+        if (this.device.connection_type !== 'lan') {
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
 
-        // Request a mount; if using sshfs we will "delay-connect"
+        // Request a mount
         } else {
             this.mount();
         }
@@ -88,42 +106,42 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Setup the directories for export with GMenu and store the mountpoint.
+     * Parse the connection info
      *
      * @param {object} info - The body of a kdeconnect.sftp packet
      */
-    async _setup(info) {
-        try {
-            this._user = info.user;
-            this._password = info.password;
-            this._port = info.port;
-            this._uri = `sftp://${this.ip}:${this._port}/`;
+    _parseInfo(info) {
+        this._info = info;
 
-            // HACK: Test an SFTP mount for this IP in the 1716-1764 range
-            this._uriRegex = new RegExp(`sftp://(${this.ip}):(171[6-9]|17[2-5][0-9]|176[0-4])`);
+        this.info.directories = {};
+        this.info.mount = null;
+        this.info.regex = new RegExp(
+            'sftp://(' + this.info.ip + '):(1739|17[4-5][0-9]|176[0-4])'
+        );
+        this.info.uri = 'sftp://' + this.info.ip + ':' + this.info.port + '/';
 
-            // Ensure the private key is in the keyring
-            await this._add_identity();
-
-            // If 'multiPaths' is present setup a local URI for each
-            if (info.hasOwnProperty('multiPaths')) {
-                for (let i = 0; i < info.multiPaths.length; i++) {
-                    let name = info.pathNames[i];
-                    let path = info.multiPaths[i];
-                    this._directories[name] = this._uri + path;
-                }
-
-            // If 'multiPaths' is missing use 'path' and assume a Camera folder
-            } else {
-                let uri = this._uri + info.path;
-                this._directories[_('All files')] = uri;
-                this._directories[_('Camera pictures')] = uri + 'DCIM/Camera';
+        // If 'multiPaths' is present setup a local URI for each
+        if (info.hasOwnProperty('multiPaths')) {
+            for (let i = 0; i < info.multiPaths.length; i++) {
+                let name = info.pathNames[i];
+                let path = info.multiPaths[i];
+                this.info.directories[name] = this.info.uri + path;
             }
 
-            return Promise.resolve();
-        } catch (e) {
-            return Promise.reject(e);
+        // If 'multiPaths' is missing use 'path' and assume a Camera folder
+        } else {
+            let uri = this.info.uri + this.info.path;
+            this.info.directories[_('All files')] = uri;
+            this.info.directories[_('Camera pictures')] = uri + 'DCIM/Camera';
         }
+    }
+
+    _onAskQuestion(op, message, choices) {
+        op.reply(Gio.MountOperationResult.HANDLED);
+    }
+
+    _onAskPassword(op, message, user, domain, flags) {
+        op.reply(Gio.MountOperationResult.HANDLED);
     }
 
     async _mount(info) {
@@ -132,42 +150,42 @@ var Plugin = GObject.registerClass({
             if (this._mounting) return;
             this._mounting = true;
 
-            await this._setup(info);
+            // Parse the connection info
+            await this._parseInfo(info);
 
+            // Ensure the private key is in the keyring
+            await this._addPrivateKey();
+
+            // Create a new mount operation
             let op = new Gio.MountOperation({
-                username: this._user,
-                password: this._password,
+                username: info.user,
+                password: info.password,
                 password_save: Gio.PasswordSave.NEVER
             });
 
-            // We already know the host, so just accept
-            op.connect('ask-question', (op, message, choices) => {
-                op.reply(Gio.MountOperationResult.HANDLED);
-            });
-
-            // We set the password, so just accept
-            op.connect('ask-password', (op, message, user, domain, flags) => {
-                op.reply(Gio.MountOperationResult.HANDLED);
-            });
+            // Auto-accept new host keys and password requests
+            let questionId = op.connect('ask-question', this._onAskQuestion);
+            let passwordId = op.connect('ask-password', this._onAskPassword);
 
             // This is the actual call to mount the device
             await new Promise((resolve, reject) => {
-                let file = Gio.File.new_for_uri(this._uri);
+                let file = Gio.File.new_for_uri(this.info.uri);
 
                 file.mount_enclosing_volume(0, op, null, (file, res) => {
                     try {
+                        op.disconnect(questionId);
+                        op.disconnect(passwordId);
                         resolve(file.mount_enclosing_volume_finish(res));
                     } catch (e) {
                         // Special case when the GMount didn't unmount properly
                         // but is still on the same port and can be reused.
                         if (e.code && e.code === Gio.IOErrorEnum.ALREADY_MOUNTED) {
-                            warning(e, `${this.device.name} (${this.name})`);
                             resolve(true);
 
                         // There's a good chance this is a host key verification
                         // error; regardless we'll remove the key for security.
                         } else {
-                            this._remove_host(this._port);
+                            this._removeHostKey();
                             reject(e);
                         }
                     }
@@ -180,14 +198,19 @@ var Plugin = GObject.registerClass({
             for (let mount of monitor.get_mounts()) {
                 let uri = mount.get_root().get_uri();
 
-                // Check if this is our mount
-                if (this._uri === uri) {
-                    this._gmount = mount;
-                    this._gmount.connect('unmounted', this.unmount.bind(this));
+                // This is our GMount
+                if (this.info.uri === uri) {
+                    this.info.mount = mount;
+                    this.info.mount.connect(
+                        'unmounted',
+                        this.unmount.bind(this)
+                    );
 
-                // Or if it's a stale mount we need to cleanup
-                } else if (this._uriRegex.test(uri)) {
-                    warning('Removing stale GMount', `${this.device.name} (${this.name})`);
+                    this._addSymlink(mount);
+
+                // This is one of our old mounts
+                } else if (this.info.regex.test(uri)) {
+                    debug(`Remove stale mount at ${uri}`);
                     await this._unmount(mount);
                 }
             }
@@ -196,21 +219,24 @@ var Plugin = GObject.registerClass({
             this._addSubmenu();
             this._mounting = false;
         } catch (e) {
-            logError(e, `${this.device.name} (${this.name})`);
-            this._mounting = false;
+            logError(e, this.device.name);
             this.unmount();
         }
     }
 
-    _unmount(mount) {
+    _unmount(mount = null) {
+        if (!mount) return Promise.resolve();
+
         return new Promise((resolve, reject) => {
             let op = new Gio.MountOperation();
 
             mount.unmount_with_operation(1, op, null, (mount, res) => {
                 try {
-                    resolve(mount.unmount_with_operation_finish(res));
+                    mount.unmount_with_operation_finish(res);
+                    resolve();
                 } catch (e) {
-                    reject(e);
+                    debug(e);
+                    resolve();
                 }
             });
         });
@@ -220,7 +246,7 @@ var Plugin = GObject.registerClass({
      * Add Zorin Connect's private key identity to the authentication agent so our
      * identity can be verified by Android during private key authentication.
      */
-    _add_identity() {
+    _addPrivateKey() {
         let ssh_add = this._launcher.spawnv([
             zorin_connect.metadata.bin.ssh_add,
             GLib.build_filenamev([zorin_connect.configdir, 'private.pem'])
@@ -232,7 +258,7 @@ var Plugin = GObject.registerClass({
                     let result = proc.communicate_utf8_finish(res)[1].trim();
 
                     if (proc.get_exit_status() !== 0) {
-                        warning(result, `${this.device.name} (${this.name})`);
+                        debug(result, this.device.name);
                     }
 
                     resolve();
@@ -244,87 +270,194 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Remove old host keys from ~/.ssh/known_hosts for this host from the range
+     * Remove all host keys from ~/.ssh/known_hosts for @host in the port range
      * used by KDE Connect (1739-1764).
      *
-     * @param {number} port - The port to remove the host key for
+     * @param {string} host - A hostname or IP address
      */
-    async _remove_host(port = 1739) {
-        try {
-            let ssh_keygen = this._launcher.spawnv([
-                zorin_connect.metadata.bin.ssh_keygen,
-                '-R',
-                `[${this.ip}]:${port}`
-            ]);
+    async _removeHostKey(host) {
+        for (let port = 1739; port <= 1764; port++) {
+            try {
+                let ssh_keygen = this._launcher.spawnv([
+                    zorin_connect.metadata.bin.ssh_keygen,
+                    '-R',
+                    `[${host}]:${port}`
+                ]);
 
-            await new Promise((resolve, reject) => {
-                ssh_keygen.wait_check_async(null, (proc, res) => {
-                    try {
-                        resolve(proc.wait_check_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
+                await new Promise((resolve, reject) => {
+                    ssh_keygen.wait_check_async(null, (proc, res) => {
+                        try {
+                            resolve(proc.wait_check_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    });
                 });
-            });
-
-            debug(`removed host key for [${this.ip}]:${port}`);
-        } catch (e) {
-            warning(e, `${this.device.name} (${this.name})`);
+            } catch (e) {
+                debug(e);
+            }
         }
     }
 
     /**
-     * Replace the 'Mount' item with a submenu of directories
+     * Mount menu helpers
      */
-    _addSubmenu() {
-        // Sftp Submenu
-        let submenu = new Gio.Menu();
+    _getUnmountSection() {
+        if (this._unmountSection === undefined) {
+            this._unmountSection = new Gio.Menu();
 
-        // Directories Section
-        let directories = new Gio.Menu();
-
-        for (let [name, uri] of Object.entries(this._directories)) {
-            directories.append(name, `device.openPath::${uri}`);
+            let unmountItem = new Gio.MenuItem();
+            unmountItem.set_label(Metadata.actions.unmount.label);
+            unmountItem.set_icon(new Gio.ThemedIcon({
+                name: Metadata.actions.unmount.icon_name
+            }));
+            unmountItem.set_detailed_action('device.unmount');
+            this._unmountSection.append_item(unmountItem);
         }
 
-        submenu.append_section(null, directories);
+        return this._unmountSection;
+    }
 
-        // Unmount Section/Item
-        let unmount = new Gio.Menu();
-        unmount.add_action(this.device.lookup_action('unmount'));
-        submenu.append_section(null, unmount);
+    _getMountedIcon() {
+        if (this._mountedIcon === undefined) {
+            this._mountedIcon = new Gio.EmblemedIcon({
+                gicon: new Gio.ThemedIcon({name: 'folder-remote-symbolic'})
+            });
 
-        // Files Item
-        let item = new Gio.MenuItem();
-        item.set_detailed_action('device.mount');
+            // TODO: this emblem often isn't very visible
+            let emblem = new Gio.Emblem({
+                icon: new Gio.ThemedIcon({name: 'emblem-default'})
+            });
 
-        // Icon with check emblem
-        // TODO: this emblem often isn't very visible
-        let icon = new Gio.EmblemedIcon({
-            gicon: new Gio.ThemedIcon({name: 'folder-remote-symbolic'})
-        });
-        let emblem = new Gio.Emblem({
-            icon: new Gio.ThemedIcon({name: 'emblem-default'})
-        });
-        icon.add_emblem(emblem);
-        item.set_icon(icon);
+            this._mountedIcon.add_emblem(emblem);
+        }
 
-        item.set_attribute_value(
-            'hidden-when',
-            new GLib.Variant('s', 'action-disabled')
-        );
-        item.set_label(_('Files'));
-        item.set_submenu(submenu);
+        return this._mountedIcon;
+    }
 
-        this.device.menu.replace_action('device.mount', item);
+    _addSubmenu() {
+        try {
+            // Directories Section
+            let dirSection = new Gio.Menu();
+
+            for (let [name, uri] of Object.entries(this.info.directories)) {
+                dirSection.append(name, `device.openPath::${uri}`);
+            }
+
+            // Unmount Section
+            let unmountSection = this._getUnmountSection();
+
+            // Files Submenu
+            let filesSubmenu = new Gio.Menu();
+            filesSubmenu.append_section(null, dirSection);
+            filesSubmenu.append_section(null, unmountSection);
+
+            // Files Item
+            let filesItem = new Gio.MenuItem();
+            filesItem.set_detailed_action('device.mount');
+            filesItem.set_icon(this._getMountedIcon());
+            filesItem.set_label(_('Files'));
+            filesItem.set_submenu(filesSubmenu);
+
+            this.device.replaceMenuAction('device.mount', filesItem);
+        } catch (e) {
+            logError(e);
+        }
     }
 
     _removeSubmenu() {
-        let index = this.device.menu.remove_action('device.mount');
-        let action = this.device.lookup_action('mount');
+        try {
+            let index = this.device.removeMenuAction('device.mount');
+            let action = this.device.lookup_action('mount');
 
-        if (action !== null) {
-            this.device.menu.add_action(action, index);
+            if (action !== null) {
+                this.device.addMenuAction(
+                    action,
+                    index,
+                    Metadata.actions.mount.label,
+                    Metadata.actions.mount.icon_name
+                );
+            }
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    /**
+     * Create a symbolic link referring to the device by name
+     */
+    async _addSymlink(mount) {
+        try {
+            let by_name_dir = Gio.File.new_for_path(
+                zorin_connect.runtimedir + '/by-name/'
+            );
+
+            try {
+                by_name_dir.make_directory_with_parents(null);
+            } catch (e) {
+                if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS)) {
+                    throw e;
+                }
+            }
+
+            // Replace path separator with a Unicode lookalike:
+            let safe_device_name = this.device.name.replace('/', '∕');
+
+            if (safe_device_name === '.') {
+                safe_device_name = '·';
+            } else if (safe_device_name === '..') {
+                safe_device_name = '··';
+            }
+
+            let link_target = mount.get_root().get_path();
+            let link = Gio.File.new_for_path(
+                by_name_dir.get_path() + '/' + safe_device_name
+            );
+
+            // Check for and remove any existing stale link
+            try {
+                let link_stat = await new Promise((resolve, reject) => {
+                    link.query_info_async(
+                        'standard::symlink-target',
+                        Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                        GLib.PRIORITY_DEFAULT,
+                        null,
+                        (link, res) => {
+                            try {
+                                resolve(link.query_info_finish(res));
+                            } catch (e) {
+                                reject(e);
+                            }
+                        },
+                    );
+                });
+
+                if (link_stat.get_symlink_target() === link_target) {
+                    return;
+                }
+
+                await new Promise((resolve, reject) => {
+                    link.delete_async(
+                        GLib.PRIORITY_DEFAULT,
+                        null,
+                        (link, res) => {
+                            try {
+                                resolve(link.delete_finish(res));
+                            } catch (e) {
+                                reject(e);
+                            }
+                        },
+                    );
+                });
+            } catch (e) {
+                if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND)) {
+                    throw e;
+                }
+            }
+
+            link.make_symbolic_link(link_target, null);
+        } catch (e) {
+            debug(e, this.device.name);
         }
     }
 
@@ -334,7 +467,9 @@ var Plugin = GObject.registerClass({
     mount() {
         this.device.sendPacket({
             type: 'kdeconnect.sftp.request',
-            body: {startBrowsing: true}
+            body: {
+                startBrowsing: true
+            }
         });
     }
 
@@ -343,19 +478,19 @@ var Plugin = GObject.registerClass({
      */
     async unmount() {
         try {
-            // Skip since this will always fail
-            if (this._gmount) {
-                await this._unmount(this._gmount);
+            if (this.info.mount === null) {
+                return;
             }
-        } catch (e) {
-            debug(e, this.device.name);
 
-        // Always reset the state and menu
-        } finally {
-            this._directories = {};
-            this._gmount = null;
-            this._mounting = false;
+            let mount = this.info.mount;
+
             this._removeSubmenu();
+            this._info = undefined;
+            this._mounting = false;
+
+            await this._unmount(mount);
+        } catch (e) {
+            debug(e);
         }
     }
 

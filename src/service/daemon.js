@@ -2,11 +2,6 @@
 
 'use strict';
 
-const Gettext = imports.gettext.domain('org.gnome.Shell.Extensions.ZorinConnect');
-const _ = Gettext.gettext;
-const System = imports.system;
-
-imports.gi.versions.Atspi = '2.0';
 imports.gi.versions.Gdk = '3.0';
 imports.gi.versions.GdkPixbuf = '2.0';
 imports.gi.versions.Gio = '2.0';
@@ -34,26 +29,15 @@ imports.searchPath.unshift(zorin_connect.extdatadir);
 imports._zorin_connect;
 
 // Local Imports
-const Bluetooth = imports.service.protocol.bluetooth;
 const Core = imports.service.protocol.core;
 const Device = imports.service.device;
-const Lan = imports.service.protocol.lan;
 
 const ServiceUI = imports.service.ui.service;
-const Settings = imports.service.ui.settings;
 
 
 const Service = GObject.registerClass({
     GTypeName: 'ZorinConnectService',
     Properties: {
-        'devices': GObject.param_spec_variant(
-            'devices',
-            'Devices',
-            'A list of known devices',
-            new GLib.VariantType('as'),
-            null,
-            GObject.ParamFlags.READABLE
-        ),
         'discoverable': GObject.ParamSpec.boolean(
             'discoverable',
             'Discoverable',
@@ -61,19 +45,19 @@ const Service = GObject.registerClass({
             GObject.ParamFlags.READWRITE,
             false
         ),
+        'id': GObject.ParamSpec.string(
+            'id',
+            'Id',
+            'The service id',
+            GObject.ParamFlags.READWRITE,
+            null
+        ),
         'name': GObject.ParamSpec.string(
             'name',
             'deviceName',
             'The name announced to the network',
             GObject.ParamFlags.READWRITE,
             'ZorinConnect'
-        ),
-        'type': GObject.ParamSpec.string(
-            'type',
-            'deviceType',
-            'The service device type',
-            GObject.ParamFlags.READABLE,
-            'desktop'
         )
     }
 }, class Service extends Gtk.Application {
@@ -84,34 +68,34 @@ const Service = GObject.registerClass({
             flags: Gio.ApplicationFlags.HANDLES_OPEN
         });
 
-        GLib.set_prgname(zorin_connect.app_id);
-        GLib.set_application_name('ZorinConnect');
+        GLib.set_prgname('Zorin Connect');
+        GLib.set_application_name('Zorin Connect');
 
         // Track devices with id as key
         this._devices = new Map();
-
-        // Properties
-        zorin_connect.settings.bind('discoverable', this, 'discoverable', 0);
-        zorin_connect.settings.bind('public-name', this, 'name', 0);
+        
+        // Command-line
+        this._initOptions();
     }
 
-    get certificate() {
-        if (this._certificate === undefined) {
-            this._certificate = Gio.TlsCertificate.new_for_paths(
-                GLib.build_filenamev([zorin_connect.configdir, 'certificate.pem']),
-                GLib.build_filenamev([zorin_connect.configdir, 'private.pem'])
-            );
+    get backends() {
+        if (this._backends === undefined) {
+            this._backends = new Map();
         }
 
-        return this._certificate;
+        return this._backends;
+    }
+
+    get components() {
+        if (this._components === undefined) {
+            this._components = new Map();
+        }
+
+        return this._components;
     }
 
     get devices() {
-        return Array.from(this._devices.keys());
-    }
-
-    get fingerprint() {
-        return this.certificate.fingerprint();
+        return Array.from(this._devices.values());
     }
 
     get identity() {
@@ -120,10 +104,9 @@ const Service = GObject.registerClass({
                 id: 0,
                 type: 'kdeconnect.identity',
                 body: {
-                    deviceId: this.certificate.common_name,
+                    deviceId: this.id,
                     deviceName: this.name,
-                    deviceType: this.type,
-                    tcpPort: 1716,
+                    deviceType: this._getDeviceType(),
                     protocolVersion: 7,
                     incomingCapabilities: [],
                     outgoingCapabilities: []
@@ -131,9 +114,6 @@ const Service = GObject.registerClass({
             });
 
             for (let name in imports.service.plugins) {
-                // Don't report clipbaord/mousepad support in Wayland sessions
-                if (_WAYLAND && ['clipboard', 'mousepad'].includes(name)) continue;
-
                 let meta = imports.service.plugins[name].Metadata;
 
                 if (!meta) continue;
@@ -151,75 +131,27 @@ const Service = GObject.registerClass({
         return this._identity;
     }
 
-    get type() {
-        if (this._type === undefined) {
-            try {
-                let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
-
-                if (type instanceof Uint8Array) {
-                    type = imports.byteArray.toString(type);
-                }
-
-                type = Number(type);
-                this._type = [8, 9, 10, 14].includes(type) ? 'laptop' : 'desktop';
-            } catch (e) {
-                this._type = 'desktop';
-            }
-        }
-
-        return this._type;
-    }
-
     /**
-     * Send identity to @address or broadcast if %null
-     *
-     * @param {string|Gio.InetSocketAddress} - TCP address, bluez path or %null
+     * Helpers
      */
-    broadcast(address = null) {
+    _getDeviceType() {
         try {
-            switch (true) {
-                case (address instanceof Gio.InetSocketAddress):
-                    this.lan.broadcast(address);
-                    break;
+            let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
 
-                case (typeof address === 'string'):
-                    this.bluetooth.broadcast(address);
-                    break;
-
-                // If not discoverable we'll only broadcast to paired devices
-                case !this.discoverable:
-                    this.reconnect();
-                    break;
-
-                // We only do true "broadcasts" for LAN
-                default:
-                    this.lan.broadcast();
+            if (type instanceof Uint8Array) {
+                type = imports.byteArray.toString(type);
             }
+
+            type = Number(type);
+
+            if ([8, 9, 10, 14].includes(type)) {
+                return 'laptop';
+            }
+
+            return 'desktop';
         } catch (e) {
-            logError(e);
+            return 'desktop';
         }
-    }
-
-    /**
-     * Try to reconnect to each paired device that has disconnected
-     */
-    reconnect() {
-        for (let [id, device] of this._devices.entries()) {
-            if (!device.connected) {
-                if (device.paired) {
-                    device.activate();
-
-                // Prune the device if the settings window is not open
-                } else if (!this._window || !this._window.visible) {
-                    device.destroy();
-                    this._devices.delete(id);
-                    zorin_connect.settings.set_strv('devices', this.devices);
-                    this.notify('devices');
-                }
-            }
-        }
-
-        return GLib.SOURCE_CONTINUE;
     }
 
     /**
@@ -244,7 +176,7 @@ const Service = GObject.registerClass({
             });
 
             if (unpaired.length === 3 && this.discoverable) {
-                this.activate_action('discoverable', null);
+                this.discoverable = false;
 
                 let error = new Error();
                 error.name = 'DiscoveryWarning';
@@ -253,58 +185,91 @@ const Service = GObject.registerClass({
 
             device = new Device.Device(packet);
             this._devices.set(device.id, device);
-            device.loadPlugins();
 
-            zorin_connect.settings.set_strv('devices', this.devices);
-            this.notify('devices');
+            // Notify
+            this.settings.set_strv(
+                'devices',
+                Array.from(this._devices.keys())
+            );
         }
 
         return device;
     }
 
     /**
-     * Delete a known device.
+     * Permanently remove a device.
      *
-     * Removes the device from the list of known devices, unpairs it, destroys
-     * it and deletes all GSettings and cached files.
+     * Removes the device from the list of known devices, deletes all GSettings
+     * and files.
      *
      * @param {String} id - The id of the device to delete
      */
-    deleteDevice(id) {
-        let device = this._devices.get(id);
+    _removeDevice(id) {
+        // Delete all GSettings
+        let settings_path = '/org/gnome/shell/extensions/zorin-connect/' + id + '/';
+        GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
 
-        if (device) {
-            // Stash the settings path before unpairing and removing
-            let settings_path = device.settings.path;
-            device.sendPacket({type: 'kdeconnect.pair', pair: 'false'});
+        // Delete the cache
+        let cache = GLib.build_filenamev([zorin_connect.cachedir, id]);
+        Gio.File.rm_rf(cache);
 
-            //
-            device.destroy();
-            this._devices.delete(id);
-
-            // Delete all GSettings
-            GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
-
-            // Delete the cache
-            let cache = GLib.build_filenamev([zorin_connect.cachedir, id]);
-            Gio.File.rm_rf(cache);
-
-            // Notify
-            zorin_connect.settings.set_strv('devices', this.devices);
-            this.notify('devices');
-        }
+        // Forget the device
+        this._devices.delete(id);
+        this.settings.set_strv(
+            'devices',
+            Array.from(this._devices.keys())
+        );
     }
 
     /**
-     * Service GActions
+     * GSettings
+     */
+    _initSettings() {
+        this.settings = new Gio.Settings({
+            settings_schema: zorin_connect.gschema.lookup(zorin_connect.app_id, true)
+        });
+
+        // TODO: added v25, remove after a few releases
+        let publicName = this.settings.get_string('public-name');
+
+        if (publicName.length > 0) {
+            this.settings.set_string('name', publicName);
+            this.settings.reset('public-name');
+        }
+
+        // Bound Properties
+        this.settings.bind('discoverable', this, 'discoverable', 0);
+        this.settings.bind('id', this, 'id', 0);
+        this.settings.bind('name', this, 'name', 0);
+
+        // Set the default name to the computer's hostname
+        if (this.name.length === 0) {
+            this.settings.set_string('name', GLib.get_host_name());
+        }
+
+        // Keep identity updated and broadcast any name changes
+        this._nameChangedId = this.settings.connect(
+            'changed::name',
+            this._onNameChanged.bind(this)
+        );
+    }
+
+    _onNameChanged(settings, key) {
+        this.identity.body.deviceName = this.name;
+        this._identify();
+    }
+
+    /**
+     * GActions
      */
     _initActions() {
         let actions = [
-            ['broadcast', this.broadcast.bind(this)],
-            ['devel', this._devel.bind(this)],
+            ['connect', this._identify.bind(this), 's'],
             ['device', this._device.bind(this), '(ssbv)'],
             ['error', this._error.bind(this), 'a{ss}'],
-            ['settings', this._settings.bind(this)]
+            ['preferences', this._preferences],
+            ['quit', () => this.quit()],
+            ['refresh', this._identify.bind(this)]
         ];
 
         for (let [name, callback, type] of actions) {
@@ -315,8 +280,6 @@ const Service = GObject.registerClass({
             action.connect('activate', callback);
             this.add_action(action);
         }
-
-        this.add_action(zorin_connect.settings.create_action('discoverable'));
     }
 
     /**
@@ -331,24 +294,32 @@ const Service = GObject.registerClass({
      * @param {GLib.Variant(v)} parameter[3] - GAction parameter
      */
     _device(action, parameter) {
-        parameter = parameter.unpack();
+        try {
+            parameter = parameter.unpack();
 
-        let id = parameter[0].unpack();
-        let devices = (id === '*') ? this._devices.values() : [this._devices.get(id)];
+            // Select the appropriate device(s)
+            let devices;
+            let id = parameter[0].unpack();
 
-        for (let device of devices) {
-            // If the device is available
-            if (device) {
-                device.activate_action(
-                    parameter[1].unpack(),
-                    parameter[2].unpack() ? parameter[3].unpack() : null
-                );
+            if (id === '*') {
+                devices = this._devices.values();
+            } else {
+                devices = [this._devices.get(id)];
             }
-        }
-    }
 
-    _devel() {
-        (new imports.service.ui.devel.Window()).present();
+            // Unpack the action data
+            let name = parameter[1].unpack();
+            let target = parameter[2].unpack() ? parameter[3].unpack() : null;
+
+            // Activate the action on each available device
+            for (let device of devices) {
+                if (device) {
+                    device.activate_action(name, target);
+                }
+            }
+        } catch (e) {
+            logError(e);
+        }
     }
 
     _error(action, parameter) {
@@ -377,25 +348,142 @@ const Service = GObject.registerClass({
         }
     }
 
-    _settings(page = null, parameter = null) {
-        if (parameter instanceof GLib.Variant) {
-            page = parameter.unpack();
+    _identify(action, parameter) {
+        try {
+            // If we're passed a parameter, try and find a backend for it
+            if (parameter instanceof GLib.Variant) {
+                let uri = parameter.unpack();
+                let [scheme, address] = uri.split('://');
+
+                let backend = this.backends.get(scheme);
+
+                if (backend) {
+                    backend.broadcast(address);
+                }
+
+            // If we're not discoverable, only try to reconnect known devices
+            } else if (!this.discoverable) {
+                this._reconnect();
+
+            // Otherwise have each backend broadcast to it's network
+            } else {
+                for (let backend of this.backends.values()) {
+                    backend.broadcast();
+                }
+            }
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    _preferences() {
+        let proc = new Gio.Subprocess({
+            argv: [zorin_connect.extdatadir + '/zorin-connect-preferences']
+        });
+        proc.init(null);
+        proc.wait_async(null, null);
+    }
+
+    /**
+     * A GSourceFunc that tries to reconnect to each paired device, while
+     * pruning unpaired devices that have disconnected.
+     */
+    _reconnect() {
+        for (let [id, device] of this._devices.entries()) {
+            switch (true) {
+                case device.connected:
+                    break;
+
+                case device.paired:
+                    device.activate();
+                    break;
+
+                default:
+                    this._removeDevice(id);
+                    device.destroy();
+            }
         }
 
-        if (!this._window) {
-            this._window = new Settings.Window();
+        return GLib.SOURCE_CONTINUE;
+    }
+
+    /**
+     * Components
+     */
+    _initComponents() {
+        for (let name in imports.service.components) {
+            try {
+                let module = imports.service.components[name];
+
+                if (module.hasOwnProperty('Component')) {
+                    let component = new module.Component();
+                    this.components.set(name, component);
+                }
+            } catch (e) {
+                logError(e, `'${name}' Component`);
+            }
         }
+    }
 
-        // Open to a specific page
-        if (typeof page === 'string' && this._window.stack.get_child_by_name(page)) {
-            this._window._onDeviceSelected(page);
+    /**
+     * Backends
+     *
+     * These are the implementations of Core.ChannelService that emit
+     * Core.ChannelService::channel with objects implementing Core.Channel.
+     */
+    _onChannel(backend, channel) {
+        try {
+            let device = this._devices.get(channel.identity.body.deviceId);
 
-        // Open the main page
-        } else {
-            this._window._onPrevious();
+            switch (true) {
+                // Proceed if this is an existing device...
+                case (device !== undefined):
+                    break;
+
+                // Or the service is discoverable...
+                case this.discoverable:
+                    device = this._ensureDevice(channel.identity);
+                    break;
+
+                // ...otherwise bail
+                default:
+                    debug(`${channel.identity.body.deviceName}: not allowed`);
+                    return false;
+            }
+
+            channel.attach(device);
+            return true;
+        } catch (e) {
+            logError(e, backend.name);
+            return false;
         }
+    }
 
-        this._window.present();
+    _initBackends() {
+        let backends = [
+            //'bluetooth',
+            'lan'
+        ];
+
+        for (let name of backends) {
+            try {
+                // Try to create the backend and track it if successful
+                let module = imports.service.protocol[name];
+                let backend = new module.ChannelService();
+                this.backends.set(name, backend);
+
+                // Connect to the backend
+                backend.__channelId = backend.connect(
+                    'channel',
+                    this._onChannel.bind(this)
+                );
+
+                // Now try to start the backend, allowing us to retry if we fail
+                backend.start();
+            } catch (e) {
+                this.notify_error(e);
+            }
+        }
     }
 
     /**
@@ -410,7 +498,7 @@ const Service = GObject.registerClass({
         }
 
         let now = GLib.DateTime.new_now_local().to_unix();
-        let dnd = (zorin_connect.settings.get_int('donotdisturb') <= now);
+        let dnd = (this.settings.get_int('donotdisturb') <= now);
 
         // TODO: Maybe the 'enable-sound-alerts' should be left alone/queried
         this._notificationSettings.set_boolean('enable-sound-alerts', dnd);
@@ -457,7 +545,6 @@ const Service = GObject.registerClass({
      * Report a service-level error
      *
      * @param {object} error - An Error or object with name, message and stack
-     * @param {string} context - The scope of the error
      */
     notify_error(error) {
         try {
@@ -495,20 +582,6 @@ const Service = GObject.registerClass({
                     notif.set_default_action('app.settings');
                     break;
 
-                case 'PluginError':
-                    id = `${error.plugin}-error`;
-                    title = _('%s Plugin Failed To Load').format(error.plugin);
-                    body = _('Click for more information');
-                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
-                    priority = Gio.NotificationPriority.HIGH;
-                    error = new GLib.Variant('a{ss}', {
-                        name: error.name.trim(),
-                        message: error.message.trim(),
-                        stack: error.stack.trim()
-                    });
-                    notif.set_default_action_and_target('app.error', error);
-                    break;
-
                 default:
                     id = `${Date.now()}`;
                     title = error.name.trim();
@@ -536,23 +609,6 @@ const Service = GObject.registerClass({
         }
     }
 
-    /**
-     * Load each script in components/ and instantiate a Service if it has one
-     */
-    _loadComponents() {
-        for (let name in imports.service.components) {
-            try {
-                let module = imports.service.components[name];
-
-                if (module.hasOwnProperty('Service')) {
-                    this[name] = new module.Service();
-                }
-            } catch (e) {
-                logError(e);
-            }
-        }
-    }
-
     vfunc_activate() {
         super.vfunc_activate();
     }
@@ -565,16 +621,8 @@ const Service = GObject.registerClass({
         // Watch *this* file and stop the service if it's updated/uninstalled
         this._serviceMonitor = Gio.File.new_for_path(
             zorin_connect.extdatadir + '/service/daemon.js'
-        ).monitor(
-            Gio.FileMonitorFlags.WATCH_MOVES,
-            null
-        );
+        ).monitor(Gio.FileMonitorFlags.WATCH_MOVES, null);
         this._serviceMonitor.connect('changed', () => this.quit());
-
-        // Changing the default public name to the computer's hostname
-        if (this.name.length === 0) {
-            zorin_connect.settings.set_string('public-name', GLib.get_host_name());
-        }
 
         // Init some resources
         let provider = new Gtk.CssProvider();
@@ -591,38 +639,23 @@ const Service = GObject.registerClass({
             appInfo.add_supports_type('x-scheme-handler/sms');
             appInfo.add_supports_type('x-scheme-handler/tel');
         } catch (e) {
-            warning(e);
+            logError(e);
         }
 
-        // Keep identity updated and broadcast any name changes
-        zorin_connect.settings.connect('changed::public-name', (settings) => {
-            this.identity.body.deviceName = this.name;
-        });
-
-        // GActions
+        // GActions & GSettings
+        this._initSettings();
         this._initActions();
+        this._initComponents();
+        this._initBackends();
 
-        // Components (PulseAudio, UPower, etc)
-        this._loadComponents();
-
-        // Lan.ChannelService
-        try {
-            this.lan = new Lan.ChannelService();
-        } catch (e) {
-            e.name = 'LanError';
-            this.notify_error(e);
+        // Load cached devices
+        for (let id of this.settings.get_strv('devices')) {
+            let device = new Device.Device({body: {deviceId: id}});
+            this._devices.set(id, device);
         }
 
-        // Bluetooth.ChannelService
-        try {
-            //this.bluetooth = new Bluetooth.ChannelService();
-        } catch (e) {
-            if (this.bluetooth) {
-                this.bluetooth.destroy();
-            }
-        }
-
-        GLib.timeout_add_seconds(300, 5, this.reconnect.bind(this));
+        // Reconnect to paired devices every 5 seconds
+        GLib.timeout_add_seconds(300, 5, this._reconnect.bind(this));
     }
 
     vfunc_dbus_register(connection, object_path) {
@@ -630,14 +663,7 @@ const Service = GObject.registerClass({
             connection: connection,
             object_path: object_path
         });
-
-        // Load cached devices
-        for (let id of zorin_connect.settings.get_strv('devices')) {
-            let device = new Device.Device({body: {deviceId: id}});
-            this._devices.set(id, device);
-            device.loadPlugins();
-        }
-
+        
         return true;
     }
 
@@ -668,8 +694,7 @@ const Service = GObject.registerClass({
                         break;
 
                     default:
-                        warning(`Unsupported URI: ${file.get_uri()}`);
-                        return;
+                        throw new Error(`Unsupported URI: ${file.get_uri()}`);
                 }
 
                 // Show chooser dialog
@@ -679,45 +704,427 @@ const Service = GObject.registerClass({
                     parameter: parameter
                 });
             } catch (e) {
-                logError(e, `Zorin Connect: Opening ${file.get_uri()}:`);
+                logError(e, `Zorin Connect: Opening ${file.get_uri()}`);
             }
         }
     }
 
     vfunc_shutdown() {
-        // Destroy the channel providers first to avoid any further connections
-        try {
-            if (this.lan) this.lan.destroy();
-        } catch (e) {
-            debug(e);
+        // Dispose GSettings
+        this.settings.disconnect(this._nameChangedId);
+        this.settings.run_dispose();
+
+        // Destroy the backends first to avoid any further connections
+        for (let [name, backend] of this.backends) {
+            try {
+                backend.destroy();
+            } catch (e) {
+                logError(e, `'${name}' Backend`);
+            }
         }
 
-        try {
-            if (this.bluetooth) this.bluetooth.destroy();
-        } catch (e) {
-            debug(e);
-        }
-
-        // This must be done before ::dbus-unregister is emitted
+        // We must unexport the devices before ::dbus-unregister is emitted
         this._devices.forEach(device => device.destroy());
 
-        // Destroy the remaining components last
-        try {
-            if (this.mpris) this.mpris.destroy();
-        } catch (e) {
-            debug(e);
-        }
-
-        try {
-            if (this.notification) this.notification.destroy();
-        } catch (e) {
-            debug(e);
+        // Destroy the components last
+        for (let [name, component] of this.components) {
+            try {
+                component.destroy();
+            } catch (e) {
+                logError(e, `'${name}' Component`);
+            }
         }
 
         // Chain up last (application->priv->did_shutdown)
         super.vfunc_shutdown();
     }
+    
+    /*
+     * CLI
+     */
+    _initOptions() {
+        /*
+         * Device Listings
+         */
+        this.add_main_option(
+            'list-devices',
+            'l'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('List available devices'),
+            null
+        );
+        
+        this.add_main_option(
+            'list-all',
+            'a'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('List all devices'),
+            null
+        );
+        
+        this.add_main_option(
+            'device',
+            'd'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Target Device'),
+            '<device-id>'
+        );
+
+        /**
+         * Pairing
+         */
+        this.add_main_option(
+            'pair',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('Pair'),
+            null
+        );
+
+        this.add_main_option(
+            'unpair',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('Unpair'),
+            null
+        );
+
+        /*
+         * Messaging
+         */
+        this.add_main_option(
+            'message',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING_ARRAY,
+            _('Send SMS'),
+            '<phone-number>'
+        );
+        
+        this.add_main_option(
+            'message-body',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Message Body'),
+            '<text>'
+        );
+
+        /*
+         * Notifications
+         */
+        this.add_main_option(
+            'notification',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Send Notification'),
+            '<title>'
+        );
+        
+        this.add_main_option(
+            'notification-appname',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Notification App Name'),
+            '<name>'
+        );
+
+        this.add_main_option(
+            'notification-body',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Notification Body'),
+            '<text>'
+        );
+
+        this.add_main_option(
+            'notification-icon',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Notification Icon'),
+            '<icon-name>'
+        );
+
+        this.add_main_option(
+            'notification-id',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Notification ID'),
+            '<id>'
+        );
+
+        this.add_main_option(
+            'photo',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('Photo'),
+            null
+        );
+        
+        this.add_main_option(
+            'ping',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('Ping'),
+            null
+        );
+        
+        this.add_main_option(
+            'ring',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('Ring'),
+            null
+        );
+
+        /*
+         * Sharing
+         */
+        this.add_main_option(
+            'share-file',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.FILENAME_ARRAY,
+            _('Share File'),
+            '<filepath|URI>'
+        );
+
+        this.add_main_option(
+            'share-link',
+            null,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING_ARRAY,
+            _('Share Link'),
+            '<URL>'
+        );
+        
+        /*
+         * Misc
+         */
+        this.add_main_option(
+            'version',
+            'v'.charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.NONE,
+            _('Show release version'),
+            null
+        );
+    }
+
+    _cliAction(id, name, parameter = null) {
+        let parameters = [];
+
+        if (parameter instanceof GLib.Variant) {
+            parameters[0] = parameter;
+        }
+
+        id = id.replace(/\W+/g, '_');
+
+        Gio.DBus.session.call_sync(
+            'org.gnome.Shell.Extensions.ZorinConnect',
+            `/org/gnome/Shell/Extensions/ZorinConnect/Device/${id}`,
+            'org.gtk.Actions',
+            'Activate',
+            GLib.Variant.new('(sava{sv})', [name, parameters, {}]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null
+        );
+    }
+    
+    _cliListDevices(full = true) {
+        let result = Gio.DBus.session.call_sync(
+            'org.gnome.Shell.Extensions.ZorinConnect',
+            '/org/gnome/Shell/Extensions/ZorinConnect',
+            'org.freedesktop.DBus.ObjectManager',
+            'GetManagedObjects',
+            null,
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null
+        );
+
+        let variant = result.unpack()[0].unpack();
+        let device;
+
+        for (let object of Object.values(variant)) {
+            object = object.full_unpack();
+            device = object['org.gnome.Shell.Extensions.ZorinConnect.Device'];
+            
+            if (full) {
+                print(`${device.Id}\t${device.Name}\t${device.Connected}\t${device.Paired}`);
+            } else if (device.Connected && device.Paired) {
+                print(device.Id);
+            }
+        }
+    }
+
+    _cliMessage(id, options) {
+        if (!options.contains('message-body')) {
+            throw new TypeError('missing --message-body option');
+        }
+
+        let address = options.lookup_value('message', null).deep_unpack();
+        let body = options.lookup_value('message-body', null).deep_unpack();
+
+        this._cliAction(id, 'sendSms', GLib.Variant.new('(ss)', [address, body]));
+    }
+
+    _cliNotify(id, options) {
+        let title = options.lookup_value('notification', null).unpack();
+        let body = '';
+        let icon = null;
+        let nid = `${Date.now()}`;
+        let appName = zorin_connect.settings.get_string('name');
+
+        if (options.contains('notification-id')) {
+            nid = options.lookup_value('notification-id', null).unpack();
+        }
+
+        if (options.contains('notification-body')) {
+            body = options.lookup_value('notification-body', null).unpack();
+        }
+
+        if (options.contains('notification-app')) {
+            appName = options.lookup_value('notification-appname', null).unpack();
+        }
+
+        if (options.contains('notification-icon')) {
+            icon = options.lookup_value('notification-icon', null).unpack();
+            icon = Gio.Icon.new_for_string(icon);
+        }
+
+        let notif = {
+            appName: appName,
+            id: nid,
+            title: title,
+            text: body,
+            ticker: `${title}: ${body}`,
+            time: `${Date.now()}`,
+            isClearable: true,
+            icon: icon
+        };
+
+        let parameter = GLib.Variant.full_pack(notif);
+        this._cliAction(id, 'sendNotification', parameter);
+    }
+    
+    _cliShareFile(device, options) {
+        let files = options.lookup_value('share-file', null);
+
+        debug(files.print(true));
+
+        files = files.deep_unpack();
+
+        files.map(file => {
+            if (file instanceof Uint8Array) {
+                file = imports.byteArray.toString(file);
+            }
+
+            this._cliAction(device, 'shareFile', GLib.Variant.new('(sb)', [file, false]));
+        });
+    }
+
+    _cliShareLink(device, options) {
+        let uris = options.lookup_value('share-link', null).deep_unpack();
+
+        uris.map(uri => {
+            if (uri instanceof Uint8Array) {
+                uri = imports.byteArray.toString(uri);
+            }
+            
+            this._cliAction(device, 'shareUri', GLib.Variant.new_string(uri));
+        });
+    }
+
+    vfunc_handle_local_options(options) {
+        try {
+            if (options.contains('version')) {
+                print(`Zorin Connect ${zorin_connect.metadata.version}`);
+                return 0;
+            }
+
+            this.register(null);
+
+            if (options.contains('list-devices')) {
+                this._cliListDevices(false);
+                return 0;
+            }
+
+            if (options.contains('list-all')) {
+                this._cliListDevices(true);
+                return 0;
+            }
+
+            // We need a device for anything else; exit since this is probably
+            // the daemon being started.
+            if (!options.contains('device')) {
+                return -1;
+            }
+
+            let id = options.lookup_value('device', null).unpack();
+
+            // Pairing
+            if (options.contains('pair')) {
+                this._cliAction(id, 'pair');
+            }
+
+            if (options.contains('unpair')) {
+                this._cliAction(id, 'unpair');
+                return 0;
+            }
+
+            // Plugins
+            if (options.contains('message')) {
+                this._cliMessage(id, options);
+            }
+
+            if (options.contains('notification')) {
+                this._cliNotify(id, options);
+            }
+
+            if (options.contains('photo')) {
+                this._cliAction(id, 'photo');
+            }
+
+            if (options.contains('ping')) {
+                this._cliAction(id, 'ping', GLib.Variant.new_string(''));
+            }
+
+            if (options.contains('ring')) {
+                this._cliAction(id, 'ring');
+            }
+
+            if (options.contains('share-file')) {
+                this._cliShareFile(id, options);
+            }
+
+            if (options.contains('share-link')) {
+                this._cliShareFile(id, options);
+            }
+
+            return 0;
+        } catch (e) {
+            logError(e);
+            return 1;
+        }
+    }
 });
 
-(new Service()).run([System.programInvocationName].concat(ARGV));
+(new Service()).run([imports.system.programInvocationName].concat(ARGV));
 

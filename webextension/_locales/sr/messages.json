@@ -4,7 +4,7 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Дели везе ГСКонектом, директно у преглдач или путем СМС-а.",
+        "message": "Дели везе Zorin Connect, директно у преглдач или путем СМС-а.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {

@@ -1,428 +1,617 @@
-# Chinese translations for org.gnome.Shell.Extensions.ZorinConnect package.
-# Copyright (C) 2018 THE org.gnome.Shell.Extensions.ZorinConnect'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the org.gnome.Shell.Extensions.ZorinConnect package.
-# Automatically generated, 2018.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: org.gnome.Shell.Extensions.ZorinConnect\n"
+"Project-Id-Version: zorin-connect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-24 09:24-0800\n"
-"PO-Revision-Date: 2018-12-24 09:24-0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"POT-Creation-Date: 2019-10-10 07:07-0400\n"
+"PO-Revision-Date: 2019-10-10 11:13\n"
+"Last-Translator: Andy Holmes (andyholmes)\n"
+"Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-
-#. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/connect.ui:24 data/menus.ui:7
-msgid "Connect to…"
-msgstr ""
-
-#. Action Buttons
-#: data/connect.ui:30 data/telephony.ui:14 src/service/plugins/share.js:139
-#: src/service/plugins/share.js:310 src/service/plugins/share.js:456
-#: src/service/ui/device.js:609 src/service/ui/keybindings.js:44
-#: src/service/ui/service.js:37 src/service/ui/settings.js:539
-#: src/shell/donotdisturb.js:215
-msgid "Cancel"
-msgstr ""
-
-#: data/connect.ui:37
-msgid "Connect"
-msgstr ""
-
-#: data/connect.ui:98
-msgid "IP Address"
-msgstr ""
-
-#: data/connect.ui:142
-msgid "Bluetooth Device"
-msgstr ""
-
-#: data/contacts.ui:49
-msgid "Type a phone number or name"
-msgstr ""
-
-#: data/contacts.ui:83
-msgid "No contacts"
-msgstr ""
-
-#: data/contacts.ui:95 data/menus.ui:33 data/messaging.ui:247
-msgid "Help"
-msgstr ""
-
-#: data/conversation.ui:76 data/conversation.ui:85
-msgid "Type a message"
-msgstr ""
-
-#: data/conversation.ui:84
-msgid "Send Message"
-msgstr ""
-
-#: data/device.ui:67 src/service/plugins/battery.js:12
-msgid "Battery"
-msgstr ""
-
-#: data/device.ui:122
-msgid "Clipboard Sync"
-msgstr ""
-
-#: data/device.ui:185
-msgid "Media Players"
-msgstr ""
-
-#: data/device.ui:240
-msgid "Mouse & Keyboard"
-msgstr ""
-
-#: data/device.ui:295
-msgid "Volume Control"
-msgstr ""
-
-#: data/device.ui:345 data/device.ui:1625
-msgid "Sharing"
-msgstr ""
-
-#: data/device.ui:374 data/device.ui:651 data/device.ui:1671
-#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
-msgid "Commands"
-msgstr ""
-
-#: data/device.ui:424 data/device.ui:427
-msgid "Name"
-msgstr ""
-
-#: data/device.ui:440 data/device.ui:446
-msgid "Command Line"
-msgstr ""
-
-#: data/device.ui:444 data/device.ui:445
-msgid "Choose an executable"
-msgstr ""
-
-#: data/device.ui:496 data/device.ui:511
-msgid "Add"
-msgstr ""
-
-#: data/device.ui:527 data/device.ui:542
-msgid "Remove"
-msgstr ""
-
-#: data/device.ui:576 data/device.ui:588
-msgid "Edit"
-msgstr ""
-
-#: data/device.ui:604 data/device.ui:616
-msgid "Save"
-msgstr ""
-
-#: data/device.ui:712
-msgid "Share Notifications"
-msgstr ""
-
-#: data/device.ui:763
-msgid "Applications"
-msgstr ""
-
-#: data/device.ui:809 data/device.ui:1717
-#: src/service/plugins/notification.js:12
-msgid "Notifications"
-msgstr ""
-
-#: data/device.ui:839
-msgid "Incoming Calls"
-msgstr ""
-
-#: data/device.ui:888 data/device.ui:1055
-msgid "Volume"
-msgstr ""
-
-#: data/device.ui:954 data/device.ui:1120
-msgid "Pause Media"
-msgstr ""
-
-#: data/device.ui:1007
-msgid "Ongoing Calls"
-msgstr ""
-
-#: data/device.ui:1176
-msgid "Mute Microphone"
-msgstr ""
-
-#: data/device.ui:1230 data/device.ui:1763 src/service/plugins/telephony.js:13
-msgid "Telephony"
-msgstr ""
-
-#: data/device.ui:1265
-msgid "Action Shortcuts"
-msgstr ""
-
-#: data/device.ui:1280 data/device.ui:1349
-msgid "Reset All…"
-msgstr ""
-
-#: data/device.ui:1334
-msgid "Command Shortcuts"
-msgstr ""
-
-#: data/device.ui:1398
-msgid "Shortcuts"
-msgstr ""
-
-#: data/device.ui:1429
-msgid "Plugins"
-msgstr ""
-
-#: data/device.ui:1495
-msgid "Delete"
-msgstr ""
-
-#: data/device.ui:1524
-msgid "Delete this device"
-msgstr ""
-
-#: data/device.ui:1542
-msgid "Unpair and remove all settings and files"
-msgstr ""
-
-#: data/device.ui:1575 data/device.ui:1855
-msgid "Advanced"
-msgstr ""
-
-#: data/device.ui:1809
-msgid "Keyboard Shortcuts"
-msgstr ""
-
-#. TRANSLATORS: Send a pair request to the device
-#: data/device.ui:1912 data/menus.ui:68 src/service/device.js:429
-msgid "Pair"
-msgstr ""
-
-#: data/device.ui:1944
-msgid "Device is unpaired"
-msgstr ""
-
-#: data/device.ui:1959
-msgid "You may configure this device before pairing"
-msgstr ""
-
-#: data/menus.ui:12
-msgid "Display Mode"
-msgstr ""
-
-#. TRANSLATORS: Show device indicators in the top bar
-#: data/menus.ui:15
-msgid "Panel"
-msgstr ""
-
-#. TRANSLATORS: Show devices in the user menu like Bluetooth
-#: data/menus.ui:21
-msgid "User Menu"
-msgstr ""
-
-#. TRANSLATORS: Generate a support log
-#: data/menus.ui:29 src/service/ui/settings.js:536
-msgid "Generate Support Log"
-msgstr ""
-
-#: data/menus.ui:38
-msgid "About"
-msgstr ""
-
-#. TRANSLATORS: Change the connection type to Bluetooth
-#: data/menus.ui:49
-msgid "Switch to Bluetooth"
-msgstr ""
-
-#. TRANSLATORS: Change the connection type to TCP/IP
-#: data/menus.ui:56
-msgid "Switch to LAN"
-msgstr ""
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: zorin-connect\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.ZorinConnect.pot\n"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/menus.ui:63 src/service/ui/device.js:322
+#: data/gtk/menus.ui:7 src/preferences/device.js:293
 msgid "Encryption Info"
-msgstr ""
+msgstr "加密信息"
+
+#. TRANSLATORS: Send a pair request to the device
+#: data/gtk/menus.ui:12 data/ui/device-preferences.ui:2497
+#: src/service/daemon.js:804
+msgid "Pair"
+msgstr "配对"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/menus.ui:74 src/service/device.js:437
+#: data/gtk/menus.ui:18 src/service/daemon.js:813
 msgid "Unpair"
+msgstr "取消配对"
+
+#. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
+#: data/ui/connect.ui:14 data/ui/preferences-window.ui:710
+msgid "Connect to…"
+msgstr "连接到..."
+
+#. Action Buttons
+#: data/ui/connect.ui:20 data/ui/notification-reply-dialog.ui:13
+#: data/ui/telephony.ui:14 src/preferences/device.js:657
+#: src/preferences/keybindings.js:86 src/preferences/service.js:432
+#: src/service/plugins/share.js:161 src/service/plugins/share.js:309
+#: src/service/plugins/share.js:452 src/service/ui/service.js:37
+#: src/shell/donotdisturb.js:301
+msgid "Cancel"
+msgstr "取消"
+
+#: data/ui/connect.ui:27
+msgid "Connect"
+msgstr "连接"
+
+#: data/ui/connect.ui:74
+msgid "IP Address"
+msgstr "IP 地址"
+
+#: data/ui/contact-chooser.ui:50
+msgid "No contacts"
+msgstr "没有联系人"
+
+#: data/ui/contact-chooser.ui:62 data/ui/messaging-window.ui:91
+#: data/ui/preferences-window.ui:736
+msgid "Help"
+msgstr "帮助"
+
+#: data/ui/contact-chooser.ui:103
+msgid "Type a phone number or name"
+msgstr "输入电话号码或姓名"
+
+#: data/ui/conversation.ui:76 data/ui/conversation.ui:85
+#: src/shell/notification.js:52
+msgid "Type a message"
+msgstr "键入消息"
+
+#: data/ui/conversation.ui:84 src/service/plugins/sms.js:50
+msgid "Send Message"
+msgstr "发送消息"
+
+#: data/ui/device-preferences.ui:40 src/preferences/service.js:510
+msgid "Desktop"
+msgstr "桌面"
+
+#: data/ui/device-preferences.ui:88
+msgid "Camera"
+msgstr "相机"
+
+#: data/ui/device-preferences.ui:144
+msgid "Clipboard Sync"
+msgstr "剪贴板同步"
+
+#: data/ui/device-preferences.ui:208
+msgid "Media Players"
+msgstr "媒体播放"
+
+#: data/ui/device-preferences.ui:263
+msgid "Mouse & Keyboard"
+msgstr "鼠标和键盘"
+
+#: data/ui/device-preferences.ui:318
+msgid "Volume Control"
+msgstr "音量控制"
+
+#: data/ui/device-preferences.ui:367 src/service/plugins/sftp.js:359
+msgid "Files"
+msgstr "文件"
+
+#: data/ui/device-preferences.ui:418
+msgid "Receive Files"
+msgstr "文件接收"
+
+#: data/ui/device-preferences.ui:503 data/ui/device-preferences.ui:2164
+msgid "Sharing"
+msgstr "共享"
+
+#: data/ui/device-preferences.ui:532 data/ui/device-preferences.ui:826
+#: data/ui/device-preferences.ui:2256 src/service/plugins/runcommand.js:18
+#: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:199
+msgid "Commands"
+msgstr "命令"
+
+#: data/ui/device-preferences.ui:596 data/ui/device-preferences.ui:599
+msgid "Name"
+msgstr "名称"
+
+#: data/ui/device-preferences.ui:612 data/ui/device-preferences.ui:618
+msgid "Command Line"
+msgstr "命令行"
+
+#: data/ui/device-preferences.ui:616 data/ui/device-preferences.ui:617
+msgid "Choose an executable"
+msgstr "选择可执行文件"
+
+#: data/ui/device-preferences.ui:668 data/ui/device-preferences.ui:684
+msgid "Add"
+msgstr "添加"
+
+#: data/ui/device-preferences.ui:700 data/ui/device-preferences.ui:715
+msgid "Remove"
+msgstr "删除"
+
+#: data/ui/device-preferences.ui:749 data/ui/device-preferences.ui:762
+msgid "Edit"
+msgstr "编辑"
+
+#: data/ui/device-preferences.ui:778 data/ui/device-preferences.ui:791
+msgid "Save"
+msgstr "保存"
+
+#: data/ui/device-preferences.ui:887
+msgid "Share Notifications"
+msgstr "共享通知"
+
+#: data/ui/device-preferences.ui:947
+msgid "Share When Active"
 msgstr ""
+
+#: data/ui/device-preferences.ui:998
+msgid "Applications"
+msgstr "应用"
+
+#: data/ui/device-preferences.ui:1044 data/ui/device-preferences.ui:2302
+#: src/service/plugins/notification.js:13
+msgid "Notifications"
+msgstr "通知"
+
+#: data/ui/device-preferences.ui:1102 src/service/plugins/contacts.js:23
+msgid "Contacts"
+msgstr "联络"
+
+#: data/ui/device-preferences.ui:1155
+msgid "Incoming Calls"
+msgstr "来电"
+
+#: data/ui/device-preferences.ui:1204 data/ui/device-preferences.ui:1371
+msgid "Volume"
+msgstr "音量"
+
+#: data/ui/device-preferences.ui:1270 data/ui/device-preferences.ui:1437
+msgid "Pause Media"
+msgstr "暂停媒体"
+
+#: data/ui/device-preferences.ui:1323
+msgid "Ongoing Calls"
+msgstr "正在进行的呼叫"
+
+#: data/ui/device-preferences.ui:1493
+msgid "Mute Microphone"
+msgstr "麦克风静音"
+
+#: data/ui/device-preferences.ui:1547 data/ui/device-preferences.ui:2348
+#: src/service/plugins/telephony.js:13
+msgid "Telephony"
+msgstr "电话"
+
+#: data/ui/device-preferences.ui:1582
+msgid "Action Shortcuts"
+msgstr "操作快捷方式"
+
+#: data/ui/device-preferences.ui:1597
+msgid "Reset All…"
+msgstr "全部重置..."
+
+#: data/ui/device-preferences.ui:1646
+msgid "Shortcuts"
+msgstr "快捷方式"
+
+#: data/ui/device-preferences.ui:1677
+msgid "Plugins"
+msgstr "插件"
+
+#: data/ui/device-preferences.ui:1723
+msgid "Experimental"
+msgstr "实验功能"
+
+#: data/ui/device-preferences.ui:1771
+msgid "Legacy SMS Support"
+msgstr "旧版短信支持"
+
+#: data/ui/device-preferences.ui:1824 data/ui/device-preferences.ui:2440
+msgid "Advanced"
+msgstr "高级"
+
+#: data/ui/device-preferences.ui:1855
+msgid "Device Battery"
+msgstr "设备电量"
+
+#: data/ui/device-preferences.ui:1906
+msgid "Low Battery Notification"
+msgstr "低电量通知"
+
+#: data/ui/device-preferences.ui:1967
+msgid "Fully Charged Notification"
+msgstr "充满电通知"
+
+#: data/ui/device-preferences.ui:2014
+msgid "System Battery"
+msgstr "系统电池"
+
+#: data/ui/device-preferences.ui:2065
+msgid "Share Statistics"
+msgstr "分享统计信息"
+
+#: data/ui/device-preferences.ui:2114 data/ui/device-preferences.ui:2210
+#: src/service/plugins/battery.js:11
+msgid "Battery"
+msgstr "电池"
+
+#: data/ui/device-preferences.ui:2394
+msgid "Keyboard Shortcuts"
+msgstr "键盘快捷键"
+
+#: data/ui/device-preferences.ui:2529
+msgid "Device is unpaired"
+msgstr "设备未配对"
+
+#: data/ui/device-preferences.ui:2544
+msgid "You may configure this device before pairing"
+msgstr "您可以在配对前配置此设备"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/menus.ui:86
+#: data/ui/device-preferences.ui:2585
 msgid "To Device"
-msgstr ""
+msgstr "到设备"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/menus.ui:92
+#: data/ui/device-preferences.ui:2591
 msgid "From Device"
-msgstr ""
+msgstr "从设备"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/menus.ui:104 data/menus.ui:130
+#: data/ui/device-preferences.ui:2603 data/ui/device-preferences.ui:2629
 msgid "Nothing"
-msgstr ""
+msgstr "无"
 
 #. TRANSLATORS: Lower the system volume
-#: data/menus.ui:111 data/menus.ui:137
+#: data/ui/device-preferences.ui:2610 data/ui/device-preferences.ui:2636
 msgid "Lower"
-msgstr ""
+msgstr "降低"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:118 data/menus.ui:144 src/service/plugins/telephony.js:194
+#: data/ui/device-preferences.ui:2617 data/ui/device-preferences.ui:2643
+#: src/service/plugins/telephony.js:191
 msgid "Mute"
-msgstr ""
+msgstr "静音"
 
-#: data/messaging.ui:12 src/service/plugins/sms.js:26
-#: src/service/ui/messaging.js:902
+#: data/ui/messaging-window.ui:14 src/service/plugins/sms.js:26
+#: src/service/ui/messaging.js:976
 msgid "Messaging"
-msgstr ""
+msgstr "消息"
 
-#: data/messaging.ui:21 src/service/ui/messaging.js:971
+#: data/ui/messaging-window.ui:23 src/service/ui/messaging.js:1193
 msgid "New Conversation"
-msgstr ""
+msgstr "新建对话"
 
-#: data/messaging.ui:110
-msgid "No conversation selected"
-msgstr ""
-
-#: data/messaging.ui:126
-msgid "Select or start a conversation"
-msgstr ""
-
-#: data/messaging.ui:193 data/telephony.ui:52
-msgid "Device is disconnected"
-msgstr ""
-
-#: data/messaging.ui:264
+#: data/ui/messaging-window.ui:108
 msgid "No Conversations"
-msgstr ""
+msgstr "没有对话"
 
-#: data/settings.ui:10
-msgid "Searching for devices…"
-msgstr ""
+#: data/ui/messaging-window.ui:168
+msgid "No conversation selected"
+msgstr "未选择对话"
 
-#: data/settings.ui:49 data/settings.ui:63
+#: data/ui/messaging-window.ui:184
+msgid "Select or start a conversation"
+msgstr "选择或开始对话"
+
+#: data/ui/messaging-window.ui:251 data/ui/notification-reply-dialog.ui:52
+#: data/ui/telephony.ui:53
+msgid "Device is disconnected"
+msgstr "设备已断开连接"
+
+#: data/ui/notification-reply-dialog.ui:20 data/ui/telephony.ui:21
+#: src/service/plugins/share.js:453
+msgid "Send"
+msgstr "发送"
+
+#: data/ui/preferences-window.ui:18
+msgid "Device Name"
+msgstr "设备名称"
+
+#: data/ui/preferences-window.ui:49
+msgid "_Rename"
+msgstr "修改名称"
+
+#: data/ui/preferences-window.ui:86 data/ui/preferences-window.ui:100
 msgid "Refresh"
-msgstr ""
+msgstr "刷新"
 
-#: data/settings.ui:74 data/settings.ui:91 src/extension.js:105
+#: data/ui/preferences-window.ui:111 data/ui/preferences-window.ui:128
+#: src/extension.js:151
 msgid "Mobile Settings"
-msgstr ""
+msgstr "移动设置"
 
-#: data/settings.ui:144 data/settings.ui:158
+#: data/ui/preferences-window.ui:182 data/ui/preferences-window.ui:197
 msgid "Edit Device Name"
-msgstr ""
+msgstr "编辑设备名称"
 
-#: data/settings.ui:236
+#: data/ui/preferences-window.ui:257
 msgid "Devices"
-msgstr ""
+msgstr "设备"
 
-#: data/settings.ui:299
+#: data/ui/preferences-window.ui:307 src/preferences/service.js:673
+msgid "Searching for devices…"
+msgstr "正在搜索设备…"
+
+#: data/ui/preferences-window.ui:332
 msgid "Browser Add-Ons"
-msgstr ""
+msgstr "浏览器附加组件"
 
-#: data/settings.ui:409
-msgid "KDE Connect"
-msgstr ""
-
-#: data/settings.ui:579
+#: data/ui/preferences-window.ui:612
 msgid "Enable"
-msgstr ""
+msgstr "启用"
 
-#: data/settings.ui:611
+#: data/ui/preferences-window.ui:644
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "此设备对未配对的设备不可见"
 
-#: data/settings.ui:623 src/service/daemon.js:532
+#: data/ui/preferences-window.ui:656 src/service/daemon.js:598
 msgid "Discovery Disabled"
-msgstr ""
+msgstr "发现已禁用"
+
+#: data/ui/preferences-window.ui:715
+msgid "Display Mode"
+msgstr "显示模式"
+
+#. TRANSLATORS: Show device indicators in the top bar
+#: data/ui/preferences-window.ui:718
+msgid "Panel"
+msgstr "面板"
+
+#. TRANSLATORS: Show devices in the user menu like Bluetooth
+#: data/ui/preferences-window.ui:724
+msgid "User Menu"
+msgstr "用户菜单"
+
+#. TRANSLATORS: Generate a support log
+#: data/ui/preferences-window.ui:732 src/preferences/service.js:429
+msgid "Generate Support Log"
+msgstr "生成支持日志"
+
+#: data/ui/preferences-window.ui:740
+msgid "About Zorin Connect"
+msgstr "关于 Zorin Connect"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/telephony.ui:9 src/service/daemon.js:714 src/service/plugins/sms.js:50
-#: webextension/gettext.js:39
+#: data/ui/telephony.ui:9 src/service/daemon.js:699 src/service/daemon.js:825
+#: src/service/plugins/sms.js:58 webextension/gettext.js:39
 msgid "Send SMS"
-msgstr ""
-
-#: data/telephony.ui:21 src/service/plugins/share.js:457
-msgid "Send"
-msgstr ""
+msgstr "发送短信"
 
 #. Service Menu
-#: src/extension.js:79 src/extension.js:255
+#: src/extension.js:118 src/extension.js:249
 msgid "Mobile Devices"
-msgstr ""
+msgstr "移动设备"
 
-#. TRANSLATORS: %d is the number of devices connected
-#: src/extension.js:253
+#. TRANSLATORS: A menu option to activate the extension
+#: src/extension.js:145 src/extension.js:383
+msgid "Turn On"
+msgstr "开启"
+
+#: src/extension.js:244
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 连接"
+
+#. TRANSLATORS: A menu option to deactivate the extension
+#: src/extension.js:380
+msgid "Turn Off"
+msgstr "关闭"
 
 #. TRANSLATORS: Top-level context menu item for Zorin Connect
-#: src/nautilus-zorin-connect.py:112 webextension/gettext.js:31
+#: src/nautilus-zorin-connect.py:164 webextension/gettext.js:31
 msgid "Send To Mobile Device"
-msgstr ""
+msgstr "发送到移动设备"
 
-#: src/service/daemon.js:372
-msgid "Report"
-msgstr ""
+#: src/preferences/device.js:658
+msgid "Open"
+msgstr "打开"
 
-#: src/service/daemon.js:507
-msgid "Authentication Failure"
-msgstr ""
+#: src/preferences/device.js:713 src/preferences/device.js:726
+msgid "On"
+msgstr "开"
 
-#: src/service/daemon.js:516
-msgid "Network Error"
-msgstr ""
+#: src/preferences/device.js:713 src/preferences/device.js:726
+msgid "Off"
+msgstr "关"
 
-#: src/service/daemon.js:517 src/service/daemon.js:525
-msgid "Click for help troubleshooting"
-msgstr ""
+#: src/preferences/device.js:831 src/preferences/device.js:859
+msgid "Disabled"
+msgstr "禁用"
 
-#: src/service/daemon.js:524
-msgid "PulseAudio Error"
-msgstr ""
+#. TRANSLATORS: Title of keyboard shortcut dialog
+#: src/preferences/keybindings.js:75
+msgid "Set Shortcut"
+msgstr "设置快捷方式"
 
-#: src/service/daemon.js:533
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
+#. TRANSLATORS: Button to confirm the new shortcut
+#: src/preferences/keybindings.js:89
+msgid "Set"
+msgstr "设置"
 
-#: src/service/daemon.js:541
+#. TRANSLATORS: Summary of a keyboard shortcut function
+#. Example: Enter a new shortcut to change Messaging
+#: src/preferences/keybindings.js:96
 #, javascript-format
-msgid "%s Plugin Failed To Load"
-msgstr ""
+msgid "Enter a new shortcut to change <b>%s</b>"
+msgstr "输入新的快捷方式 <b>%s</b>"
 
-#: src/service/daemon.js:542
+#. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
+#: src/preferences/keybindings.js:125
+msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
+msgstr "按 Esc 键取消，或按 Backsace 键重置键盘快捷方式。"
+
+#. TRANSLATORS: When a keyboard shortcut is unavailable
+#. Example: [Ctrl]+[S] is already being used
+#: src/preferences/keybindings.js:224
+#, javascript-format
+msgid "%s is already being used"
+msgstr "%s 已在使用中"
+
+#: src/preferences/service.js:388
+msgid "A complete KDE Connect implementation for GNOME"
+msgstr "KDE Connect 在 GNOME 的完整实现"
+
+#. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
+#: src/preferences/service.js:397
+msgid "translator-credits"
+msgstr "翻译贡献"
+
+#: src/preferences/service.js:430
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "正在记录调试日志。请采取任何必要的步骤来重现问题，然后即可查看日志。"
+
+#: src/preferences/service.js:433
+msgid "Review Log"
+msgstr "查看日志"
+
+#: src/preferences/service.js:502
+msgid "Laptop"
+msgstr "笔记本电脑"
+
+#: src/preferences/service.js:504
+msgid "Smartphone"
+msgstr "智能手机"
+
+#: src/preferences/service.js:506
+msgid "Tablet"
+msgstr "平板电脑"
+
+#: src/preferences/service.js:508
+msgid "Television"
+msgstr "电视"
+
+#: src/preferences/service.js:529
+msgid "Unpaired"
+msgstr "未配对"
+
+#: src/preferences/service.js:533
+msgid "Disconnected"
+msgstr "已断开"
+
+#: src/preferences/service.js:537
+msgid "Connected"
+msgstr "已连接"
+
+#: src/preferences/service.js:675
+msgid "Waiting for service…"
+msgstr "等待服务响应..."
+
+#: src/service/daemon.js:337
+msgid "Report"
+msgstr "报告"
+
+#: src/service/daemon.js:580
+msgid "Authentication Failure"
+msgstr "身份验证失败"
+
+#: src/service/daemon.js:589
+msgid "Network Error"
+msgstr "网络错误"
+
+#: src/service/daemon.js:590
+msgid "Click for help troubleshooting"
+msgstr "单击以获取疑难解答帮助"
+
+#: src/service/daemon.js:599
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "由于此网络上的设备数量，已禁用发现。"
+
+#: src/service/daemon.js:608
 msgid "Click for more information"
-msgstr ""
+msgstr "单击以获取详细信息"
 
-#: src/service/daemon.js:720
+#: src/service/daemon.js:705
 msgid "Dial Number"
-msgstr ""
+msgstr "拨打号码"
 
-#: src/service/daemon.js:726 src/service/plugins/share.js:27
+#: src/service/daemon.js:711 src/service/daemon.js:921
+#: src/service/plugins/share.js:27
 msgid "Share File"
-msgstr ""
+msgstr "共享文件"
 
-#: src/service/device.js:166
+#: src/service/daemon.js:774
+msgid "List available devices"
+msgstr "可用设备列表"
+
+#: src/service/daemon.js:783
+msgid "List all devices"
+msgstr "所有可用设备"
+
+#: src/service/daemon.js:792
+msgid "Target Device"
+msgstr "目标设备"
+
+#: src/service/daemon.js:834
+msgid "Message Body"
+msgstr "消息正文"
+
+#: src/service/daemon.js:846 src/service/plugins/notification.js:51
+msgid "Send Notification"
+msgstr "发送通知"
+
+#: src/service/daemon.js:855
+msgid "Notification App Name"
+msgstr "通知的应用名称"
+
+#: src/service/daemon.js:864
+msgid "Notification Body"
+msgstr "通知的信息正文"
+
+#: src/service/daemon.js:873
+msgid "Notification Icon"
+msgstr "通知的图标"
+
+#: src/service/daemon.js:882
+msgid "Notification ID"
+msgstr "通知的ID"
+
+#: src/service/daemon.js:891 src/service/plugins/photo.js:11
+#: src/service/plugins/photo.js:17
+msgid "Photo"
+msgstr "照片"
+
+#: src/service/daemon.js:900 src/service/plugins/ping.js:11
+#: src/service/plugins/ping.js:17 src/service/plugins/ping.js:44
+msgid "Ping"
+msgstr "Ping"
+
+#: src/service/daemon.js:909 src/service/plugins/battery.js:155
+#: src/service/plugins/findmyphone.js:19
+msgid "Ring"
+msgstr "响铃"
+
+#: src/service/daemon.js:930 src/service/plugins/share.js:43
+#: src/service/ui/messaging.js:1176 src/service/ui/messaging.js:1184
+msgid "Share Link"
+msgstr "共享链接"
+
+#: src/service/daemon.js:942
+msgid "Show release version"
+msgstr "显示版本信息"
+
+#: src/service/device.js:174
 msgid "Not available"
-msgstr ""
+msgstr "无法使用的"
 
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:170
+#: src/service/device.js:179
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr ""
+msgstr "蓝牙设备位于 %s"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -430,524 +619,426 @@ msgstr ""
 #.
 #. Google Pixel Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:188 src/service/device.js:190
+#: src/service/device.js:199 src/service/device.js:201
 #, javascript-format
 msgid "%s Fingerprint:"
-msgstr ""
-
-#: src/service/device.js:247
-msgid "Laptop"
-msgstr ""
-
-#: src/service/device.js:249
-msgid "Smartphone"
-msgstr ""
-
-#: src/service/device.js:251
-msgid "Tablet"
-msgstr ""
-
-#: src/service/device.js:253
-msgid "Desktop"
-msgstr ""
-
-#: src/service/device.js:413 src/service/ui/device.js:15
-msgid "Reconnect"
-msgstr ""
-
-#: src/service/device.js:421 src/service/ui/device.js:16
-#: src/service/ui/settings.js:371
-msgid "Settings"
-msgstr ""
+msgstr "%s 指纹:"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:612
+#: src/service/device.js:748
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr ""
+msgstr "%s 请求配对"
 
-#: src/service/device.js:619
+#: src/service/device.js:755
 msgid "Reject"
-msgstr ""
+msgstr "拒绝"
 
-#: src/service/device.js:624
+#: src/service/device.js:760
 msgid "Accept"
-msgstr ""
-
-#: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
-msgid "Ring"
-msgstr ""
+msgstr "接受"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
-#: src/service/plugins/battery.js:197
+#: src/service/plugins/battery.js:181
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr ""
+msgstr "%s: 电池电量低"
 
 #. TRANSLATORS: eg. 15% remaining
-#: src/service/plugins/battery.js:199
+#: src/service/plugins/battery.js:183
 #, javascript-format
 msgid "%d%% remaining"
-msgstr ""
+msgstr "剩余 %d%%"
+
+#. TRANSLATORS: eg. Google Pixel: Battery is full
+#: src/service/plugins/battery.js:199
+#, javascript-format
+msgid "%s: Battery is full"
+msgstr "%s: 电池已充满"
+
+#. TRANSLATORS: when the battery is fully charged
+#. TRANSLATORS: When the battery level is 100%
+#: src/service/plugins/battery.js:201 src/shell/device.js:115
+msgid "Fully Charged"
+msgstr "充满电"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
-msgstr ""
+msgstr "剪贴板"
 
-#: src/service/plugins/clipboard.js:17
+#: src/service/plugins/clipboard.js:23
 msgid "Clipboard Push"
-msgstr ""
+msgstr "推送剪贴板"
 
-#: src/service/plugins/clipboard.js:25
+#: src/service/plugins/clipboard.js:31
 msgid "Clipboard Pull"
-msgstr ""
-
-#: src/service/plugins/contacts.js:12
-msgid "Contacts"
-msgstr ""
+msgstr "获取剪贴板"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
-#: src/service/plugins/contacts.js:263 src/service/plugins/telephony.js:173
-#: src/service/plugins/telephony.js:224 src/service/plugins/telephony.js:264
-#: src/service/ui/contacts.js:156 src/service/ui/contacts.js:397
+#. HACK: fix missing contact names
+#. Contact Name
+#: src/service/plugins/contacts.js:230 src/service/plugins/contacts.js:338
+#: src/service/plugins/telephony.js:170 src/service/plugins/telephony.js:221
+#: src/service/plugins/telephony.js:267 src/service/ui/contacts.js:571
+#: src/service/ui/messaging.js:247
 msgid "Unknown Contact"
-msgstr ""
+msgstr "未知联系人"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
-msgstr ""
+msgstr "查找我的手机"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
-msgstr ""
+msgstr "鼠标"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:568
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:396
 msgid "Keyboard"
-msgstr ""
+msgstr "键盘"
 
-#: src/service/plugins/mousepad.js:223
-msgid "Additional Software Required"
-msgstr ""
-
-#: src/service/plugins/mousepad.js:585
+#: src/service/plugins/mousepad.js:413
 msgid "Keyboard not ready"
-msgstr ""
+msgstr "键盘未就绪"
 
-#: src/service/plugins/mpris.js:10
+#: src/service/plugins/mpris.js:12
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
-#: src/service/plugins/notification.js:25
+#: src/service/plugins/notification.js:27
 msgid "Cancel Notification"
-msgstr ""
+msgstr "取消通知"
 
-#: src/service/plugins/notification.js:33
+#: src/service/plugins/notification.js:35
 msgid "Close Notification"
-msgstr ""
+msgstr "关闭通知"
 
-#: src/service/plugins/notification.js:41
+#: src/service/plugins/notification.js:43
 msgid "Reply Notification"
-msgstr ""
+msgstr "回复通知"
 
-#: src/service/plugins/notification.js:49
-msgid "Send Notification"
-msgstr ""
-
-#: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
-#: src/service/plugins/ping.js:46
-msgid "Ping"
-msgstr ""
+#: src/service/plugins/notification.js:59
+msgid "Activate Notification"
+msgstr "激活通知"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
-#: src/service/plugins/ping.js:53
+#: src/service/plugins/ping.js:51
 #, javascript-format
 msgid "Ping: %s"
+msgstr "Ping: %s"
+
+#: src/service/plugins/presenter.js:9
+msgid "Presentation"
 msgstr ""
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
-msgstr ""
+msgstr "运行命令"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
-msgstr ""
+msgstr "挂载"
 
 #: src/service/plugins/sftp.js:26
 msgid "Unmount"
-msgstr ""
+msgstr "卸载"
 
-#: src/service/plugins/sftp.js:159
+#: src/service/plugins/sftp.js:134
 msgid "All files"
-msgstr ""
+msgstr "全部文件"
 
-#: src/service/plugins/sftp.js:160
+#: src/service/plugins/sftp.js:135
 msgid "Camera pictures"
-msgstr ""
-
-#: src/service/plugins/sftp.js:416
-msgid "Files"
-msgstr ""
+msgstr "相机图片"
 
 #: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
-msgstr ""
+msgstr "共享"
 
 #: src/service/plugins/share.js:35
 msgid "Share Text"
-msgstr ""
+msgstr "共享文本"
 
-#: src/service/plugins/share.js:43 src/service/ui/messaging.js:954
-#: src/service/ui/messaging.js:962
-msgid "Share Link"
-msgstr ""
+#: src/service/plugins/share.js:116 src/service/plugins/share.js:201
+#: src/service/plugins/share.js:333
+msgid "Transfer Failed"
+msgstr "传输失败"
 
-#: src/service/plugins/share.js:132 src/service/plugins/share.js:303
-msgid "Starting Transfer"
-msgstr ""
+#. TRANSLATORS: eg. Google Pixel is not allowed to upload files
+#: src/service/plugins/share.js:118
+#, javascript-format
+msgid "%s is not allowed to upload files"
+msgstr "%s 不允许上传文件"
+
+#: src/service/plugins/share.js:154 src/service/plugins/share.js:302
+msgid "Transferring File"
+msgstr "文件传输中"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:134
+#: src/service/plugins/share.js:156
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr ""
+msgstr "从 %s 接收 “%s”"
 
-#: src/service/plugins/share.js:172 src/service/plugins/share.js:327
+#: src/service/plugins/share.js:181 src/service/plugins/share.js:325
 msgid "Transfer Successful"
-msgstr ""
+msgstr "传输成功"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:174
+#: src/service/plugins/share.js:183
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr ""
+msgstr "从 %s 接收 “%s”"
 
-#: src/service/plugins/share.js:180
+#: src/service/plugins/share.js:189
 msgid "Open Folder"
-msgstr ""
+msgstr "打开目录"
 
-#: src/service/plugins/share.js:185
+#: src/service/plugins/share.js:194
 msgid "Open File"
-msgstr ""
-
-#: src/service/plugins/share.js:192 src/service/plugins/share.js:335
-msgid "Transfer Failed"
-msgstr ""
+msgstr "打开文件"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:194
+#: src/service/plugins/share.js:203
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr ""
+msgstr "无法从 %s 接收 “%s”"
 
-#: src/service/plugins/share.js:233
+#: src/service/plugins/share.js:232
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr ""
+msgstr "共享的文本 %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:305
+#: src/service/plugins/share.js:304
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr ""
+msgstr "正在将 “%s” 发送到 %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:329
+#: src/service/plugins/share.js:327
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr ""
+msgstr "发送 “%s” 到 %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:337
+#: src/service/plugins/share.js:335
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr ""
+msgstr "无法将 “%s” 发送到 %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:408
+#: src/service/plugins/share.js:404
 #, javascript-format
 msgid "Send files to %s"
-msgstr ""
+msgstr "发送文件到 %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
-#: src/service/plugins/share.js:412
+#: src/service/plugins/share.js:408
 msgid "Open when done"
-msgstr ""
+msgstr "完成后打开"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:451
+#: src/service/plugins/share.js:447
 #, javascript-format
 msgid "Send a link to %s"
-msgstr ""
+msgstr "发送链接到 %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr ""
+msgstr "短信"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
-msgstr ""
+msgstr "新短信(URI)"
 
 #: src/service/plugins/sms.js:42 src/service/plugins/telephony.js:22
 msgid "Reply SMS"
-msgstr ""
+msgstr "回复短信"
 
-#: src/service/plugins/sms.js:58
+#: src/service/plugins/sms.js:66
 msgid "Share SMS"
-msgstr ""
+msgstr "共享短信"
 
 #: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
-msgstr ""
+msgstr "系统音量"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
-msgstr ""
+msgstr "静音通话"
 
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:190
+#: src/service/plugins/telephony.js:187
 msgid "Incoming call"
-msgstr ""
+msgstr "来电"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:205
+#: src/service/plugins/telephony.js:202
 msgid "Ongoing call"
-msgstr ""
+msgstr "呼叫中"
 
 #. TRANSLATORS: All other phone number types
-#: src/service/ui/contacts.js:118 src/service/ui/contacts.js:139
+#: src/service/ui/contacts.js:126 src/service/ui/contacts.js:147
 #, javascript-format
 msgid "%s・Other"
-msgstr ""
+msgstr "%s・其它"
 
 #. TRANSLATORS: A fax number
-#: src/service/ui/contacts.js:123
-#, javascript-format
-msgid "%s・Fax"
-msgstr ""
-
-#. TRANSLATORS: A work phone number
-#: src/service/ui/contacts.js:127
-#, javascript-format
-msgid "%s・Work"
-msgstr ""
-
-#. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:131
 #, javascript-format
-msgid "%s・Mobile"
-msgstr ""
+msgid "%s・Fax"
+msgstr "%s・传真"
 
-#. TRANSLATORS: A home phone number
+#. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
+msgid "%s・Work"
+msgstr "%s・工作"
+
+#. TRANSLATORS: A mobile or cellular phone number
+#: src/service/ui/contacts.js:139
+#, javascript-format
+msgid "%s・Mobile"
+msgstr "%s・手机"
+
+#. TRANSLATORS: A home phone number
+#: src/service/ui/contacts.js:143
+#, javascript-format
 msgid "%s・Home"
-msgstr ""
+msgstr "%s・住宅"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
-#: src/service/ui/contacts.js:278 src/service/ui/contacts.js:292
+#: src/service/ui/contacts.js:433 src/service/ui/contacts.js:447
 #, javascript-format
 msgid "Send to %s"
-msgstr ""
-
-#: src/service/ui/device.js:610
-msgid "Open"
-msgstr ""
-
-#: src/service/ui/device.js:662 src/service/ui/device.js:675
-msgid "On"
-msgstr ""
-
-#: src/service/ui/device.js:662 src/service/ui/device.js:675
-msgid "Off"
-msgstr ""
-
-#: src/service/ui/device.js:800 src/service/ui/device.js:838
-#: src/service/ui/device.js:862
-msgid "Disabled"
-msgstr ""
-
-#. TRANSLATORS: Title of keyboard shortcut dialog
-#: src/service/ui/keybindings.js:33
-msgid "Set Shortcut"
-msgstr ""
-
-#. TRANSLATORS: Button to confirm the new shortcut
-#: src/service/ui/keybindings.js:47
-msgid "Set"
-msgstr ""
-
-#. TRANSLATORS: Summary of a keyboard shortcut function
-#. Example: Enter a new shortcut to change Messaging
-#: src/service/ui/keybindings.js:54
-#, javascript-format
-msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr ""
-
-#. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
-#: src/service/ui/keybindings.js:83
-msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-
-#. TRANSLATORS: When a keyboard shortcut is unavailable
-#. Example: [Ctrl]+[S] is already being used
-#: src/service/ui/keybindings.js:182
-#, javascript-format
-msgid "%s is already being used"
-msgstr ""
+msgstr "发送到 %s"
 
 #. TRANSLATORS: Less than a minute ago
-#: src/service/ui/messaging.js:93 src/service/ui/messaging.js:126
+#: src/service/ui/messaging.js:29 src/service/ui/messaging.js:66
 msgid "Just now"
-msgstr ""
+msgstr "刚才"
 
-#. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-#: src/service/ui/messaging.js:98 src/service/ui/messaging.js:130
-#: src/shell/donotdisturb.js:266
+#: src/service/ui/messaging.js:35 src/service/ui/messaging.js:71
+#: src/shell/donotdisturb.js:142
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 分钟"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
-#: src/service/ui/messaging.js:103
+#: src/service/ui/messaging.js:43
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr ""
+msgstr "昨天・%s"
+
+#: src/service/ui/messaging.js:255
+msgid "Group Message"
+msgstr "群组消息"
+
+#. TRANSLATORS: An outgoing message body in a conversation summary
+#: src/service/ui/messaging.js:265
+#, javascript-format
+msgid "You: %s"
+msgstr "你: %s"
+
+#: src/service/ui/messaging.js:869
+#, javascript-format
+msgid "And %d other contact"
+msgid_plural "And %d others"
+msgstr[0] "添加 %d 位联系人"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
-msgstr ""
+msgstr "选择设备"
 
 #: src/service/ui/service.js:35
 msgid "Select"
-msgstr ""
+msgstr "选择"
 
-#: src/service/ui/settings.js:331
-msgid "Unpaired"
-msgstr ""
-
-#: src/service/ui/settings.js:333
-msgid "Disconnected"
-msgstr ""
-
-#: src/service/ui/settings.js:336
-msgid "Connected"
-msgstr ""
-
-#. TODO: Copied from GNOME Control Center; may change
-#: src/service/ui/settings.js:406
-#, javascript-format
-msgid ""
-"Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-msgstr ""
-
-#: src/service/ui/settings.js:499
-msgid "A complete KDE Connect implementation for GNOME"
-msgstr ""
-
-#. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/ui/settings.js:508
-msgid "translator-credits"
-msgstr ""
-
-#: src/service/ui/settings.js:537
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-
-#: src/service/ui/settings.js:540
-msgid "Review Log"
-msgstr ""
-
-#. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:82
-msgid "Fully Charged"
-msgstr ""
+#. TRANSLATORS: No devices are known or available
+#: src/service/ui/service.js:77 webextension/gettext.js:35
+msgid "No Device Found"
+msgstr "没有找到设备"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:86
+#: src/shell/device.js:119
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr ""
+msgstr "%d%% (估计...)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:96
+#: src/shell/device.js:129
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr ""
+msgstr "%d%% (%d∶%02d 为止)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:104
+#: src/shell/device.js:137
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr ""
+msgstr "%d%% (剩余 %d∶%02d)"
 
-#: src/shell/donotdisturb.js:150 src/shell/donotdisturb.js:289
-msgid "Do Not Disturb"
-msgstr ""
-
-#: src/shell/donotdisturb.js:156
-msgid "Silence Mobile Device Notifications"
-msgstr ""
-
-#: src/shell/donotdisturb.js:171
-msgid "Until you turn off Do Not Disturb"
-msgstr ""
-
-#. TRANSLATORS: Time until change with time duration
-#. EXAMPLE: Until 10:00 (2 hours)
-#: src/shell/donotdisturb.js:184 src/shell/donotdisturb.js:278
-#, javascript-format
-msgid "Until %s (%s)"
-msgstr ""
-
-#: src/shell/donotdisturb.js:216
-msgid "Done"
-msgstr ""
-
-#. TRANSLATORS: Time duration in hours (eg. 2 hours)
-#: src/shell/donotdisturb.js:263
+#: src/shell/donotdisturb.js:135
 #, javascript-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 小时"
+
+#. TRANSLATORS: Time until change with time duration
+#. EXAMPLE: Until 10:00 (2 hours)
+#: src/shell/donotdisturb.js:150
+#, javascript-format
+msgid "Until %s (%s)"
+msgstr "到 %s (%s)"
+
+#: src/shell/donotdisturb.js:243 src/shell/donotdisturb.js:342
+msgid "Do Not Disturb"
+msgstr "请勿打扰"
+
+#: src/shell/donotdisturb.js:249
+msgid "Silence Notifications from Mobile Devices"
+msgstr "移动设备通知静音"
+
+#: src/shell/donotdisturb.js:261
+msgid "Until you turn off Do Not Disturb"
+msgstr "在关机之前不要打扰"
+
+#: src/shell/donotdisturb.js:302
+msgid "Done"
+msgstr "完成"
+
+#: src/shell/notification.js:43
+msgid "Reply"
+msgstr "回复"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "Zorin Connect"
-msgstr ""
+msgstr "Zorin Connect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with Zorin Connect, direct to the browser or by SMS."
-msgstr ""
+msgstr "与 Zorin Connect 共享链接，直接发送到浏览器或短信。"
 
 #. TRANSLATORS: WebExtension can't connect to Zorin Connect
 #: webextension/gettext.js:33
 msgid "Service Unavailable"
-msgstr ""
-
-#. TRANSLATORS: No devices are known or available
-#: webextension/gettext.js:35
-msgid "No Device Found"
-msgstr ""
+msgstr "服务不可用"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37
 msgid "Open in Browser"
-msgstr ""
+msgstr "在浏览器中打开"
 
 msgid "Mobile Application"
 msgstr "移动应用"

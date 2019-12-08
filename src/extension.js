@@ -18,7 +18,7 @@ window.zorin_connect = {
 imports.searchPath.unshift(zorin_connect.extdatadir);
 imports._zorin_connect;
 
-// Local Imports
+// eslint-disable-next-line no-redeclare
 const _ = zorin_connect._;
 const Device = imports.shell.device;
 const DoNotDisturb = imports.shell.donotdisturb;
@@ -67,6 +67,43 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         this.keybindingManager = new Keybindings.Manager();
 
+        // GSettings
+        this.settings = new Gio.Settings({
+            settings_schema: zorin_connect.gschema.lookup(
+                'org.gnome.Shell.Extensions.ZorinConnect',
+                null
+            ),
+            path: '/org/gnome/shell/extensions/zorin-connect/'
+        });
+
+        this._enabledId = this.settings.connect(
+            'changed::enabled',
+            this._onEnabledChanged.bind(this)
+        );
+
+        this._panelModeId = this.settings.connect(
+            'changed::show-indicators',
+            this._sync.bind(this)
+        );
+
+        // Service Proxy
+        this.service = new Remote.Service();
+
+        this._deviceAddedId = this.service.connect(
+            'device-added',
+            this._onDeviceAdded.bind(this)
+        );
+
+        this._deviceRemovedId = this.service.connect(
+            'device-removed',
+            this._onDeviceRemoved.bind(this)
+        );
+
+        this._serviceChangedId = this.service.connect(
+            'notify::active',
+            this._onServiceChanged.bind(this)
+        );
+
         // Service Indicator
         this._indicator = this._addIndicator();
         this._indicator.gicon = zorin_connect.get_gicon(
@@ -88,7 +125,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Service Menu -> Devices Section
         this.deviceSection = new PopupMenu.PopupMenuSection();
         this.deviceSection.actor.add_style_class_name('zorin-connect-device-section');
-        zorin_connect.settings.bind(
+        this.settings.bind(
             'show-indicators',
             this.deviceSection.actor,
             'visible',
@@ -100,67 +137,88 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._item.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
         // Service Menu -> "Do Not Disturb"
-        this._item.menu.addMenuItem(new DoNotDisturb.MenuItem());
+        let dndItem = new DoNotDisturb.createMenuItem(this.settings);
+        this._item.menu.addMenuItem(dndItem);
 
-        // Service Menu -> "Mobile Settings"
-        this._item.menu.addAction(_('Mobile Settings'), this._settings);
-
-        // Watch for UI prefs
-        this._gsettingsId = zorin_connect.settings.connect(
-            'changed::show-indicators',
-            this._sync.bind(this)
+        // Service Menu -> "Turn On/Off"
+        this._enableItem = this._item.menu.addAction(
+            _('Turn On'),
+            this._enable.bind(this)
         );
 
-        // Async setup
-        this._init_async();
+        // Service Menu -> "Mobile Settings"
+        this._item.menu.addAction(_('Mobile Settings'), this._preferences);
+
+        // Prime the service
+        this._initService();
     }
 
-    async _init_async() {
+    async _initService() {
         try {
-            // Device Manager
-            this.manager = new Remote.Service();
-
-            // Watch for new and removed
-            this._deviceAddedId = this.manager.connect(
-                'device-added',
-                this._onDeviceAdded.bind(this)
-            );
-
-            this._deviceRemovedId = this.manager.connect(
-                'device-removed',
-                this._onDeviceRemoved.bind(this)
-            );
-
-            this._availableChangedId = this.manager.connect(
-                'available-changed',
-                this._sync.bind(this)
-            );
-
-            await this.manager._init_async();
-        } catch (e) {
-            Gio.DBusError.strip_remote_error(e);
-
-            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
-                logError(e, 'Zorin Connect');
+            if (this.settings.get_boolean('enabled')) {
+                await this.service.start();
+            } else {
+                await this.service.reload();
             }
+        } catch (e) {
+            logError(e, 'Zorin Connect');
         }
     }
 
+    _enable() {
+        try {
+            // If the service state matches the enabled setting, we should
+            // toggle the service by toggling the setting
+            let enabled = this.settings.get_boolean('enabled');
+
+            if (this.service.active === enabled) {
+                this.settings.set_boolean('enabled', !enabled);
+
+            // Otherwise, we should change the service to match the setting
+            } else if (this.service.active) {
+                this.service.stop();
+            } else {
+                this.service.start();
+            }
+        } catch (e) {
+            logError(e, 'Zorin Connect');
+        }
+    }
+
+    _preferences() {
+        let proc = new Gio.Subprocess({
+            argv: [zorin_connect.extdatadir + '/zorin-connect-preferences']
+        });
+        proc.init(null);
+        proc.wait_async(null, null);
+    }
+
     _sync() {
-        let available = this.manager.available;
-        let panelMode = zorin_connect.settings.get_boolean('show-indicators');
+        let available = this.service.devices.filter(device => {
+            return (device.connected && device.paired);
+        });
+        let panelMode = this.settings.get_boolean('show-indicators');
 
         // Hide status indicator if in Panel mode or no devices are available
         this._indicator.visible = (!panelMode && available.length);
 
         // Show device indicators in Panel mode if available
-        for (let device of this.manager.devices) {
-            let indicator = Main.panel.statusArea[device.g_object_path].actor;
-            indicator.visible = panelMode && available.includes(device);
+        for (let device of this.service.devices) {
+            let isAvailable = available.includes(device);
+            let indicator = Main.panel.statusArea[device.g_object_path];
+
+            // TODO: remove after 3.34+
+            if (zorin_connect.shell_version >= 34) {
+                indicator.visible = panelMode && isAvailable;
+            } else {
+                indicator.actor.visible = panelMode && isAvailable;
+            }
+
+            indicator.update_icon(device.icon_name);
 
             let menu = this._menus[device.g_object_path];
-            menu.actor.visible = !panelMode && available.includes(device);
-            menu._title.actor.visible = menu.actor.visible;
+            menu.actor.visible = !panelMode && isAvailable;
+            menu._title.actor.visible = !panelMode && isAvailable;
         }
 
         // One connected device in User Menu mode
@@ -169,7 +227,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             // Hide the menu title and move it to the submenu item
             this._menus[device.g_object_path]._title.actor.visible = false;
-            this._item.label.text = device.Name;
+            this._item.label.text = device.name;
 
             // Destroy any other device's battery
             if (this._item._battery && this._item._battery.device !== device) {
@@ -208,28 +266,20 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    _settings() {
-        Gio.DBus.session.call(
-            'org.gnome.Shell.Extensions.ZorinConnect',
-            '/org/gnome/Shell/Extensions/ZorinConnect',
-            'org.freedesktop.Application',
-            'ActivateAction',
-            new GLib.Variant('(sava{sv})', ['settings', [], {}]),
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null,
-            (connection, res) => {
-                try {
-                    connection.call_finish(res);
-                } catch (e) {
-                    logError(e, 'Zorin Connect');
-                }
+    _onDeviceChanged(device, changed, invalidated) {
+        try {
+            changed = changed.deep_unpack();
+
+            if (changed.hasOwnProperty('Connected') ||
+                changed.hasOwnProperty('Paired')) {
+                this._sync();
             }
-        );
+        } catch (e) {
+            logError(e, 'Zorin Connect' );
+        }
     }
 
-    _onDeviceAdded(manager, device) {
+    _onDeviceAdded(service, device) {
         try {
             // Device Indicator
             let indicator = new Device.Indicator({device: device});
@@ -244,26 +294,36 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this.deviceSection.addMenuItem(menu);
 
             // Keyboard Shortcuts
-            device._keybindingsChangedId = device.settings.connect(
+            device.__keybindingsChangedId = device.settings.connect(
                 'changed::keybindings',
-                this._onKeybindingsChanged.bind(this, device)
+                this._onDeviceKeybindingsChanged.bind(this, device)
             );
-            this._onKeybindingsChanged(device);
+            this._onDeviceKeybindingsChanged(device);
 
-            // Try activating the device
-            device.action_group.activate_action('activate', null);
+            // Watch the for status changes
+            device.__deviceChangedId = device.connect(
+                'g-properties-changed',
+                this._onDeviceChanged.bind(this)
+            );
 
             this._sync();
         } catch (e) {
-            logError(e, device.g_object_path);
+            logError(e, 'Zorin Connect');
         }
     }
 
-    _onDeviceRemoved(manager, device) {
+    _onDeviceRemoved(service, device, sync = true) {
         try {
+            // Stop watching for status changes
+            if (device.__deviceChangedId) {
+                device.disconnect(device.__deviceChangedId);
+            }
+
             // Release keybindings
-            device.settings.disconnect(device._keybindingsChangedId);
-            device._keybindings.map(id => this.keybindingManager.remove(id));
+            if (device.__keybindingsChangedId) {
+                device.settings.disconnect(device.__keybindingsChangedId);
+                device._keybindings.map(id => this.keybindingManager.remove(id));
+            }
 
             // Destroy the indicator
             Main.panel.statusArea[device.g_object_path].destroy();
@@ -272,13 +332,15 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this._menus[device.g_object_path].destroy();
             delete this._menus[device.g_object_path];
 
-            this._sync();
+            if (sync) {
+                this._sync();
+            }
         } catch (e) {
-            logError(e, device.g_object_path);
+            logError(e, 'Zorin Connect');
         }
     }
 
-    async _onKeybindingsChanged(device) {
+    _onDeviceKeybindingsChanged(device) {
         try {
             // Reset any existing keybindings
             if (device.hasOwnProperty('_keybindings')) {
@@ -304,37 +366,63 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            logError(e, device.g_object_path);
+            logError(e, 'Zorin Connect');
         }
     }
 
-    // TODO: need hardcoded keybinding for this
-    _openDeviceMenu(indicator) {
-        if (zorin_connect.settings.get_boolean('show-indicators')) {
-            indicator.menu.toggle();
-        } else {
-            Main.panel._toggleMenu(AggregateMenu);
-            this._item.menu.toggle();
-            this._item.actor.grab_key_focus();
+    async _onEnabledChanged(settings, key) {
+        try {
+            if (this.settings.get_boolean('enabled')) {
+                await this.service.start();
+            } else {
+                await this.service.stop();
+            }
+        } catch (e) {
+            logError(e, 'Zorin Connect');
+        }
+    }
+
+    async _onServiceChanged(service, pspec) {
+        try {
+            if (this.service.active) {
+                // TRANSLATORS: A menu option to deactivate the extension
+                this._enableItem.label.text = _('Turn Off');
+            } else {
+                // TRANSLATORS: A menu option to activate the extension
+                this._enableItem.label.text = _('Turn On');
+
+                // If it's enabled, we should try to restart now
+                if (this.settings.get_boolean('enabled')) {
+                    await this.service.start();
+                }
+            }
+        } catch (e) {
+            logError(e, 'Zorin Connect');
         }
     }
 
     destroy() {
-        // Unhook from any ObjectManager events
-        if (this.manager) {
-            this.manager.destroy();
-            this.manager.disconnect(this._deviceAddedId);
-            this.manager.disconnect(this._deviceRemovedId);
-            this.manager.disconnect(this._availableChangedId);
+        // Unhook from Remote.Service
+        if (this.service) {
+            this.service.disconnect(this._serviceChangedId);
+            this.service.disconnect(this._deviceAddedId);
+            this.service.disconnect(this._deviceRemovedId);
+
+            for (let device of this.service.devices) {
+                this._onDeviceRemoved(this.service, device, false);
+            }
+
+            this.service.destroy();
         }
 
         // Disconnect any keybindings
         this.keybindingManager.destroy();
 
         // Disconnect from any GSettings changes
-        zorin_connect.settings.disconnect(this._gsettingsId);
+        this.settings.disconnect(this._panelModeId);
+        this.settings.run_dispose();
 
-        // Destroy the UI
+        // Destroy the PanelMenu.SystemIndicator actors
         delete AggregateMenu._zorin_connect;
         this.indicators.destroy();
         this._item.destroy();
@@ -348,7 +436,7 @@ var serviceIndicator = null;
 
 function init() {
     // This is only relevant on gnome-shell <= 3.30
-    if (imports.system.version < 15500) {
+    if (zorin_connect.shell_version <= 30) {
         Gtk.IconTheme.get_default().add_resource_path('/org/gnome/Shell/Extensions/ZorinConnect/icons');
     }
 

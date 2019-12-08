@@ -52,7 +52,9 @@ var Plugin = GObject.registerClass({
     }
 
     get legacy_sms() {
-        let sms = this.device.lookup_plugin('sms');
+        // We have to do this lookup each time, because if we hold a reference
+        // to the plugin we don't know if it's disabled
+        let sms = this.device._plugins.get('sms');
         return (sms && sms.settings.get_boolean('legacy-sms'));
     }
 
@@ -85,24 +87,30 @@ var Plugin = GObject.registerClass({
      * @param {String} eventType - 'ringing' or 'talking'
      */
     _setMediaState(eventType) {
-        if (this.service.pulseaudio) {
+        // Mixer Volume
+        let pulseaudio = this.service.components.get('pulseaudio');
+
+        if (pulseaudio) {
             switch (this.settings.get_string(`${eventType}-volume`)) {
                 case 'lower':
-                    this.service.pulseaudio.lowerVolume();
+                    pulseaudio.lowerVolume();
                     break;
 
                 case 'mute':
-                    this.service.pulseaudio.muteVolume();
+                    pulseaudio.muteVolume();
                     break;
             }
 
             if (eventType === 'talking' && this.settings.get_boolean('talking-microphone')) {
-                this.service.pulseaudio.muteMicrophone();
+                pulseaudio.muteMicrophone();
             }
         }
 
-        if (this.service.mpris && this.settings.get_boolean(`${eventType}-pause`)) {
-            this.service.mpris.pauseAll();
+        // Media Playback
+        let mpris = this.service.components.get('mpris');
+
+        if (mpris && this.settings.get_boolean(`${eventType}-pause`)) {
+            mpris.pauseAll();
         }
     }
 
@@ -111,12 +119,18 @@ var Plugin = GObject.registerClass({
      * sure to unpause before raising volume.
      */
     _restoreMediaState() {
-        if (this.service.mpris) {
-            this.service.mpris.unpauseAll();
+        // Media Playback
+        let mpris = this.service.components.get('mpris');
+
+        if (mpris) {
+            mpris.unpauseAll();
         }
 
-        if (this.service.pulseaudio) {
-            this.service.pulseaudio.restore();
+        // Mixer Volume
+        let pulseaudio = this.service.components.get('pulseaudio');
+
+        if (pulseaudio) {
+            pulseaudio.restore();
         }
     }
 
@@ -134,7 +148,7 @@ var Plugin = GObject.registerClass({
             loader.write(data);
             loader.close();
         } catch (e) {
-            warning(e);
+            debug(e);
         }
 
         return loader.get_pixbuf();
@@ -237,18 +251,28 @@ var Plugin = GObject.registerClass({
     }
 
     legacyReply(packet) {
-        let window = new TelephonyUI.Dialog({
-            address: packet.body.phoneNumber,
-            device: this.device,
-            message: {
-                date: packet.id,
-                address: packet.body.phoneNumber,
-                body: packet.body.messageBody,
-                sender: packet.body.contactName || _('Unknown Contact'),
-                type: 1
+        try {
+            let plugin = this.device._plugins.get('sms');
+
+            if (plugin === undefined) {
+                throw new Error('SMS Plugin is disabled');
             }
-        });
-        window.present();
+
+            let dialog = new TelephonyUI.LegacyMessagingDialog({
+                device: this.device,
+                message: {
+                    date: packet.id,
+                    addresses: [{address: packet.body.phoneNumber}],
+                    body: packet.body.messageBody,
+                    sender: packet.body.contactName || _('Unknown Contact'),
+                    type: 1 // MessageBox.INBOX
+                },
+                plugin: plugin
+            });
+            dialog.present();
+        } catch (e) {
+            logError(e);
+        }
     }
 
     /**

@@ -29,24 +29,26 @@ var Plugin = GObject.registerClass({
         super._init(device, 'systemvolume');
 
         try {
-            // Cache stream properties
-            this._cache = new WeakMap();
-
             // Connect to the mixer
-            this._streamChangedId = this.service.pulseaudio.connect(
+            this._pulseaudio = this.service.components.get('pulseaudio');
+
+            this._streamChangedId = this._pulseaudio.connect(
                 'stream-changed',
                 this._sendSink.bind(this)
             );
 
-            this._outputAddedId = this.service.pulseaudio.connect(
+            this._outputAddedId = this._pulseaudio.connect(
                 'output-added',
                 this._sendSinkList.bind(this)
             );
 
-            this._outputRemovedId = this.service.pulseaudio.connect(
+            this._outputRemovedId = this._pulseaudio.connect(
                 'output-removed',
                 this._sendSinkList.bind(this)
             );
+
+            // Cache stream properties
+            this._cache = new WeakMap();
         } catch (e) {
             this.destroy();
             e.name = 'GvcError';
@@ -78,7 +80,7 @@ var Plugin = GObject.registerClass({
     _changeSink(packet) {
         let stream;
 
-        for (let sink of this.service.pulseaudio.get_sinks()) {
+        for (let sink of this._pulseaudio.get_sinks()) {
             if (sink.name === packet.body.name) {
                 stream = sink;
                 break;
@@ -92,20 +94,40 @@ var Plugin = GObject.registerClass({
         }
 
         // Get a cache and store volume and mute states if changed
-        let cache = this._cache.get(stream) || [null, null, null];
+        let cache = this._cache.get(stream) || {};
 
         if (packet.body.hasOwnProperty('muted')) {
-            cache[1] = packet.body.muted;
+            cache.muted = packet.body.muted;
             this._cache.set(stream, cache);
             stream.change_is_muted(packet.body.muted);
         }
 
         if (packet.body.hasOwnProperty('volume')) {
-            cache[0] = packet.body.volume;
+            cache.volume = packet.body.volume;
             this._cache.set(stream, cache);
             stream.volume = packet.body.volume;
             stream.push_volume();
         }
+    }
+
+    /**
+     * Update the cache for @stream
+     *
+     * @param {Gvc.MixerStream} stream - The stream to cache
+     * @return {object} - The updated cache object
+     */
+    _updateCache(stream) {
+        let state = {
+            name: stream.name,
+            description: stream.display_name,
+            muted: stream.is_muted,
+            volume: stream.volume,
+            maxVolume: this._pulseaudio.get_vol_max_norm()
+        };
+
+        this._cache.set(stream, state);
+
+        return state;
     }
 
     /**
@@ -115,69 +137,45 @@ var Plugin = GObject.registerClass({
      * @param {Number} id - The Id of the stream that changed
      */
     _sendSink(mixer, id) {
-        let stream = this.service.pulseaudio.lookup_stream_id(id);
-
-        // Get a cache to check for changes
-        let cache = this._cache.get(stream) || [null, null, null];
-
-        switch (true) {
-            // If the port (we show in the description) has changed we have to
-            // send the whole list to show the change
-            case (cache[2] !== stream.display_name):
-                this._sendSinkList();
-                return;
-
-            // If only volume and/or mute are set, send a single update
-            case (cache[0] !== stream.volume):
-            case (cache[1] !== stream.is_muted):
-                this._cache.set(stream, [
-                    stream.volume,
-                    stream.is_muted,
-                    stream.display_name
-                ]);
-                break;
-
-            // Bail if nothing relevant has changed
-            default:
-                return;
+        // Avoid starving the packet channel when fading
+        if (this._pulseaudio.fading) {
+            return;
         }
 
-        // Send the stream update
-        this.device.sendPacket({
-            type: 'kdeconnect.systemvolume',
-            body: {
-                name: stream.name,
-                volume: stream.volume,
-                muted: stream.is_muted
-            }
-        });
+        // Check the cache
+        let stream = this._pulseaudio.lookup_stream_id(id);
+        let cache = this._cache.get(stream) || {};
+
+        // If the port has changed we have to send the whole list to update the
+        // display name
+        if (!cache.display_name || cache.display_name !== stream.display_name) {
+            this._sendSinkList();
+            return;
+        }
+
+        // If only volume and/or mute are set, send a single update
+        if (cache.volume !== stream.volume || cache.muted !== stream.is_muted) {
+            // Update the cache
+            let state = this._updateCache(stream);
+
+            // Send the stream update
+            this.device.sendPacket({
+                type: 'kdeconnect.systemvolume',
+                body: state
+            });
+        }
     }
 
     /**
      * Send a list of local sinks
      */
     _sendSinkList() {
-        let sinkList = this.service.pulseaudio.get_sinks().map(sink => {
-            // Cache the sink state
-            this._cache.set(sink, [
-                sink.volume,
-                sink.is_muted,
-                sink.display_name
-            ]);
-
-            // return a sinkList entry
-            return {
-                name: sink.name,
-                description: sink.display_name,
-                muted: sink.is_muted,
-                volume: sink.volume,
-                maxVolume: this.service.pulseaudio.get_vol_max_norm()
-            };
+        let sinkList = this._pulseaudio.get_sinks().map(sink => {
+            return this._updateCache(sink);
         });
 
         // Send the sinkList
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.systemvolume',
             body: {
                 sinkList: sinkList
@@ -187,10 +185,11 @@ var Plugin = GObject.registerClass({
 
     destroy() {
         try {
-            this.service.pulseaudio.disconnect(this._streamChangedId);
-            this.service.pulseaudio.disconnect(this._outputAddedId);
-            this.service.pulseaudio.disconnect(this._outputRemovedId);
+            this._pulseaudio.disconnect(this._streamChangedId);
+            this._pulseaudio.disconnect(this._outputAddedId);
+            this._pulseaudio.disconnect(this._outputRemovedId);
         } catch (e) {
+            debug(e, this.device.name);
         }
 
         super.destroy();

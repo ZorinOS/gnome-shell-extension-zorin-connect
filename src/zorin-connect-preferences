@@ -1,0 +1,112 @@
+#!/usr/bin/env gjs
+
+'use strict';
+
+const Gettext = imports.gettext.domain('org.gnome.Shell.Extensions.ZorinConnect');
+const _ = Gettext.gettext;
+const System = imports.system;
+
+imports.gi.versions.Gdk = '3.0';
+imports.gi.versions.GdkPixbuf = '2.0';
+imports.gi.versions.Gio = '2.0';
+imports.gi.versions.GLib = '2.0';
+imports.gi.versions.GObject = '2.0';
+imports.gi.versions.Gtk = '3.0';
+
+const Gdk = imports.gi.Gdk;
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
+
+// Find the root datadir of the extension
+function get_datadir() {
+    let m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
+    return Gio.File.new_for_path(m[1]).get_parent().get_path();
+}
+
+window.zorin_connect = {extdatadir: get_datadir()};
+imports.searchPath.unshift(zorin_connect.extdatadir);
+imports._zorin_connect;
+
+const Remote = imports.shell.remote;
+const Settings = imports.preferences.service;
+
+
+const Preferences = GObject.registerClass({
+    GTypeName: 'ZorinConnectPreferences'
+}, class Preferences extends Gtk.Application {
+
+    _init() {
+        super._init({
+            application_id: `${zorin_connect.app_id}.Preferences`
+        });
+
+        GLib.set_prgname(_('Zorin Connect Preferences'));
+        GLib.set_application_name(_('Zorin Connect Preferences'));
+        this.set_resource_base_path(zorin_connect.app_path);
+    }
+
+    vfunc_activate() {
+        if (this._window === undefined) {
+            this._window = new Settings.Window({
+                application: this
+            });
+        }
+
+        this._window.present();
+    }
+
+    vfunc_startup() {
+        super.vfunc_startup();
+
+        // Init some resources
+        let provider = new Gtk.CssProvider();
+        provider.load_from_resource(zorin_connect.app_path + '/application.css');
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        );
+
+        let actions = [
+            ['refresh', null],
+            ['connect', GLib.VariantType.new('s')]
+        ];
+
+        for (let [name, type] of actions) {
+            let action = new Gio.SimpleAction({
+                name: name,
+                parameter_type: type
+            });
+            this.add_action(action);
+        }
+    }
+
+    vfunc_activate_action(action_name, parameter) {
+        try {
+            let paramArray = [];
+
+            if (parameter instanceof GLib.Variant) {
+                paramArray[0] = parameter;
+            }
+
+            this.get_dbus_connection().call(
+                'org.gnome.Shell.Extensions.ZorinConnect',
+                '/org/gnome/Shell/Extensions/ZorinConnect',
+                'org.freedesktop.Application',
+                'ActivateAction',
+                GLib.Variant.new('(sava{sv})', [action_name, paramArray, {}]),
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null,
+                null
+            );
+        } catch (e) {
+            logError(e);
+        }
+    }
+});
+
+(new Preferences()).run([System.programInvocationName].concat(ARGV));

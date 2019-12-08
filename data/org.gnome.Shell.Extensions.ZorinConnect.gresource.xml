@@ -3,57 +3,59 @@
   <gresource prefix="/org/gnome/Shell/Extensions/ZorinConnect">
     <!-- UI -->
     <file compressed="true">application.css</file>
-    <file compressed="true" preprocess="xml-stripblanks">connect.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">contacts.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">conversation.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">devel.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">device.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">messaging.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">notification.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">settings.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">telephony.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">enter-keyboard-shortcut.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/connect.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/contact-chooser.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/conversation.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/device-preferences.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/notification-reply-dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/telephony.ui</file>
 
-    <!-- DBus Service -->
+    <!-- DBus Service Files -->
     <file compressed="true">org.gnome.Shell.Extensions.ZorinConnect.desktop</file>
     <file compressed="true">org.gnome.Shell.Extensions.ZorinConnect.service</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.ZorinConnect.xml</file>
-
-    <!-- Bluetooth SDP -->
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.ZorinConnect.sdp.xml</file>
 
-    <!-- WebExtension Manifests -->
+    <!-- Application Icons -->
+    <file compressed="true" preprocess="xml-stripblanks">icons/org.gnome.Shell.Extensions.ZorinConnect.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/org.gnome.Shell.Extensions.ZorinConnect-symbolic.svg</file>
+
+    <!-- Device Icons (Fallback) c/o GNOME -->
+    <file compressed="true" preprocess="xml-stripblanks">icons/computer-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/smartphone-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/tv-symbolic.svg</file>
+
+    <!-- Device Icons (Fallbacks) c/o Numix
+
+         TODO: GNOME currently doesn't have an icon for `laptop`
+               The stock icon for `tablet` is actually a wacom tablet
+    -->
+    <file compressed="true" preprocess="xml-stripblanks">icons/laptop-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/tablet-symbolic.svg</file>
+
+    <!-- Phonelink Icons c/o GNOME -->
+    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-delete-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-lock-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-off-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-ring-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/phonelink-setup-symbolic.svg</file>
+
+    <!-- Misc Resources c/o GNOME -->
+    <file compressed="true" preprocess="xml-stripblanks">icons/group-avatar-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/sms-send.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">icons/sms-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">images/enter-keyboard-shortcut.svg</file>
+
+    <!-- WebExtension Manifests & Badges -->
     <file compressed="true">org.gnome.shell.extensions.zorin_connect.json-chrome</file>
     <file compressed="true">org.gnome.shell.extensions.zorin_connect.json-mozilla</file>
-  </gresource>
-  <gresource prefix="/org/gnome/Shell/Extensions/ZorinConnect/icons">
-    <!-- Application Icons -->
-    <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.ZorinConnect.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.ZorinConnect-symbolic.svg</file>
-
-    <!-- Action Icons -->
-    <file compressed="true" preprocess="xml-stripblanks">sms-send.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">sms-symbolic.svg</file>
-
-    <!-- Device Icons c/o Numix -->
-    <file compressed="true" preprocess="xml-stripblanks">computer.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">computer-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">laptop.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">laptop-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">smartphone.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">smartphone-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">tablet.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">tablet-symbolic.svg</file>
-
-    <!-- Browser Badges -->
-    <file compressed="true">firefox-badge.png</file>
-    <file compressed="true">chrome-badge.png</file>
-
-    <!-- Mobile Application Badges -->
-    <file compressed="true">apk-badge.png</file>
-    <file compressed="true">play-store-badge.png</file>
-  </gresource>
-  <gresource prefix="/org/gnome/Shell/Extensions/ZorinConnect/gtk">
-    <file compressed="true" preprocess="xml-stripblanks">menus.ui</file>
+    <file compressed="true">images/chrome-badge.png</file>
+    <file compressed="true">images/firefox-badge.png</file>
+    <file compressed="true">images/play-store-badge.png</file>
+    <file compressed="true">images/fdroid-badge.png</file>
   </gresource>
 </gresources>

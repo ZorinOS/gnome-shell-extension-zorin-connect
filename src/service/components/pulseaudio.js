@@ -36,8 +36,10 @@ Object.defineProperty(Gvc.MixerStream.prototype, 'display_name', {
  */
 class Stream {
     constructor(mixer, stream) {
-        this._max = mixer.get_vol_max_norm();
+        this._mixer = mixer;
         this._stream = stream;
+
+        this._max = mixer.get_vol_max_norm();
     }
 
     get muted() {
@@ -61,22 +63,26 @@ class Stream {
     /**
      * Gradually raise or lower the stream volume to @value
      *
-     * @param {Number} value - A number in the range 0-1
+     * @param {number} value - A number in the range 0-1
+     * @param {number} [duration] - Duration to fade in seconds
      */
-    fade(value) {
+    fade(value, duration = 1) {
         Tweener.removeTweens(this);
+        this._mixer.fading = true;
 
         if (this._stream.volume > value) {
             Tweener.addTween(this, {
                 volume: value,
-                time: 1,
-                transition: 'easeOutCubic'
+                time: duration,
+                transition: 'easeOutCubic',
+                onComplete: () => this._mixer.fading = false
             });
         } else if (this._stream.volume < value) {
             Tweener.addTween(this, {
                 volume: value,
-                time: 1,
-                transition: 'easeInCubic'
+                time: duration,
+                transition: 'easeInCubic',
+                onComplete: () => this._mixer.fading = false
             });
         }
     }
@@ -101,6 +107,24 @@ var Mixer = GObject.registerClass({
         this._previousVolume = undefined;
         this._volumeMuted = false;
         this._microphoneMuted = false;
+    }
+
+    get fading() {
+        if (this._fading === undefined) {
+            this._fading = false;
+        }
+
+        return this._fading;
+    }
+
+    set fading(bool) {
+        if (this.fading !== bool) {
+            this._fading = bool;
+
+            if (!this.fading) {
+                this.emit('stream-changed', this._output._stream.id);
+            }
+        }
     }
 
     get input() {
@@ -151,11 +175,11 @@ var Mixer = GObject.registerClass({
     /**
      * Store the current output volume then lower it to %15
      */
-    lowerVolume() {
+    lowerVolume(duration = 1) {
         try {
             if (this.output.volume > 0.15) {
                 this._previousVolume = Number(this.output.volume);
-                this.output.fade(0.15);
+                this.output.fade(0.15, duration);
             }
         } catch (e) {
             logError(e);
@@ -216,11 +240,14 @@ var Mixer = GObject.registerClass({
             logError(e);
         }
     }
+
+    destroy() {
+    }
 });
 
 
 /**
  * The service class for this component
  */
-var Service = Mixer;
+var Component = Mixer;
 

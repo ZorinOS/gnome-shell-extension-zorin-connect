@@ -18,23 +18,23 @@ imports._zorin_connect;
 
 function init() {
     zorin_connect.installService();
-    Gtk.IconTheme.get_default().add_resource_path(zorin_connect.app_path);
 }
 
 function buildPrefsWidget() {
+    // Destroy the window once the mainloop starts
     let label = new Gtk.Label();
+
     GLib.timeout_add(GLib.PRIORITY_DEFAULT, 0, () => {
         label.get_toplevel().destroy();
         return false;
     });
 
-    let service = Gio.DBusActionGroup.get(
-        Gio.DBus.session,
-        'org.gnome.Shell.Extensions.ZorinConnect',
-        '/org/gnome/Shell/Extensions/ZorinConnect'
-    );
-    service.list_actions();
-    service.activate_action('settings', null);
+    // Exec `zorin-connect-preferences
+    let proc = new Gio.Subprocess({
+        argv: [zorin_connect.extdatadir + '/zorin-connect-preferences']
+    });
+    proc.init(null);
+    proc.wait_async(null, null);
 
     return label;
 }

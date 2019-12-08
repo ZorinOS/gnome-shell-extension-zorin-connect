@@ -1,10 +1,8 @@
 'use strict';
 
-const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GIRepository = imports.gi.GIRepository;
 const GLib = imports.gi.GLib;
-const Gtk = imports.gi.Gtk;
 
 
 /**
@@ -95,7 +93,7 @@ if (zorin_connect.is_local) {
  * Init Gettext
  *
  * If we aren't inside the GNOME Shell process we'll set gettext functions on
- * the global object, otherwise we'll set them on the global 'zorin_connect' object
+ * the global object, otherwise we'll set them on the global 'zorin-connect' object
  */
 imports.gettext.bindtextdomain(zorin_connect.app_id, zorin_connect.localedir);
 const Gettext = imports.gettext.domain(zorin_connect.app_id);
@@ -169,9 +167,16 @@ zorin_connect.installService = function() {
     let desktopDir = GLib.build_filenamev([dataDir, 'applications']);
     let desktopFile = `${zorin_connect.app_id}.desktop`;
 
-    // Nautilus Extension
-    let nautDir = GLib.build_filenamev([dataDir, 'nautilus-python/extensions']);
-    let nautScript = GLib.build_filenamev([nautDir, 'nautilus-zorin-connect.py']);
+    // Application Icon
+    let iconDir = GLib.build_filenamev([dataDir, 'icons', 'hicolor', 'scalable', 'apps']);
+    let iconFull = `${zorin_connect.app_id}.svg`;
+    let iconSym = `${zorin_connect.app_id}-symbolic.svg`;
+
+    // File Manager Extensions
+    let fileManagers = [
+        [dataDir + '/nautilus-python/extensions', 'nautilus-zorin-connect.py'],
+        [dataDir + '/nemo-python/extensions', 'nemo-zorin-connect.py']
+    ];
 
     // WebExtension Manifests
     let manifestFile = 'org.gnome.shell.extensions.zorin_connect.json';
@@ -182,14 +187,15 @@ zorin_connect.installService = function() {
         [confDir + '/google-chrome/NativeMessagingHosts/', chrome],
         [confDir + '/google-chrome-beta/NativeMessagingHosts/', chrome],
         [confDir + '/google-chrome-unstable/NativeMessagingHosts/', chrome],
+        [confDir + '/BraveSoftware/Brave-Browser/NativeMessagingHosts/', chrome],
         [homeDir + '/.mozilla/native-messaging-hosts/', mozilla]
     ];
 
     // If running as a user extension, ensure the DBus service, desktop entry,
-    // Nautilus script and WebExtension manifests are installed.
+    // file manager scripts, and WebExtension manifests are installed.
     if (zorin_connect.is_local) {
         // DBus Service
-        GLib.mkdir_with_parents(dbusDir, 493);
+        GLib.mkdir_with_parents(dbusDir, 493);  // 0755 in octal
         GLib.file_set_contents(
             GLib.build_filenamev([dbusDir, dbusFile]),
             zorin_connect.get_resource(dbusFile)
@@ -202,16 +208,27 @@ zorin_connect.installService = function() {
             zorin_connect.get_resource(desktopFile)
         );
 
-        // Nautilus Extension
-        let script = Gio.File.new_for_path(nautScript);
+        // Application Icon
+        GLib.mkdir_with_parents(iconDir, 493);
+        GLib.file_set_contents(
+            GLib.build_filenamev([iconDir, iconFull]),
+            zorin_connect.get_resource(`icons/${iconFull}`)
+        );
+        GLib.file_set_contents(
+            GLib.build_filenamev([iconDir, iconSym]),
+            zorin_connect.get_resource(`icons/${iconSym}`)
+        );
 
-        if (!script.query_exists(null)) {
-            GLib.mkdir_with_parents(nautDir, 493); // 0755 in octal
-
-            script.make_symbolic_link(
-                zorin_connect.extdatadir + '/nautilus-zorin-connect.py',
-                null
-            );
+        // File Manager Extensions
+        for (let [dir, name] of fileManagers) {
+            let script = Gio.File.new_for_path(GLib.build_filenamev([dir, name]));
+            if (!script.query_exists(null)) {
+                GLib.mkdir_with_parents(dir, 493);
+                script.make_symbolic_link(
+                    zorin_connect.extdatadir + '/nautilus-zorin-connect.py',
+                    null
+                );
+            }
         }
 
         // WebExtension Manifests
@@ -228,11 +245,15 @@ zorin_connect.installService = function() {
     } else {
         GLib.unlink(GLib.build_filenamev([dbusDir, dbusFile]));
         GLib.unlink(GLib.build_filenamev([desktopDir, desktopFile]));
-        GLib.unlink(nautScript);
+        GLib.unlink(GLib.build_filenamev([iconDir, iconFull]));
+        GLib.unlink(GLib.build_filenamev([iconDir, iconSym]));
+
+        for (let [dir, name] of fileManagers) {
+            GLib.unlink(GLib.build_filenamev([dir, name]));
+        }
 
         for (let dir of Object.keys(manifests)) {
             GLib.unlink(GLib.build_filenamev([dir, manifestFile]));
         }
     }
 };
-

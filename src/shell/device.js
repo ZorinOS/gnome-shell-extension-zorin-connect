@@ -8,6 +8,7 @@ const St = imports.gi.St;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
+// eslint-disable-next-line no-redeclare
 const _ = zorin_connect._;
 const GMenu = imports.shell.gmenu;
 const Tooltip = imports.shell.tooltip;
@@ -37,7 +38,8 @@ var Battery = GObject.registerClass({
 
         // Battery Icon
         this.icon = new St.Icon({
-            fallback_icon_name: 'battery-missing-symbolic'
+            fallback_icon_name: 'battery-missing-symbolic',
+            icon_size: 16
         });
         this.add_child(this.icon);
 
@@ -171,44 +173,39 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         this.actor.add_style_class_name('zorin-connect-device-menu');
 
         // Title
-        this._title = new PopupMenu.PopupSeparatorMenuItem(this.device.Name);
+        this._title = new PopupMenu.PopupSeparatorMenuItem(this.device.name);
         this.addMenuItem(this._title);
 
         // Title -> Name
         this._title.label.style_class = 'zorin-connect-device-name';
         this._title.label.clutter_text.ellipsize = 0;
-        this._nameId = this.device.settings.connect(
-            'changed::name',
-            this._onNameChanged.bind(this)
+        this.device.bind_property(
+            'name',
+            this._title.label,
+            'text',
+            GObject.BindingFlags.SYNC_CREATE
         );
-        this.actor.connect('destroy', this._onDestroy);
 
         // Title -> Battery
         this._battery = new Battery({device: this.device});
         this._title.actor.add_child(this._battery);
 
         // Actions
+        let actions;
+
         if (this.menu_type === 'icon') {
-            this._actions = new GMenu.IconBox({
+            actions = new GMenu.IconBox({
                 action_group: this.device.action_group,
-                menu_model: this.device.menu_model
+                model: this.device.menu
             });
         } else if (this.menu_type === 'list') {
-            this._actions = new GMenu.ListBox({
+            actions = new GMenu.ListBox({
                 action_group: this.device.action_group,
-                menu_model: this.device.menu_model
+                model: this.device.menu
             });
         }
 
-        this.addMenuItem(this._actions);
-    }
-
-    _onDestroy(actor) {
-        actor._delegate.device.settings.disconnect(actor._delegate._nameId);
-    }
-
-    _onNameChanged(settings) {
-        this._title.label.text = settings.get_string('name');
+        this.addMenuItem(actions);
     }
 
     isEmpty() {
@@ -223,15 +220,22 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
 var Indicator = class Indicator extends PanelMenu.Button {
 
     _init(params) {
-        super._init(0.0, `${params.device.Name} Indicator`, false);
+        super._init(0.0, `${params.device.name} Indicator`, false);
         Object.assign(this, params);
 
         // Device Icon
         let icon = new St.Icon({
-            gicon: zorin_connect.get_gicon(`${this.device.IconName}-symbolic`),
+            gicon: zorin_connect.get_gicon(this.device.icon_name),
             style_class: 'system-status-icon zorin-connect-device-indicator'
         });
-        this.actor.add_child(icon);
+        this._icon = icon;
+
+        // TODO: remove after 3.34+
+        if (zorin_connect.shell_version >= 34) {
+            this.add_child(icon);
+        } else {
+            this.actor.add_child(icon);
+        }
 
         // Menu
         let menu = new Menu({
@@ -239,6 +243,10 @@ var Indicator = class Indicator extends PanelMenu.Button {
             menu_type: 'icon'
         });
         this.menu.addMenuItem(menu);
+    }
+
+    update_icon(icon_name) {
+        this._icon.gicon = zorin_connect.get_gicon(icon_name);
     }
 };
 

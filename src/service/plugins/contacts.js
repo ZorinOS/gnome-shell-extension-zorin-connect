@@ -7,6 +7,17 @@ const GObject = imports.gi.GObject;
 const PluginsBase = imports.service.plugins.base;
 const Contacts = imports.service.components.contacts;
 
+/*
+ * We prefer libebook's vCard parser if it's available
+ */
+var EBookContacts;
+
+try {
+    EBookContacts = imports.gi.EBookContacts;
+} catch (e) {
+    EBookContacts = null;
+}
+
 
 var Metadata = {
     label: _('Contacts'),
@@ -26,10 +37,12 @@ var Metadata = {
 /**
  * vCard 2.1 Patterns
  */
-const FIELD_BASIC = /^([^:;]+):(.+)$/;
-const FIELD_TYPED = /^([^:;]+);([^:]+):(.+)$/;
-const FIELD_TYPED_KEY = /item\d{1,2}\./;
-const FIELD_TYPED_META = /([a-z]+)=(.*)/i;
+const VCARD_FOLDING = /\r\n |\r |\n |=\n/g;
+const VCARD_SUPPORTED = /^fn|tel|photo|x-kdeconnect/i;
+const VCARD_BASIC = /^([^:;]+):(.+)$/;
+const VCARD_TYPED = /^([^:;]+);([^:]+):(.+)$/;
+const VCARD_TYPED_KEY = /item\d{1,2}\./;
+const VCARD_TYPED_META = /([a-z]+)=(.*)/i;
 
 
 /**
@@ -43,6 +56,7 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'contacts');
         this._store = new Contacts.Store(device.id);
+        this._store.fetch = this.requestUids.bind(this);
 
         // Notify when the store is ready
         this._contactsStoreReadyId = this._store.connect(
@@ -79,12 +93,15 @@ var Plugin = GObject.registerClass({
 
     _handleUids(packet) {
         try {
-            // Delete any contacts that were removed on the device
             let contacts = this._store.contacts;
             let remote_uids = packet.body.uids;
             let removed = false;
             delete packet.body.uids;
 
+            // Usually a failed request, so avoid wiping the cache
+            if (remote_uids.length === 0) return;
+
+            // Delete any contacts that were removed on the device
             for (let i = 0, len = contacts.length; i < len; i++) {
                 let contact = contacts[i];
 
@@ -194,7 +211,7 @@ var Plugin = GObject.registerClass({
 
             // Say "chowdah" frenchie!
             } catch (e) {
-                warning(`Failed to decode UTF-8 VCard field "${input}"`);
+                debug(e, `Failed to decode UTF-8 VCard field ${input}`);
                 return input;
             }
         }
@@ -215,26 +232,26 @@ var Plugin = GObject.registerClass({
         };
 
         // Remove line folding and split
-        let lines = vcard_data.replace(/\n /g, '').split('\n');
+        let lines = vcard_data.replace(VCARD_FOLDING, '').split(/\r\n|\r|\n/);
 
         for (let i = 0, len = lines.length; i < len; i++) {
             let line = lines[i];
             let results, key, type, value;
 
-            // Empty line
-            if (!line) continue;
+            // Empty line or a property we aren't interested in
+            if (!line || !line.match(VCARD_SUPPORTED)) continue;
 
             // Basic Fields (fn, x-kdeconnect-timestamp, etc)
-            if ((results = line.match(FIELD_BASIC))) {
+            if ((results = line.match(VCARD_BASIC))) {
                 [results, key, value] = results;
                 vcard[key.toLowerCase()] = value;
                 continue;
             }
 
             // Typed Fields (tel, adr, etc)
-            if ((results = line.match(FIELD_TYPED))) {
+            if ((results = line.match(VCARD_TYPED))) {
                 [results, key, type, value] = results;
-                key = key.replace(FIELD_TYPED_KEY, '').toLowerCase();
+                key = key.replace(VCARD_TYPED_KEY, '').toLowerCase();
                 value = value.split(';');
                 type = type.split(';');
 
@@ -242,7 +259,7 @@ var Plugin = GObject.registerClass({
                 let meta = {};
 
                 for (let i = 0, len = type.length; i < len; i++) {
-                    let res = type[i].match(FIELD_TYPED_META);
+                    let res = type[i].match(VCARD_TYPED_META);
 
                     if (res) {
                         meta[res[1]] = res[2];
@@ -252,7 +269,7 @@ var Plugin = GObject.registerClass({
                 }
 
                 // Value(s)
-                if (!vcard[key]) vcard[key] = [];
+                if (vcard[key] === undefined) vcard[key] = [];
 
                 // Decode QUOTABLE-PRINTABLE
                 if (meta.ENCODING && meta.ENCODING === 'QUOTED-PRINTABLE') {
@@ -278,7 +295,7 @@ var Plugin = GObject.registerClass({
         return vcard;
     }
 
-    async parseContact(uid, vcard_data) {
+    async parseVCardNative(uid, vcard_data) {
         try {
             let vcard = this.parseVCard21(vcard_data);
 
@@ -309,7 +326,60 @@ var Plugin = GObject.registerClass({
 
             return contact;
         } catch (e) {
-            warning(e, `Failed to parse VCard contact "${uid}"`);
+            debug(e, `Failed to parse VCard contact ${uid}`);
+            return undefined;
+        }
+    }
+    
+    async parseVCard(uid, vcard_data) {
+        try {
+            let contact = {
+                id: uid,
+                name: _('Unknown Contact'),
+                numbers: [],
+                origin: 'device',
+                timestamp: 0
+            };
+            
+            let evcard = EBookContacts.VCard.new_from_string(vcard_data);
+            let evattrs = evcard.get_attributes();
+            
+            for (let i = 0, len = evattrs.length; i < len; i++) {
+                let attr = evattrs[i];
+                let data, number;
+                
+                switch (attr.get_name().toLowerCase()) {
+                    case 'fn':
+                        contact.name = attr.get_value();
+                        break;
+                        
+                    case 'tel':
+                        number = {value: attr.get_value(), type: 'unknown'};
+                        
+                        if (attr.has_type('CELL'))
+                            number.type = 'cell';
+                        else if (attr.has_type('HOME'))
+                            number.type = 'home';
+                        else if (attr.has_type('WORK'))
+                            number.type = 'work';
+                        
+                        contact.numbers.push (number);
+                        break;
+                        
+                    case 'x-kdeconnect-timestamp':
+                        contact.timestamp = parseInt(attr.get_value());
+                        break;
+                        
+                    case 'photo':
+                        data = GLib.base64_decode(attr.get_value());
+                        contact.avatar = await this._store.storeAvatar(data);
+                        break;
+                }
+            }
+
+            return contact;
+        } catch (e) {
+            debug(e, `Failed to parse VCard contact ${uid}`);
             return undefined;
         }
     }
@@ -321,7 +391,13 @@ var Plugin = GObject.registerClass({
 
             // Parse each vCard and add the contact
             for (let [uid, vcard] of Object.entries(packet.body)) {
-                let contact = await this.parseContact(uid, vcard);
+                let contact;
+                
+                if (EBookContacts) {
+                    contact = await this.parseVCard(uid, vcard);
+                } else {
+                    contact = await this.parseVCardNative(uid, vcard);
+                }
 
                 if (contact) {
                     this._store.add(contact);

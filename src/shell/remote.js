@@ -4,18 +4,256 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+const DBUS_NAME = 'org.gnome.Shell.Extensions.ZorinConnect';
+const DBUS_PATH = '/org/gnome/Shell/Extensions/ZorinConnect';
 
-const DEVICE_NAME = 'org.gnome.Shell.Extensions.ZorinConnect.Device';
-const DEVICE_INFO = zorin_connect.dbusinfo.lookup_interface(DEVICE_NAME);
+
+function toHyphenCase(string) {
+    if (toHyphenCase.__cache === undefined) {
+        toHyphenCase.__cache = {};
+    }
+
+    if (!toHyphenCase.__cache[string]) {
+        toHyphenCase.__cache[string] = string.replace(/(?:[A-Z])/g, (c, i) => {
+            return (i > 0) ? '-' + c.toLowerCase() : c.toLowerCase();
+        }).replace(/[\s_]+/g, '');
+    }
+
+    return toHyphenCase.__cache[string];
+}
+
+
+function _proxyInit(proxy, cancellable = null) {
+    if (proxy.__initialized !== undefined) {
+        return Promise.resolve();
+    }
+
+    return new Promise((resolve, reject) => {
+        proxy.init_async(
+            GLib.PRIORITY_DEFAULT,
+            cancellable,
+            (proxy, res) => {
+                try {
+                    proxy.init_finish(res);
+                    proxy.__initialized = true;
+                    resolve();
+                } catch (e) {
+                    Gio.DBusError.strip_remote_error(e);
+                    reject(e);
+                }
+            }
+        );
+    });
+}
+
+
+var Device = GObject.registerClass({
+    GTypeName: 'ZorinConnectRemoteDevice',
+    Implements: [Gio.DBusInterface],
+    Properties: {
+        'connected': GObject.ParamSpec.boolean(
+            'connected',
+            'Connected',
+            'Whether the device is connected',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
+        'encryption-info': GObject.ParamSpec.string(
+            'encryption-info',
+            'Encryption Info',
+            'A formatted string with the local and remote fingerprints',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
+        'icon-name': GObject.ParamSpec.string(
+            'icon-name',
+            'Icon Name',
+            'Icon name representing the device',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
+        'id': GObject.ParamSpec.string(
+            'id',
+            'deviceId',
+            'The device hostname or other unique id',
+            GObject.ParamFlags.READABLE,
+            ''
+        ),
+        'name': GObject.ParamSpec.string(
+            'name',
+            'deviceName',
+            'The device name',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
+        'paired': GObject.ParamSpec.boolean(
+            'paired',
+            'Paired',
+            'Whether the device is paired',
+            GObject.ParamFlags.READABLE,
+            null
+        ),
+        'type': GObject.ParamSpec.string(
+            'type',
+            'deviceType',
+            'The device type',
+            GObject.ParamFlags.READABLE,
+            null
+        )
+    }
+}, class Device extends Gio.DBusProxy {
+
+    _init(service, object_path) {
+        this._service = service;
+
+        super._init({
+            g_connection: service.g_connection,
+            g_name: DBUS_NAME,
+            g_object_path: object_path,
+            g_interface_name: 'org.gnome.Shell.Extensions.ZorinConnect.Device'
+        });
+    }
+
+    // Proxy GObject::notify signals
+    vfunc_g_properties_changed(changed, invalidated) {
+        try {
+            for (let name in changed.deep_unpack()) {
+                this.notify(toHyphenCase(name));
+            }
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    _get(name, fallback = null) {
+        try {
+            return this.get_cached_property(name).unpack();
+        } catch (e) {
+            return fallback;
+        }
+    }
+
+    get connected() {
+        return this._get('Connected', false);
+    }
+
+    get encryption_info() {
+        return this._get('EncryptionInfo', '');
+    }
+
+    get icon_name() {
+        return this._get('IconName', 'computer');
+    }
+
+    get id() {
+        return this._get('Id', '0');
+    }
+
+    get name() {
+        return this._get('Name', 'Unknown');
+    }
+
+    get paired() {
+        return this._get('Paired', false);
+    }
+
+    get settings() {
+        if (this._settings === undefined) {
+            this._settings = new Gio.Settings({
+                settings_schema: zorin_connect.gschema.lookup(
+                    this.g_interface_name,
+                    true
+                ),
+                path: `${this.g_object_path.toLowerCase()}/`
+            });
+        }
+
+        return this._settings;
+    }
+
+    get service() {
+        return this._service;
+    }
+
+    get type() {
+        return this._get('Type', 'desktop');
+    }
+
+    async start() {
+        try {
+            // Initialize the proxy
+            await _proxyInit(this);
+
+            // GActions
+            this.action_group = Gio.DBusActionGroup.get(
+                this.g_connection,
+                this.service.g_name_owner,
+                this.g_object_path
+            );
+
+            // GMenu
+            this.menu = Gio.DBusMenuModel.get(
+                this.g_connection,
+                this.service.g_name_owner,
+                this.g_object_path
+            );
+
+            // Subscribe to the GMenu
+            await new Promise((resolve, reject) => {
+                this.g_connection.call(
+                    DBUS_NAME,
+                    this.g_object_path,
+                    'org.gtk.Menus',
+                    'Start',
+                    new GLib.Variant('(au)', [[0]]),
+                    null,
+                    Gio.DBusCallFlags.NONE,
+                    -1,
+                    null,
+                    (proxy, res) => {
+                        try {
+                            resolve(proxy.call_finish(res));
+                        } catch (e) {
+                            Gio.DBusError.strip_remote_error(e);
+                            reject(e);
+                        }
+                    }
+                );
+            });
+        } catch (e) {
+            this.destroy();
+            throw e;
+        }
+    }
+
+    destroy() {
+        if (this.__disposed === undefined) {
+            this.__disposed = true;
+
+            if (this._settings) {
+                this._settings.run_dispose();
+                this._settings = null;
+            }
+
+            this.run_dispose();
+        }
+    }
+});
 
 
 var Service = GObject.registerClass({
     GTypeName: 'ZorinConnectRemoteService',
     Implements: [Gio.DBusInterface],
+    Properties: {
+        'active': GObject.ParamSpec.boolean(
+            'active',
+            'Active',
+            'Whether the service is active',
+            GObject.ParamFlags.READABLE,
+            false
+        )
+    },
     Signals: {
-        'available-changed': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        },
         'device-added': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [GObject.TYPE_OBJECT]
@@ -30,13 +268,15 @@ var Service = GObject.registerClass({
     _init() {
         super._init({
             g_bus_type: Gio.BusType.SESSION,
-            g_name: 'org.gnome.Shell.Extensions.ZorinConnect',
-            g_object_path: '/org/gnome/Shell/Extensions/ZorinConnect',
+            g_name: DBUS_NAME,
+            g_object_path: DBUS_PATH,
             g_interface_name: 'org.freedesktop.DBus.ObjectManager',
             g_flags: Gio.DBusProxyFlags.DO_NOT_AUTO_START_AT_CONSTRUCTION
         });
 
+        this._active = false;
         this._devices = new Map();
+        this._starting = false;
 
         // Watch the service
         this._nameOwnerChangedId = this.connect(
@@ -45,30 +285,8 @@ var Service = GObject.registerClass({
         );
     }
 
-    async _init_async() {
-        try {
-            await new Promise((resolve, reject) => {
-                this.init_async(
-                    GLib.PRIORITY_DEFAULT,
-                    null,
-                    (proxy, res) => {
-                        try {
-                            resolve(proxy.init_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-
-            this._onNameOwnerChanged();
-        } catch (e) {
-            return Promise.reject(e);
-        }
-    }
-
-    get available() {
-        return this.devices.filter(device => (device.Connected && device.Paired));
+    get active() {
+        return this._active;
     }
 
     get devices() {
@@ -77,8 +295,8 @@ var Service = GObject.registerClass({
 
     vfunc_g_signal(sender_name, signal_name, parameters) {
         try {
-            // Don't emit signals until the name is properly owned
-            if (!this.g_name_owner === null) return;
+            // Don't emit signals until the ObjectManager has started
+            if (!this.active) return;
 
             parameters = parameters.deep_unpack();
 
@@ -96,87 +314,11 @@ var Service = GObject.registerClass({
         }
     }
 
-    _onDeviceChanged(proxy, changed, invalidated) {
-        changed = changed.deep_unpack();
-
-        if (changed.hasOwnProperty('Connected') || changed.hasOwnProperty('Paired')) {
-            this.emit('available-changed');
-        }
-    }
-
-    _proxyGetter(name) {
-        let variant = this.get_cached_property(name);
-        return variant ? variant.deep_unpack() : null;
-    }
-
-    async _getProxy(object_path) {
-        try {
-            let proxy = new Gio.DBusProxy({
-                g_connection: this.g_connection,
-                g_name: this.g_name_owner,
-                g_object_path: object_path,
-                g_interface_name: DEVICE_NAME
-            });
-
-            // Initialize the device proxy
-            await new Promise((resolve, reject) => {
-                proxy.init_async(
-                    GLib.PRIORITY_DEFAULT,
-                    null,
-                    (proxy, res) => {
-                        try {
-                            resolve(proxy.init_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-
-            // Setup properties
-            for (let i = 0, len = DEVICE_INFO.properties.length; i < len; i++) {
-                let property = DEVICE_INFO.properties[i];
-
-                Object.defineProperty(proxy, property.name, {
-                    get: this._proxyGetter.bind(proxy, property.name),
-                    enumerable: true
-                });
-            }
-
-            // GActions
-            proxy.action_group = Gio.DBusActionGroup.get(
-                proxy.g_connection,
-                proxy.g_name,
-                proxy.g_object_path
-            );
-
-            // GMenu
-            proxy.menu_model = Gio.DBusMenuModel.get(
-                proxy.g_connection,
-                proxy.g_name,
-                proxy.g_object_path
-            );
-
-            await this._Start(object_path);
-
-            // GSettings
-            proxy.settings = new Gio.Settings({
-                settings_schema: zorin_connect.gschema.lookup(DEVICE_NAME, true),
-                path: '/org/gnome/shell/extensions/zorin-connect/device/' + proxy.Id + '/'
-            });
-
-            return proxy;
-        } catch (e) {
-            logError(e, object_path);
-            return undefined;
-        }
-    }
-
     /**
      * org.freedesktop.DBus.ObjectManager.InterfacesAdded
      *
-     * @param {string} object_path - Path interfaces have been removed from
-     * @param {object[]} - ??
+     * @param {string} object_path - Path interfaces have been added to
+     * @param {object[]} - list of interface objects
      */
     async _onInterfacesAdded(object_path, interfaces) {
         try {
@@ -187,18 +329,12 @@ var Service = GObject.registerClass({
             if (this._devices.has(object_path)) return;
 
             // Create a proxy
-            let proxy = await this._getProxy(object_path);
-            if (proxy === undefined) return;
-
-            // Watch for connected/paired changes
-            proxy.__deviceChangedId = proxy.connect(
-                'g-properties-changed',
-                this._onDeviceChanged.bind(this)
-            );
+            let device = new Device(this, object_path);
+            await device.start();
 
             // Hold the proxy and emit ::device-added
-            this._devices.set(object_path, proxy);
-            this.emit('device-added', proxy);
+            this._devices.set(object_path, device);
+            this.emit('device-added', device);
         } catch (e) {
             logError(e, object_path);
         }
@@ -210,53 +346,28 @@ var Service = GObject.registerClass({
      * @param {string} object_path - Path interfaces have been removed from
      * @param {string[]} - List of interface names removed
      */
-    async _onInterfacesRemoved(object_path, interfaces) {
+    _onInterfacesRemoved(object_path, interfaces) {
         try {
             // An empty interface list means the object is being removed
             if (interfaces.length === 0) return;
 
             // Get the proxy
-            let proxy = this._devices.get(object_path);
-            if (proxy === undefined) return;
-
-            // Stop watching for connected/paired changes
-            proxy.disconnect(proxy.__deviceChangedId);
+            let device = this._devices.get(object_path);
+            if (device === undefined) return;
 
             // Release the proxy and emit ::device-removed
             this._devices.delete(object_path);
-            this.emit('device-removed', proxy);
+            this.emit('device-removed', device);
+
+            // Destroy the device and force disposal
+            device.destroy();
         } catch (e) {
             logError(e, object_path);
         }
     }
 
-    async _onNameOwnerChanged() {
-        try {
-            // If the service stopped, clear all devices before restarting
-            if (this.g_name_owner === null) {
-                this.clear();
-                await this._GetManagedObjects();
-
-            // Now that service is started, add each device manually
-            } else {
-                let objects = await this._GetManagedObjects();
-
-                for (let [object_path, object] of Object.entries(objects)) {
-                    await this._onInterfacesAdded(object_path, object);
-                }
-            }
-        } catch (e) {
-            logError(e);
-        }
-    }
-
-    /**
-     * org.freedesktop.DBus.ObjectManager.GetManagedObjects
-     *
-     * @return {object} - Dictionary of managed object paths and interface names
-     */
-    _GetManagedObjects() {
-        return new Promise((resolve, reject) => {
+    async _addDevices() {
+        let objects = await new Promise((resolve, reject) => {
             this.call(
                 'GetManagedObjects',
                 null,
@@ -268,55 +379,158 @@ var Service = GObject.registerClass({
                         let variant = proxy.call_finish(res);
                         resolve(variant.deep_unpack()[0]);
                     } catch (e) {
+                        Gio.DBusError.strip_remote_error(e);
                         reject(e);
                     }
                 }
             );
         });
+
+        for (let [object_path, object] of Object.entries(objects)) {
+            await this._onInterfacesAdded(object_path, object);
+        }
+    }
+
+    _clearDevices() {
+        for (let [object_path, device] of this._devices) {
+            this._devices.delete(object_path);
+            this.emit('device-removed', device);
+            device.destroy();
+        }
+    }
+
+    async _onNameOwnerChanged() {
+        try {
+            // If the service stopped, remove each device and mark it inactive
+            if (this.g_name_owner === null) {
+                this._clearDevices();
+
+                this._active = false;
+                this.notify('active');
+
+            // If the service started, mark it active and add each device
+            } else {
+                this._active = true;
+                this.notify('active');
+
+                await this._addDevices();
+            }
+        } catch (e) {
+            logError(e);
+        }
     }
 
     /**
-     * org.gtk.Menus.Start
-     *
-     * We use this call to ensure that our connection is subscribed to GMenu
-     * changes if the device is added after the service has started.
-     *
-     * @param {string} object_path
+     * Reload all devices without affecting the remote service. This amounts to
+     * removing and adding each device while emitting the appropriate signals.
      */
-    _Start(object_path) {
-        return new Promise((resolve, reject) => {
-            this.g_connection.call(
-                this.g_name,
-                object_path,
-                'org.gtk.Menus',
-                'Start',
-                new GLib.Variant('(au)', [[0]]),
+    async reload() {
+        try {
+            if (this._starting === false) {
+                this._starting = true;
+
+                this._clearDevices();
+                await _proxyInit(this);
+                await this._onNameOwnerChanged();
+
+                this._starting = false;
+            }
+        } catch (e) {
+            this._starting = false;
+            throw e;
+        }
+    }
+
+    /**
+     * Start the service
+     */
+    async start() {
+        try {
+            if (this._starting === false && this.active === false) {
+                this._starting = true;
+
+                await _proxyInit(this);
+                await this._onNameOwnerChanged();
+
+                // Activate the service if it's not already running
+                if (!this.active) {
+                    await new Promise((resolve, reject) => {
+                        this.g_connection.call(
+                            DBUS_NAME,
+                            DBUS_PATH,
+                            'org.freedesktop.Application',
+                            'Activate',
+                            GLib.Variant.new('(a{sv})', [{}]),
+                            null,
+                            Gio.DBusCallFlags.NONE,
+                            -1,
+                            null,
+                            (proxy, res) => {
+                                try {
+                                    resolve(proxy.call_finish(res));
+                                } catch (e) {
+                                    Gio.DBusError.strip_remote_error(e);
+                                    reject(e);
+                                }
+                            }
+                        );
+                    });
+                }
+
+                this._starting = false;
+            }
+        } catch (e) {
+            this._starting = false;
+            throw e;
+        }
+    }
+
+    /**
+     * Stop the service
+     */
+    stop() {
+        if (this.active) {
+            this.activate_action('quit');
+        }
+    }
+
+    activate_action(name, parameter = null) {
+        try {
+            let paramArray = [];
+
+            if (parameter instanceof GLib.Variant) {
+                paramArray[0] = parameter;
+            }
+
+            let connection = this.g_connection || Gio.DBus.session;
+
+            connection.call(
+                DBUS_NAME,
+                DBUS_PATH,
+                'org.freedesktop.Application',
+                'ActivateAction',
+                GLib.Variant.new('(sava{sv})', [name, paramArray, {}]),
                 null,
                 Gio.DBusCallFlags.NONE,
                 -1,
                 null,
-                (proxy, res) => {
-                    try {
-                        resolve(proxy.call_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
+                null
             );
-        });
-    }
-
-    clear() {
-        for (let device of this.devices) {
-            device.disconnect(device.__deviceChangedId);
-            this._devices.delete(device.g_object_path);
-            this.emit('device-removed', device);
+        } catch (e) {
+            logError(e);
         }
     }
 
     destroy() {
-        this.disconnect(this._nameOwnerChangedId);
-        this.clear();
+        if (this._nameOwnerChangedId > 0) {
+            this.disconnect(this._nameOwnerChangedId);
+            this._nameOwnerChangedId = 0;
+
+            this._clearDevices();
+            this._active = false;
+
+            this.run_dispose();
+        }
     }
 });
 

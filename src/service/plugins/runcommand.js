@@ -21,6 +21,14 @@ var Metadata = {
             parameter_type: new GLib.VariantType('s'),
             incoming: ['kdeconnect.runcommand'],
             outgoing: ['kdeconnect.runcommand.request']
+        },
+        executeCommand: {
+            label: _('Commands'),
+            icon_name: 'system-run-symbolic',
+
+            parameter_type: new GLib.VariantType('s'),
+            incoming: ['kdeconnect.runcommand'],
+            outgoing: ['kdeconnect.runcommand.request']
         }
     }
 };
@@ -47,9 +55,22 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'runcommand');
+        
+        // Setup a launcher with env variables for commands
+        let application = GLib.build_filenamev([
+            zorin_connect.extdatadir,
+            'service',
+            'daemon.js'
+        ]);
+        this._launcher = new Gio.SubprocessLauncher();
+        this._launcher.setenv('ZORIN_CONNECT', application, false);
+        this._launcher.setenv('ZORIN_CONNECT_DEVICE_ID', this.device.id, false);
+        this._launcher.setenv('ZORIN_CONNECT_DEVICE_NAME', this.device.name, false);
+        this._launcher.setenv('ZORIN_CONNECT_DEVICE_ICON', this.device.icon_name, false);
+        this._launcher.setenv('ZORIN_CONNECT_DEVICE_DBUS', this.device.g_object_path, false);
 
         // Local Commands
-        this.settings.connect(
+        this._commandListChangedId = this.settings.connect(
             'changed::command-list',
             this.sendCommandList.bind(this)
         );
@@ -58,15 +79,6 @@ var Plugin = GObject.registerClass({
         // when the device is offline.
         this._remote_commands = {};
         this.cacheProperties(['_remote_commands']);
-
-        // Define executeCommand here so since plugin actions are all stateful
-        let executeCommand = new Gio.SimpleAction({
-            name: 'executeCommand',
-            parameter_type: new GLib.VariantType('s')
-        });
-        executeCommand.connect('activate', this._activateAction.bind(this));
-        this.device.add_action(executeCommand);
-        this._gactions.push(executeCommand);
     }
 
     get remote_commands() {
@@ -92,8 +104,11 @@ var Plugin = GObject.registerClass({
     connected() {
         super.connected();
 
+        // Disable the commands action until we know better
         this.sendCommandList();
         this.requestCommandList();
+
+        this._handleCommandList(this.remote_commands);
     }
 
     cacheClear() {
@@ -105,10 +120,6 @@ var Plugin = GObject.registerClass({
     cacheLoaded() {
         if (this.device.connected) {
             this.connected();
-        }
-
-        if (this.device.get_incoming_supported('runcommand.request')) {
-            this._handleCommandList(this.remote_commands);
         }
     }
 
@@ -123,16 +134,23 @@ var Plugin = GObject.registerClass({
             if (!commandList.hasOwnProperty(key)) {
                 throw new Error(`Unknown command: ${key}`);
             }
-
-            GLib.spawn_async(
-                null,
-                ['/bin/sh', '-c', commandList[key].command],
-                null,
-                GLib.SpawnFlags.DEFAULT,
-                null
-            );
+            
+            let proc = this._launcher.spawnv([
+                '/bin/sh',
+                '-c',
+                commandList[key].command
+            ]);
+            proc.wait_check_async(null, this._commandExit);
         } catch (e) {
             logError(e, this.device.name);
+        }
+    }
+    
+    _commandExit(proc, res) {
+        try {
+            proc.wait_check_finish(res);
+        } catch (e) {
+            debug(e);
         }
     }
 
@@ -176,7 +194,12 @@ var Plugin = GObject.registerClass({
         item.set_submenu(submenu);
 
         // If the submenu item is already present it will be replaced
-        this.device.menu.replace_action('commands', item);
+        let index = this.device.settings.get_strv('menu-actions').indexOf('commands');
+
+        if (index > -1) {
+            this.device.removeMenuAction('commands');
+            this.device.addMenuItem(item, index);
+        }
     }
 
     /**
@@ -190,7 +213,6 @@ var Plugin = GObject.registerClass({
      */
     executeCommand(key) {
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.runcommand.request',
             body: {key: key}
         });
@@ -201,7 +223,6 @@ var Plugin = GObject.registerClass({
      */
     requestCommandList() {
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.runcommand.request',
             body: {requestCommandList: true}
         });
@@ -214,10 +235,17 @@ var Plugin = GObject.registerClass({
         let commands = this.settings.get_value('command-list').full_unpack();
 
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.runcommand',
             body: {commandList: commands}
         });
+    }
+
+    destroy() {
+        if (this._commandListChangedId) {
+            this.settings.disconnect(this._commandListChangedId);
+        }
+
+        super.destroy();
     }
 });
 

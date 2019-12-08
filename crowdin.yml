@@ -4,9 +4,11 @@ files:
     translation: /po/%locale%.po
     languages_mapping:
       locale:
+        ar-SA: ar
         ca-ES: ca
         ca: ca
         fr: fr
+        da: da
         de: de
         pt-BR: pt_BR
         nl: nl_NL
@@ -15,6 +17,7 @@ files:
         be: be
         cs: cs
         et: et
+        gl: gl
         hu: hu
         it: it
         ja: ja
@@ -26,3 +29,4 @@ files:
         tr: tr
         uk: uk
         zh-CN: zh_CN
+        zh-TW: zh_TW

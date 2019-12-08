@@ -4,7 +4,7 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Deli veze GSKonektom, direktno u pregldač ili putem SMS-a.",
+        "message": "Deli veze Zorin Connect, direktno u pregldač ili putem SMS-a.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
