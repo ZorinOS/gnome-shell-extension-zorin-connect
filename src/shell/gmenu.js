@@ -8,7 +8,9 @@ const St = imports.gi.St;
 
 const PopupMenu = imports.ui.popupMenu;
 
-const Tooltip = imports.shell.tooltip;
+const Extension = imports.misc.extensionUtils.getCurrentExtension();
+
+const Tooltip = Extension.imports.shell.tooltip;
 
 
 /**
@@ -16,19 +18,19 @@ const Tooltip = imports.shell.tooltip;
  *
  * @param {Gio.MenuModel} model - The menu model containing the item
  * @param {number} index - The index of the item in @model
- * @return {object} - A dictionary of the item's attributes
+ * @return {Object} A dictionary of the item's attributes
  */
 function getItemInfo(model, index) {
-    let info = {
+    const info = {
         target: null,
-        links: []
+        links: [],
     };
 
     //
     let iter = model.iterate_item_attributes(index);
 
     while (iter.next()) {
-        let name = iter.get_name();
+        const name = iter.get_name();
         let value = iter.get_value();
 
         switch (name) {
@@ -36,7 +38,7 @@ function getItemInfo(model, index) {
                 value = Gio.Icon.deserialize(value);
 
                 if (value instanceof Gio.ThemedIcon)
-                    value = zorin_connect.get_gicon(value.names[0]);
+                    value = Extension.getIcon(value.names[0]);
 
                 info[name] = value;
                 break;
@@ -56,7 +58,7 @@ function getItemInfo(model, index) {
     while (iter.next()) {
         info.links.push({
             name: iter.get_name(),
-            value: iter.get_value()
+            value: iter.get_value(),
         });
     }
 
@@ -76,7 +78,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         // Main Actor
         this.actor = new St.BoxLayout({
             x_expand: true,
-            clip_to_allocation: true
+            clip_to_allocation: true,
         });
         this.actor._delegate = this;
 
@@ -90,10 +92,9 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         // Submenu Container
         this.sub = new St.BoxLayout({
             clip_to_allocation: true,
-            style_class: 'popup-sub-menu',
             vertical: false,
             visible: false,
-            x_expand: true
+            x_expand: true,
         });
         this.sub.set_pivot_point(1, 1);
         this.sub._delegate = this;
@@ -151,7 +152,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     _onSubmenuCloseKey(actor, event) {
-        if (this.submenu && event.get_key_symbol() == Clutter.KEY_Left) {
+        if (this.submenu && event.get_key_symbol() === Clutter.KEY_Left) {
             this.submenu.submenu_for.setActive(true);
             this.submenu = null;
             return Clutter.EVENT_STOP;
@@ -161,9 +162,9 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     _onSubmenuOpenKey(actor, event) {
-        let item = actor._delegate;
+        const item = actor._delegate;
 
-        if (item.submenu && event.get_key_symbol() == Clutter.KEY_Right) {
+        if (item.submenu && event.get_key_symbol() === Clutter.KEY_Right) {
             this.submenu = item.submenu;
             item.submenu.firstMenuItem.setActive(true);
         }
@@ -186,8 +187,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     _addGMenuItem(info) {
-        // TODO: Use an image menu item if there's an icon?
-        let item = new PopupMenu.PopupMenuItem(info.label);
+        const item = new PopupMenu.PopupMenuItem(info.label);
         this.addMenuItem(item);
 
         if (info.action !== undefined) {
@@ -210,16 +210,16 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     _addGMenuSection(model) {
-        let section = new ListBox({
+        const section = new ListBox({
             model: model,
-            action_group: this.action_group
+            action_group: this.action_group,
         });
         this.addMenuItem(section);
     }
 
     _addGMenuSubmenu(model, item) {
         // Add an expander arrow to the item
-        let arrow = PopupMenu.arrowIcon(St.Side.RIGHT);
+        const arrow = PopupMenu.arrowIcon(St.Side.RIGHT);
         arrow.x_align = Clutter.ActorAlign.END;
         arrow.x_expand = true;
         item.actor.add_child(arrow);
@@ -237,7 +237,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             model: model,
             action_group: this.action_group,
             submenu_for: item,
-            _parent: this
+            _parent: this,
         });
         item.submenu.actor.hide();
 
@@ -251,15 +251,14 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this.sub.get_children().map(child => child.destroy());
 
         for (let i = 0, len = this.model.get_n_items(); i < len; i++) {
-            let info = getItemInfo(this.model, i);
+            const info = getItemInfo(this.model, i);
             let item;
 
             // A regular item
-            if (info.hasOwnProperty('label')) {
+            if (info.hasOwnProperty('label'))
                 item = this._addGMenuItem(info);
-            }
 
-            for (let link of info.links) {
+            for (const link of info.links) {
                 // Submenu
                 if (link.name === 'submenu') {
                     this._addGMenuSubmenu(link.value, item);
@@ -269,9 +268,8 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
                     this._addGMenuSection(link.value);
 
                     // len is length starting at 1
-                    if (i + 1 < len) {
+                    if (i + 1 < len)
                         this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-                    }
                 }
             }
         }
@@ -279,9 +277,10 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         // If this is a submenu of another item...
         if (this.submenu_for) {
             // Prepend an "<= Go Back" item, bold with a unicode arrow
-            let prev = new PopupMenu.PopupMenuItem(this.submenu_for.label.text);
+            const prev = new PopupMenu.PopupMenuItem(this.submenu_for.label.text);
             prev.label.style = 'font-weight: bold;';
-            prev._ornamentLabel.text = '\u25C2';
+            const prevArrow = PopupMenu.arrowIcon(St.Side.LEFT);
+            prev.replace_child(prev._ornamentLabel, prevArrow);
             this.addMenuItem(prev, 0);
 
             // Modify the ::activate callback to close the submenu
@@ -309,8 +308,8 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
     set submenu(submenu) {
         // Get the current allocation to hold the menu width
-        let allocation = this.actor.allocation;
-        let width = Math.max(0, allocation.x2 - allocation.x1);
+        const allocation = this.actor.allocation;
+        const width = Math.max(0, allocation.x2 - allocation.x1);
 
         // Prepare the appropriate child for tweening
         if (submenu) {
@@ -378,38 +377,37 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
  * A St.Button subclass for iconic GMenu items
  */
 var IconButton = GObject.registerClass({
-    GTypeName: 'ZorinConnectShellIconButton'
+    GTypeName: 'ZorinConnectShellIconButton',
 }, class Button extends St.Button {
 
     _init(params) {
         super._init({
-            style_class: 'system-menu-action zorin-connect-icon-button',
-            can_focus: true
+            style_class: 'zorin-connect-icon-button',
+            can_focus: true,
         });
         Object.assign(this, params);
 
         // Item attributes
-        if (params.info.hasOwnProperty('action')) {
+        if (params.info.hasOwnProperty('action'))
             this.action_name = params.info.action.split('.')[1];
-        }
 
-        if (params.info.hasOwnProperty('target')) {
+        if (params.info.hasOwnProperty('target'))
             this.action_target = params.info.target;
-        }
 
         if (params.info.hasOwnProperty('label')) {
             this.tooltip = new Tooltip.Tooltip({
                 parent: this,
-                markup: params.info.label
+                markup: params.info.label,
             });
+
+            this.accessible_name = params.info.label;
         }
 
-        if (params.info.hasOwnProperty('icon')) {
+        if (params.info.hasOwnProperty('icon'))
             this.child = new St.Icon({gicon: params.info.icon});
-        }
 
         // Submenu
-        for (let link of params.info.links) {
+        for (const link of params.info.links) {
             if (link.name === 'submenu') {
                 this.add_accessible_state(Atk.StateType.EXPANDABLE);
                 this.toggle_mode = true;
@@ -417,15 +415,14 @@ var IconButton = GObject.registerClass({
 
                 this.submenu = new ListBox({
                     model: link.value,
-                    action_group: this.action_group
+                    action_group: this.action_group,
+                    _parent: this._parent,
                 });
 
                 this.submenu.actor.style_class = 'popup-sub-menu';
                 this.submenu.actor.visible = false;
             }
         }
-
-        this.connect('clicked', this._onClicked);
     }
 
     // This is (reliably?) emitted before ::clicked
@@ -440,23 +437,23 @@ var IconButton = GObject.registerClass({
     }
 
     // This is (reliably?) emitted after notify::checked
-    _onClicked(button, clicked_button) {
-        // Unless this has submenu activate the action and close
-        if (!button.toggle_mode) {
-            button._parent._getTopMenu().close();
+    vfunc_clicked(clicked_button) {
+        // Unless this has a submenu, activate the action and close the menu
+        if (!this.toggle_mode) {
+            this._parent._getTopMenu().close();
 
-            button.action_group.activate_action(
-                button.action_name,
-                button.action_target
+            this.action_group.activate_action(
+                this.action_name,
+                this.action_target
             );
 
         // StButton.checked has already been toggled so we're opening
-        } else if (button.checked) {
-            button._parent.submenu = button.submenu;
+        } else if (this.checked) {
+            this._parent.submenu = this.submenu;
 
         // If this is the active submenu being closed, animate-close it
-        } else if (button._parent.submenu === button.submenu) {
-            button._parent.submenu = null;
+        } else if (this._parent.submenu === this.submenu) {
+            this._parent.submenu = null;
         }
     }
 });
@@ -471,7 +468,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         // Main Actor
         this.actor = new St.BoxLayout({
             vertical: true,
-            x_expand: true
+            x_expand: true,
         });
         this.actor._delegate = this;
 
@@ -484,9 +481,8 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         // Submenu Container
         this.sub = new St.BoxLayout({
             clip_to_allocation: true,
-            style_class: 'popup-sub-menu',
             vertical: true,
-            x_expand: true
+            x_expand: true,
         });
         this.sub.connect('transitions-completed', this._onTransitionsCompleted);
         this.sub._delegate = this;
@@ -538,7 +534,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
 
     set submenu(submenu) {
         if (submenu) {
-            for (let button of this.box.get_children()) {
+            for (const button of this.box.get_children()) {
                 if (button.submenu && this._submenu && button.submenu !== submenu) {
                     button.checked = false;
                     button.submenu.actor.hide();
@@ -553,7 +549,7 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         this.sub.set_easing_duration(250);
         this.sub.set_easing_mode(Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
 
-        this.sub.set_height(submenu ? -1 : 0);
+        this.sub.set_height(submenu ? submenu.actor.get_preferred_size()[1] : 0);
         this.sub.restore_easing_state();
 
         this._submenu = submenu;
@@ -562,26 +558,31 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
     _onMapped(actor) {
         if (!actor.mapped) {
             this._submenu = null;
-            this.box.get_children().map(button => button.checked = false);
-            this.sub.get_children().map(submenu => submenu.hide());
+
+            for (const button of this.box.get_children())
+                button.checked = false;
+
+            for (const submenu of this.sub.get_children())
+                submenu.hide();
         }
     }
 
     _onActionChanged(group, name, enabled) {
-        let menuItem = this._menu_items.get(name);
+        const menuItem = this._menu_items.get(name);
 
-        if (menuItem !== undefined) {
+        if (menuItem !== undefined)
             menuItem.visible = group.get_action_enabled(name);
-        }
     }
 
     _onItemsChanged(model, position, removed, added) {
         // Remove items
         while (removed > 0) {
-            let button = this.box.get_child_at_index(position);
-            let action_name = button.action_name;
-            
-            (button.submenu) ? button.submenu.destroy() : null;
+            const button = this.box.get_child_at_index(position);
+            const action_name = button.action_name;
+
+            if (button.submenu)
+                button.submenu.destroy();
+
             button.destroy();
 
             this._menu_items.delete(action_name);
@@ -590,16 +591,16 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
 
         // Add items
         for (let i = 0; i < added; i++) {
-            let index = position + i;
+            const index = position + i;
 
             // Create an iconic button
-            let button = new IconButton({
+            const button = new IconButton({
                 action_group: this.action_group,
                 info: getItemInfo(model, index),
-                // TODO: Because this doesn't derive from a PopupMenu class
+                // NOTE: Because this doesn't derive from a PopupMenu class
                 //       it lacks some things its parent will expect from it
                 _parent: this,
-                _delegate: null
+                _delegate: null,
             });
 
             // Set the visibility based on the enabled state
@@ -610,14 +611,12 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
             }
 
             // If it has a submenu, add it as a sibling
-            if (button.submenu) {
+            if (button.submenu)
                 this.sub.add_child(button.submenu.actor);
-            }
 
             // Track the item if it has an action
-            if (button.action_name !== undefined) {
+            if (button.action_name !== undefined)
                 this._menu_items.set(button.action_name, button);
-            }
 
             // Insert it in the box at the defined position
             this.box.insert_child_at_index(button, index);
@@ -625,14 +624,16 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
     }
 
     _onTransitionsCompleted(actor) {
-        let menu = actor._delegate;
+        const menu = actor._delegate;
 
-        menu.box.get_children().map(button => {
+        for (const button of menu.box.get_children()) {
             if (button.submenu && button.submenu !== menu.submenu) {
                 button.checked = false;
                 button.submenu.actor.hide();
             }
-        });
+        }
+
+        menu.sub.set_height(-1);
     }
 
     // PopupMenu.PopupMenuBase overrides

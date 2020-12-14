@@ -3,9 +3,12 @@
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GjsPrivate = imports.gi.GjsPrivate;
+const GObject = imports.gi.GObject;
+
+const DBus = imports.service.utils.dbus;
 
 
-let _nodeInfo = Gio.DBusNodeInfo.new_for_xml(`
+const _nodeInfo = Gio.DBusNodeInfo.new_for_xml(`
 <node>
   <interface name="org.freedesktop.Notifications">
     <method name="Notify">
@@ -45,11 +48,22 @@ const GTK_MATCH = "interface='org.gtk.Notifications',member='AddNotification',ty
  * A class for snooping Freedesktop (libnotify) and Gtk (GNotification)
  * notifications and forwarding them to supporting devices.
  */
-var Listener = class Listener {
-    constructor() {
+const Listener = GObject.registerClass({
+    GTypeName: 'ZorinConnectNotificationListener',
+    Signals: {
+        'notification-added': {
+            flags: GObject.SignalFlags.RUN_LAST,
+            param_types: [GLib.Variant.$gtype],
+        },
+    },
+}, class Listener extends GObject.Object {
+
+    _init() {
+        super._init();
+
         // Respect desktop notification settings
         this._settings = new Gio.Settings({
-            schema_id: 'org.gnome.desktop.notifications'
+            schema_id: 'org.gnome.desktop.notifications',
         });
 
         // Watch for new application policies
@@ -57,7 +71,6 @@ var Listener = class Listener {
             'changed::application-children',
             this._onSettingsChanged.bind(this)
         );
-        this._onSettingsChanged();
 
         // Cache for appName->desktop-id lookups
         this._names = {};
@@ -66,14 +79,9 @@ var Listener = class Listener {
         this._init_async();
     }
 
-    get application() {
-        return Gio.Application.get_default();
-    }
-
     get applications() {
-        if (this._applications === undefined) {
-            this._applications = {};
-        }
+        if (this._applications === undefined)
+            this._onSettingsChanged();
 
         return this._applications;
     }
@@ -84,55 +92,19 @@ var Listener = class Listener {
     _onSettingsChanged() {
         this._applications = {};
 
-        for (let app of this._settings.get_strv('application-children')) {
-            let appSettings = new Gio.Settings({
+        for (const app of this._settings.get_strv('application-children')) {
+            const appSettings = new Gio.Settings({
                 schema_id: 'org.gnome.desktop.notifications.application',
-                path: `/org/gnome/desktop/notifications/application/${app}/`
+                path: `/org/gnome/desktop/notifications/application/${app}/`,
             });
 
-            let appInfo = Gio.DesktopAppInfo.new(
+            const appInfo = Gio.DesktopAppInfo.new(
                 appSettings.get_string('application-id')
             );
 
-            if (appInfo !== null) {
+            if (appInfo !== null)
                 this._applications[appInfo.get_name()] = appSettings;
-            }
         }
-    }
-
-    /**
-     * Setup a dedicated DBus connection for monitoring
-     */
-    _newConnection() {
-        return new Promise((resolve, reject) => {
-            Gio.DBusConnection.new_for_address(
-                Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION, null),
-                Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT |
-                Gio.DBusConnectionFlags.MESSAGE_BUS_CONNECTION,
-                null,
-                null,
-                (connection, res) => {
-                    try {
-                        resolve(Gio.DBusConnection.new_for_address_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-
-        });
-    }
-
-    _getConnection(type = Gio.BusType.SESSION) {
-        return new Promise((resolve, reject) => {
-            Gio.bus_get(type, null, (connection, res) => {
-                try {
-                    resolve(Gio.bus_get_finish(res));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
     }
 
     _listNames() {
@@ -150,7 +122,7 @@ var Listener = class Listener {
                 (connection, res) => {
                     try {
                         res = connection.call_finish(res);
-                        resolve(res.deep_unpack()[0]);
+                        resolve(res.deepUnpack()[0]);
                     } catch (e) {
                         reject(e);
                     }
@@ -174,7 +146,7 @@ var Listener = class Listener {
                 (connection, res) => {
                     try {
                         res = connection.call_finish(res);
-                        resolve(res.deep_unpack()[0]);
+                        resolve(res.deepUnpack()[0]);
                     } catch (e) {
                         reject(e);
                     }
@@ -188,39 +160,37 @@ var Listener = class Listener {
      *
      * @param {string} sender - A DBus unique name (eg. :1.2282)
      * @param {string} appName - @appName passed to Notify() (Optional)
-     * @return {string} - A well-known name or %null
+     * @return {string} A well-known name or %null
      */
     async _getAppId(sender, appName) {
         try {
             // Get a list of well-known names, ignoring @sender
-            let names = await this._listNames();
+            const names = await this._listNames();
             names.splice(names.indexOf(sender), 1);
 
             // Make a short list for substring matches (fractal/org.gnome.Fractal)
-            let appLower = appName.toLowerCase();
+            const appLower = appName.toLowerCase();
 
-            let shortList = names.filter(name => {
+            const shortList = names.filter(name => {
                 return name.toLowerCase().includes(appLower);
             });
 
             // Run the short list first
-            for (let name of shortList) {
-                let nameOwner = await this._getNameOwner(name);
+            for (const name of shortList) {
+                const nameOwner = await this._getNameOwner(name);
 
-                if (nameOwner === sender) {
+                if (nameOwner === sender)
                     return name;
-                }
 
                 names.splice(names.indexOf(name), 1);
             }
 
             // Run the full list
-            for (let name of names) {
-                let nameOwner = await this._getNameOwner(name);
+            for (const name of names) {
+                const nameOwner = await this._getNameOwner(name);
 
-                if (nameOwner === sender) {
+                if (nameOwner === sender)
                     return name;
-                }
             }
 
             return null;
@@ -234,20 +204,17 @@ var Listener = class Listener {
      * Try and find the application name for @sender
      *
      * @param {string} sender - A DBus unique name
-     * @param {string} appName - (Optional) appName supplied by Notify()
-     * @return {string} - A well-known name or %null
+     * @param {string} [appName] - `appName` supplied by Notify()
+     * @return {string} A well-known name or %null
      */
-    async _getAppName(sender, appName) {
+    async _getAppName(sender, appName = null) {
         // Check the cache first
-        if (appName && this._names.hasOwnProperty(appName)) {
+        if (appName && this._names.hasOwnProperty(appName))
             return this._names[appName];
-        }
-
-        let appId, appInfo;
 
         try {
-            appId = await this._getAppId(sender, appName);
-            appInfo = Gio.DesktopAppInfo.new(`${appId}.desktop`);
+            const appId = await this._getAppId(sender, appName);
+            const appInfo = Gio.DesktopAppInfo.new(`${appId}.desktop`);
             this._names[appName] = appInfo.get_name();
             appName = appInfo.get_name();
         } catch (e) {
@@ -259,13 +226,17 @@ var Listener = class Listener {
 
     /**
      * Callback for AddNotification()/Notify()
+     *
+     * @param {DBus.Interface} iface - The DBus interface
+     * @param {string} name - The DBus method name
+     * @param {GLib.Variant} parameters - The method parameters
+     * @param {Gio.DBusMethodInvocation} invocation - The method invocation info
      */
-    async _onHandleMethodCall(impl, name, parameters, invocation) {
+    async _onHandleMethodCall(iface, name, parameters, invocation) {
         try {
             // Check if notifications are disabled in desktop settings
-            if (!this._settings.get_boolean('show-banners')) {
+            if (!this._settings.get_boolean('show-banners'))
                 return;
-            }
 
             parameters = parameters.full_unpack();
 
@@ -275,9 +246,19 @@ var Listener = class Listener {
 
             // libnotify
             } else if (name === 'Notify') {
+                const message = invocation.get_message();
+
+                if (this._fdoNameOwner === undefined) {
+                    this._fdoNameOwner = await this._getNameOwner(
+                        'org.freedesktop.Notifications');
+                }
+
+                if (this._fdoNameOwner !== message.get_destination())
+                    return;
+
                 // Try to brute-force an application name using DBus
                 if (!this.applications.hasOwnProperty(parameters[0])) {
-                    let sender = invocation.get_sender();
+                    const sender = message.get_sender();
                     parameters[0] = await this._getAppName(sender, parameters[0]);
                 }
 
@@ -290,12 +271,14 @@ var Listener = class Listener {
 
     /**
      * Export interfaces for proxying notifications and become a monitor
+     *
+     * @return {Promise} A promise for the operation
      */
     _monitorConnection() {
         return new Promise((resolve, reject) => {
             // libnotify Interface
             this._fdoNotifications = new GjsPrivate.DBusImplementation({
-                g_interface_info: FDO_IFACE
+                g_interface_info: FDO_IFACE,
             });
             this._fdoMethodCallId = this._fdoNotifications.connect(
                 'handle-method-call',
@@ -306,9 +289,19 @@ var Listener = class Listener {
                 '/org/freedesktop/Notifications'
             );
 
+            this._fdoNameOwnerChangedId = this._session.signal_subscribe(
+                'org.freedesktop.DBus',
+                'org.freedesktop.DBus',
+                'NameOwnerChanged',
+                '/org/freedesktop/DBus',
+                'org.freedesktop.Notifications',
+                Gio.DBusSignalFlags.MATCH_ARG0_NAMESPACE,
+                this._onFdoNameOwnerChanged.bind(this)
+            );
+
             // GNotification Interface
             this._gtkNotifications = new GjsPrivate.DBusImplementation({
-                g_interface_info: GTK_IFACE
+                g_interface_info: GTK_IFACE,
             });
             this._gtkMethodCallId = this._gtkNotifications.connect(
                 'handle-method-call',
@@ -343,92 +336,84 @@ var Listener = class Listener {
 
     async _init_async() {
         try {
-            this._session = await this._getConnection();
-            this._monitor = await this._newConnection();
+            this._session = await DBus.getConnection();
+            this._monitor = await DBus.newConnection();
             await this._monitorConnection();
         } catch (e) {
-            // FIXME: if something goes wrong the component will appear active
-            logError(e);
-            this.destroy();
+            const service = Gio.Application.get_default();
+
+            if (service !== null)
+                service.notify_error(e);
+            else
+                logError(e);
         }
+    }
+
+    _onFdoNameOwnerChanged(connection, sender, object, iface, signal, parameters) {
+        this._fdoNameOwner = parameters.deepUnpack()[2];
     }
 
     _sendNotification(notif) {
         // Check if this application is disabled in desktop settings
-        let appSettings = this.applications[notif.appName];
+        const appSettings = this.applications[notif.appName];
 
-        if (appSettings && !appSettings.get_boolean('enable')) {
+        if (appSettings && !appSettings.get_boolean('enable'))
             return;
-        }
 
         // Send the notification to each supporting device
-        let variant = GLib.Variant.full_pack(notif);
-
-        for (let device of this.application._devices.values()) {
-            device.activate_action('sendNotification', variant);
-        }
+        // TODO: avoid the overhead of the GAction framework with a signal?
+        const variant = GLib.Variant.full_pack(notif);
+        this.emit('notification-added', variant);
     }
 
     Notify(appName, replacesId, iconName, summary, body, actions, hints, timeout) {
-        try {
-            // Ignore notifications without an appName
-            if (!appName) {
-                return;
-            }
+        // Ignore notifications without an appName
+        if (!appName)
+            return;
 
-            this._sendNotification({
-                appName: appName,
-                id: `fdo|null|${replacesId}`,
-                title: summary,
-                text: body,
-                ticker: `${summary}: ${body}`,
-                isClearable: (replacesId !== 0),
-                icon: iconName
-            });
-        } catch (e) {
-            debug(e);
-        }
+        this._sendNotification({
+            appName: appName,
+            id: `fdo|null|${replacesId}`,
+            title: summary,
+            text: body,
+            ticker: `${summary}: ${body}`,
+            isClearable: (replacesId !== 0),
+            icon: iconName,
+        });
     }
 
     AddNotification(application, id, notification) {
-        try {
-            // Ignore our own GNotifications
-            if (application === 'org.gnome.Shell.Extensions.ZorinConnect') {
-                return;
-            }
+        // Ignore our own notifications or we'll cause a notification loop
+        if (application === 'org.gnome.Shell.Extensions.ZorinConnect')
+            return;
 
-            let appInfo = Gio.DesktopAppInfo.new(`${application}.desktop`);
+        const appInfo = Gio.DesktopAppInfo.new(`${application}.desktop`);
 
-            // Try to get an icon for the notification
-            if (!notification.hasOwnProperty('icon')) {
-                notification.icon = appInfo.get_icon() || undefined;
-            }
+        // Try to get an icon for the notification
+        if (!notification.hasOwnProperty('icon'))
+            notification.icon = appInfo.get_icon() || undefined;
 
-            this._sendNotification({
-                appName: appInfo.get_name(),
-                id: `gtk|${application}|${id}`,
-                title: notification.title,
-                text: notification.body,
-                ticker: `${notification.title}: ${notification.body}`,
-                isClearable: true,
-                icon: notification.icon
-            });
-        } catch (e) {
-            debug(e);
-        }
+        this._sendNotification({
+            appName: appInfo.get_name(),
+            id: `gtk|${application}|${id}`,
+            title: notification.title,
+            text: notification.body,
+            ticker: `${notification.title}: ${notification.body}`,
+            isClearable: true,
+            icon: notification.icon,
+        });
     }
 
     destroy() {
         try {
             if (this._fdoNotifications) {
                 this._fdoNotifications.disconnect(this._fdoMethodCallId);
-                this._fdoNotifications.flush();
                 this._fdoNotifications.unexport();
+                this._session.signal_unsubscribe(this._fdoNameOwnerChangedId);
             }
 
             if (this._gtkNotifications) {
                 this._gtkNotifications.disconnect(this._gtkMethodCallId);
-                this._gtkNotifications.flush();
                 this._gtkNotifications.unexport();
             }
 
@@ -438,12 +423,14 @@ var Listener = class Listener {
             }
 
             // TODO: Gio.IOErrorEnum: The connection is closed
-            //this._monitor.close_sync(null);
+            // this._monitor.close_sync(null);
+
+            GObject.signal_handlers_destroy(this);
         } catch (e) {
             debug(e);
         }
     }
-};
+});
 
 
 /**

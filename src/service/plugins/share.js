@@ -6,7 +6,8 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-const PluginsBase = imports.service.plugins.base;
+const PluginBase = imports.service.plugin;
+const URI = imports.service.utils.uri;
 
 
 var Metadata = {
@@ -21,7 +22,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: [],
-            outgoing: ['kdeconnect.share.request']
+            outgoing: ['kdeconnect.share.request'],
         },
         shareFile: {
             label: _('Share File'),
@@ -29,7 +30,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('(sb)'),
             incoming: [],
-            outgoing: ['kdeconnect.share.request']
+            outgoing: ['kdeconnect.share.request'],
         },
         shareText: {
             label: _('Share Text'),
@@ -37,7 +38,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.share.request']
+            outgoing: ['kdeconnect.share.request'],
         },
         shareUri: {
             label: _('Share Link'),
@@ -45,9 +46,9 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.share.request']
-        }
-    }
+            outgoing: ['kdeconnect.share.request'],
+        },
+    },
 };
 
 
@@ -60,56 +61,66 @@ var Metadata = {
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'ZorinConnectSharePlugin',
-}, class Plugin extends PluginsBase.Plugin {
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'share');
+    }
+
+    handlePacket(packet) {
+        // TODO: composite jobs (lastModified, numberOfFiles, totalPayloadSize)
+        if (packet.body.hasOwnProperty('filename')) {
+            if (this.settings.get_boolean('receive-files'))
+                this._handleFile(packet);
+            else
+                this._refuseFile(packet);
+        } else if (packet.body.hasOwnProperty('text')) {
+            this._handleText(packet);
+        } else if (packet.body.hasOwnProperty('url')) {
+            this._handleUri(packet);
+        }
     }
 
     _ensureReceiveDirectory() {
         let receiveDir = this.settings.get_string('receive-directory');
 
         // Ensure a directory is set
-        if (!receiveDir) {
+        if (receiveDir.length === 0) {
             receiveDir = GLib.get_user_special_dir(
                 GLib.UserDirectory.DIRECTORY_DOWNLOAD
             );
 
             // Fallback to ~/Downloads
-            let homeDir = GLib.get_home_dir();
+            const homeDir = GLib.get_home_dir();
 
-            if (!receiveDir || receiveDir === homeDir) {
+            if (!receiveDir || receiveDir === homeDir)
                 receiveDir = GLib.build_filenamev([homeDir, 'Downloads']);
-            }
 
             this.settings.set_string('receive-directory', receiveDir);
         }
 
         // Ensure the directory exists
-        if (!GLib.file_test(receiveDir, GLib.FileTest.IS_DIR)) {
+        if (!GLib.file_test(receiveDir, GLib.FileTest.IS_DIR))
             GLib.mkdir_with_parents(receiveDir, 448);
-        }
 
         return receiveDir;
     }
 
     _getFile(filename) {
-        let dirpath = this._ensureReceiveDirectory();
-        let basepath = GLib.build_filenamev([dirpath, filename]);
+        const dirpath = this._ensureReceiveDirectory();
+        const basepath = GLib.build_filenamev([dirpath, filename]);
         let filepath = basepath;
         let copyNum = 0;
 
-        while (GLib.file_test(filepath, GLib.FileTest.EXISTS)) {
-            copyNum += 1;
-            filepath = `${basepath} (${copyNum})`;
-        }
+        while (GLib.file_test(filepath, GLib.FileTest.EXISTS))
+            filepath = `${basepath} (${++copyNum})`;
 
         return Gio.File.new_for_path(filepath);
     }
 
-    async _refuseFile(packet) {
+    _refuseFile(packet) {
         try {
-            await this.device.rejectTransfer(packet);
+            this.device.rejectTransfer(packet);
 
             this.device.showNotification({
                 id: `${Date.now()}`,
@@ -118,35 +129,21 @@ var Plugin = GObject.registerClass({
                 body: _('%s is not allowed to upload files').format(
                     this.device.name
                 ),
-                icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'})
+                icon: new Gio.ThemedIcon({name: 'dialog-error-symbolic'}),
             });
         } catch (e) {
-            logError(e, this.device.name);
+            debug(e, this.device.name);
         }
     }
 
     async _handleFile(packet) {
-        let file, stream, success, transfer;
-        let title, body, iconName;
-        let buttons = [];
-
         try {
-            file = this._getFile(packet.body.filename);
+            const file = this._getFile(packet.body.filename);
 
-            stream = await new Promise((resolve, reject) => {
-                file.replace_async(null, false, 0, 0, null, (file, res) => {
-                    try {
-                        resolve(file.replace_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
+            // Create the transfer
+            const transfer = this.device.createTransfer();
 
-            transfer = this.device.createTransfer(Object.assign({
-                output_stream: stream,
-                size: packet.payloadSize
-            }, packet.payloadTransferInfo));
+            transfer.addFile(packet, file);
 
             // Notify that we're about to start the transfer
             this.device.showNotification({
@@ -160,24 +157,18 @@ var Plugin = GObject.registerClass({
                 buttons: [{
                     label: _('Cancel'),
                     action: 'cancelTransfer',
-                    parameter: new GLib.Variant('s', transfer.uuid)
+                    parameter: new GLib.Variant('s', transfer.uuid),
                 }],
-                icon: new Gio.ThemedIcon({name: 'document-save-symbolic'})
+                icon: new Gio.ThemedIcon({name: 'document-save-symbolic'}),
             });
 
-            // Start transfer
-            success = await transfer.download();
-            this.device.hideNotification(transfer.uuid);
-
-            // We've been asked to open this directly
-            if (success && packet.body.open) {
-                let uri = file.get_uri();
-                Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
-                return;
-            }
-
             // We'll show a notification (success or failure)
-            if (success) {
+            let title, body, iconName;
+            let buttons = [];
+
+            try {
+                await transfer.start();
+
                 title = _('Transfer Successful');
                 // TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
                 body = _('Received “%s” from %s').format(
@@ -188,16 +179,21 @@ var Plugin = GObject.registerClass({
                     {
                         label: _('Open Folder'),
                         action: 'openPath',
-                        parameter: new GLib.Variant('s', file.get_parent().get_uri())
+                        parameter: new GLib.Variant('s', file.get_parent().get_uri()),
                     },
                     {
                         label: _('Open File'),
                         action: 'openPath',
-                        parameter: new GLib.Variant('s', file.get_uri())
-                    }
+                        parameter: new GLib.Variant('s', file.get_uri()),
+                    },
                 ];
                 iconName = 'document-save-symbolic';
-            } else {
+
+                if (packet.body.open) {
+                    const uri = file.get_uri();
+                    Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
+                }
+            } catch (e) {
                 title = _('Transfer Failed');
                 // TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
                 body = _('Failed to receive “%s” from %s').format(
@@ -207,15 +203,16 @@ var Plugin = GObject.registerClass({
                 iconName = 'dialog-warning-symbolic';
 
                 // Clean up the downloaded file on failure
-                file.delete(null);
+                file.delete_async(GLib.PRIORITY_DEAFAULT, null, null);
             }
 
+            this.device.hideNotification(transfer.uuid);
             this.device.showNotification({
                 id: transfer.uuid,
                 title: title,
                 body: body,
                 buttons: buttons,
-                icon: new Gio.ThemedIcon({name: iconName})
+                icon: new Gio.ThemedIcon({name: iconName}),
             });
         } catch (e) {
             logError(e, this.device.name);
@@ -223,15 +220,16 @@ var Plugin = GObject.registerClass({
     }
 
     _handleUri(packet) {
-        let uri = packet.body.url;
+        const uri = packet.body.url;
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
     }
 
     _handleText(packet) {
-        let dialog = new Gtk.MessageDialog({
+        const dialog = new Gtk.MessageDialog({
             text: _('Text Shared By %s').format(this.device.name),
-            secondary_text: packet.body.text,
-            buttons: Gtk.ButtonsType.CLOSE
+            secondary_text: URI.linkify(packet.body.text),
+            secondary_use_markup: true,
+            buttons: Gtk.ButtonsType.CLOSE,
         });
         dialog.message_area.get_children()[1].selectable = true;
         dialog.set_keep_above(true);
@@ -240,27 +238,10 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Packet dispatch
-     */
-    handlePacket(packet) {
-        if (packet.body.hasOwnProperty('filename')) {
-            if (this.settings.get_boolean('receive-files')) {
-                this._handleFile(packet);
-            } else {
-                this._refuseFile(packet);
-            }
-        } else if (packet.body.hasOwnProperty('text')) {
-            this._handleText(packet);
-        } else if (packet.body.hasOwnProperty('url')) {
-            this._handleUri(packet);
-        }
-    }
-
-    /**
-     * Remote methods
+     * Open the file chooser dialog for selecting a file or inputing a URI.
      */
     share() {
-        let dialog = new FileChooserDialog(this.device);
+        const dialog = new FileChooserDialog(this.device);
         dialog.show();
     }
 
@@ -271,30 +252,24 @@ var Plugin = GObject.registerClass({
      * @param {boolean} open - Whether the file should be opened after transfer
      */
     async shareFile(path, open = false) {
-        let file, stream, success, transfer;
-        let title, body, iconName;
-
         try {
-            if (path.includes('://')) {
+            let file = null;
+
+            if (path.includes('://'))
                 file = Gio.File.new_for_uri(path);
-            } else {
+            else
                 file = Gio.File.new_for_path(path);
-            }
 
-            stream = await new Promise((resolve, reject) => {
-                file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
-                    try {
-                        resolve(file.read_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
+            // Create the transfer
+            const transfer = this.device.createTransfer();
 
-            transfer = this.device.createTransfer({
-                input_stream: stream,
-                size: file.query_info('standard::size', 0, null).get_size()
-            });
+            transfer.addFile({
+                type: 'kdeconnect.share.request',
+                body: {
+                    filename: file.get_basename(),
+                    open: open,
+                },
+            }, file);
 
             // Notify that we're about to start the transfer
             this.device.showNotification({
@@ -308,20 +283,17 @@ var Plugin = GObject.registerClass({
                 buttons: [{
                     label: _('Cancel'),
                     action: 'cancelTransfer',
-                    parameter: new GLib.Variant('s', transfer.uuid)
+                    parameter: new GLib.Variant('s', transfer.uuid),
                 }],
-                icon: new Gio.ThemedIcon({name: 'document-send-symbolic'})
+                icon: new Gio.ThemedIcon({name: 'document-send-symbolic'}),
             });
 
-            success = await transfer.upload({
-                type: 'kdeconnect.share.request',
-                body: {
-                    filename: file.get_basename(),
-                    open: open
-                }
-            });
+            // We'll show a notification (success or failure)
+            let title, body, iconName;
 
-            if (success) {
+            try {
+                await transfer.start();
+
                 title = _('Transfer Successful');
                 // TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
                 body = _('Sent “%s” to %s').format(
@@ -329,7 +301,9 @@ var Plugin = GObject.registerClass({
                     this.device.name
                 );
                 iconName = 'document-send-symbolic';
-            } else {
+            } catch (e) {
+                debug(e, this.device.name);
+
                 title = _('Transfer Failed');
                 // TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
                 body = _('Failed to send “%s” to %s').format(
@@ -344,7 +318,7 @@ var Plugin = GObject.registerClass({
                 id: transfer.uuid,
                 title: title,
                 body: body,
-                icon: new Gio.ThemedIcon({name: iconName})
+                icon: new Gio.ThemedIcon({name: iconName}),
             });
         } catch (e) {
             debug(e, this.device.name);
@@ -359,35 +333,24 @@ var Plugin = GObject.registerClass({
     shareText(text) {
         this.device.sendPacket({
             type: 'kdeconnect.share.request',
-            body: {text: text}
+            body: {text: text},
         });
     }
 
     /**
      * Share a URI. Generally the remote device opens it with the scheme default
      *
-     * @param {string} uri - Currently http(s) and tel: URIs are supported
+     * @param {string} uri - A URI to share
      */
     shareUri(uri) {
-        switch (true) {
-            // Currently only pass http(s)/tel URIs
-            case uri.startsWith('http://'):
-            case uri.startsWith('https://'):
-            case uri.startsWith('tel:'):
-                break;
-
-            // Redirect local file URIs
-            case uri.startsWith('file://'):
-                return this.sendFile(uri);
-
-            // Assume HTTPS
-            default:
-                uri = `https://${uri}`;
+        if (GLib.uri_parse_scheme(uri) === 'file') {
+            this.shareFile(uri);
+            return;
         }
 
         this.device.sendPacket({
             type: 'kdeconnect.share.request',
-            body: {url: uri}
+            body: {url: uri},
         });
     }
 });
@@ -406,16 +369,16 @@ var FileChooserDialog = GObject.registerClass({
             extra_widget: new Gtk.CheckButton({
                 // TRANSLATORS: Mark the file to be opened once completed
                 label: _('Open when done'),
-                visible: true
+                visible: true,
             }),
-            use_preview_label: false
+            use_preview_label: false,
         });
 
         this.device = device;
 
         // Align checkbox with sidebar
-        let box = this.get_content_area().get_children()[0].get_children()[0];
-        let paned = box.get_children()[0];
+        const box = this.get_content_area().get_children()[0].get_children()[0];
+        const paned = box.get_children()[0];
         paned.bind_property(
             'position',
             this.extra_widget,
@@ -432,7 +395,7 @@ var FileChooserDialog = GObject.registerClass({
         this._uriEntry = new Gtk.Entry({
             placeholder_text: 'https://',
             hexpand: true,
-            visible: true
+            visible: true,
         });
         this._uriEntry.connect('activate', this._sendLink.bind(this));
 
@@ -440,17 +403,17 @@ var FileChooserDialog = GObject.registerClass({
         this._uriButton = new Gtk.ToggleButton({
             image: new Gtk.Image({
                 icon_name: 'web-browser-symbolic',
-                pixel_size: 16
+                pixel_size: 16,
             }),
             valign: Gtk.Align.CENTER,
             // TRANSLATORS: eg. Send a link to Google Pixel
             tooltip_text: _('Send a link to %s').format(device.name),
-            visible: true
+            visible: true,
         });
         this._uriButton.connect('toggled', this._onUriButtonToggled.bind(this));
 
         this.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
-        let sendButton = this.add_button(_('Send'), Gtk.ResponseType.OK);
+        const sendButton = this.add_button(_('Send'), Gtk.ResponseType.OK);
         sendButton.connect('clicked', this._sendLink.bind(this));
 
         this.get_header_bar().pack_end(this._uriButton);
@@ -459,7 +422,7 @@ var FileChooserDialog = GObject.registerClass({
 
     _onUpdatePreview(chooser) {
         try {
-            let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            const pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 chooser.get_preview_filename(),
                 chooser.get_scale_factor() * 128,
                 -1
@@ -474,7 +437,7 @@ var FileChooserDialog = GObject.registerClass({
     }
 
     _onUriButtonToggled(button) {
-        let header = this.get_header_bar();
+        const header = this.get_header_bar();
 
         // Show the URL entry
         if (button.active) {
@@ -494,22 +457,21 @@ var FileChooserDialog = GObject.registerClass({
     }
 
     _sendLink(widget) {
-        if (this._uriButton.active && this._uriEntry.text.length) {
+        if (this._uriButton.active && this._uriEntry.text.length)
             this.response(1);
-        }
     }
 
     vfunc_response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
-            this.get_uris().map(uri => {
-                let parameter = new GLib.Variant(
+            for (const uri of this.get_uris()) {
+                const parameter = new GLib.Variant(
                     '(sb)',
                     [uri, this.extra_widget.active]
                 );
                 this.device.activate_action('shareFile', parameter);
-            });
+            }
         } else if (response_id === 1) {
-            let parameter = new GLib.Variant('s', this._uriEntry.text);
+            const parameter = new GLib.Variant('s', this._uriEntry.text);
             this.device.activate_action('shareUri', parameter);
         }
 

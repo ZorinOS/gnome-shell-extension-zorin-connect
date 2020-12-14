@@ -2,10 +2,6 @@
 
 'use strict';
 
-const Gettext = imports.gettext.domain('org.gnome.Shell.Extensions.ZorinConnect');
-const _ = Gettext.gettext;
-const System = imports.system;
-
 imports.gi.versions.Gdk = '3.0';
 imports.gi.versions.GdkPixbuf = '2.0';
 imports.gi.versions.Gio = '2.0';
@@ -19,38 +15,43 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-// Find the root datadir of the extension
+
+// Bootstrap
 function get_datadir() {
     let m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
     return Gio.File.new_for_path(m[1]).get_parent().get_path();
 }
 
-window.zorin_connect = {extdatadir: get_datadir()};
-imports.searchPath.unshift(zorin_connect.extdatadir);
-imports._zorin_connect;
+imports.searchPath.unshift(get_datadir());
+imports.config.PACKAGE_DATADIR = imports.searchPath[0];
 
-const Remote = imports.shell.remote;
+
+// Local Imports
+const Config = imports.config;
 const Settings = imports.preferences.service;
 
 
+/**
+ * Class representing the Zorin Connect service daemon.
+ */
 const Preferences = GObject.registerClass({
-    GTypeName: 'ZorinConnectPreferences'
+    GTypeName: 'ZorinConnectPreferences',
 }, class Preferences extends Gtk.Application {
 
     _init() {
         super._init({
-            application_id: `${zorin_connect.app_id}.Preferences`
+            application_id: 'org.gnome.Shell.Extensions.ZorinConnect.Preferences',
+            resource_base_path: '/org/gnome/Shell/Extensions/ZorinConnect',
         });
 
-        GLib.set_prgname(_('Zorin Connect Preferences'));
+        GLib.set_prgname('zorin-connect-preferences');
         GLib.set_application_name(_('Zorin Connect Preferences'));
-        this.set_resource_base_path(zorin_connect.app_path);
     }
 
     vfunc_activate() {
         if (this._window === undefined) {
             this._window = new Settings.Window({
-                application: this
+                application: this,
             });
         }
 
@@ -62,7 +63,7 @@ const Preferences = GObject.registerClass({
 
         // Init some resources
         let provider = new Gtk.CssProvider();
-        provider.load_from_resource(zorin_connect.app_path + '/application.css');
+        provider.load_from_resource(`${Config.APP_PATH}/application.css`);
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             provider,
@@ -71,13 +72,13 @@ const Preferences = GObject.registerClass({
 
         let actions = [
             ['refresh', null],
-            ['connect', GLib.VariantType.new('s')]
+            ['connect', GLib.VariantType.new('s')],
         ];
 
         for (let [name, type] of actions) {
             let action = new Gio.SimpleAction({
                 name: name,
-                parameter_type: type
+                parameter_type: type,
             });
             this.add_action(action);
         }
@@ -87,9 +88,8 @@ const Preferences = GObject.registerClass({
         try {
             let paramArray = [];
 
-            if (parameter instanceof GLib.Variant) {
+            if (parameter instanceof GLib.Variant)
                 paramArray[0] = parameter;
-            }
 
             this.get_dbus_connection().call(
                 'org.gnome.Shell.Extensions.ZorinConnect',
@@ -109,4 +109,4 @@ const Preferences = GObject.registerClass({
     }
 });
 
-(new Preferences()).run([System.programInvocationName].concat(ARGV));
+(new Preferences()).run([imports.system.programInvocationName].concat(ARGV));

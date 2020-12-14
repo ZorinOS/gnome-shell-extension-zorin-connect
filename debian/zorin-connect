@@ -1,0 +1,5 @@
+[zorin-connect]
+title=Zorin Connect
+description=Connect your mobile device with your Zorin OS computer
+ports=1716,1739:1764/tcp|1716,1739:1764/udp
+

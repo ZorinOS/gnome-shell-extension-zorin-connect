@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Zorin Connect Preferences
+Exec=gapplication action org.gnome.Shell.Extensions.ZorinConnect preferences
+Terminal=false
+NoDisplay=true
+Icon=org.gnome.Shell.Extensions.ZorinConnect
+Categories=Network;
+

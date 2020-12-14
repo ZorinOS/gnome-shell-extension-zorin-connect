@@ -2,11 +2,11 @@
 
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-const PluginsBase = imports.service.plugins.base;
+const Components = imports.service.components;
+const PluginBase = imports.service.plugin;
 
 
 var Metadata = {
@@ -21,29 +21,33 @@ var Metadata = {
 
             parameter_type: null,
             incoming: [],
-            outgoing: ['kdeconnect.findmyphone.request']
-        }
-    }
+            outgoing: ['kdeconnect.findmyphone.request'],
+        },
+    },
 };
 
 
 /**
  * FindMyPhone Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/findmyphone
- *
- * TODO: cancel incoming requests on disconnect?
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'ZorinConnectFindMyPhonePlugin',
-}, class Plugin extends PluginsBase.Plugin {
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'findmyphone');
+
+        this._dialog = null;
+        this._player = Components.acquire('sound');
+        this._mixer = Components.acquire('pulseaudio');
     }
 
     handlePacket(packet) {
-        if (packet.type === 'kdeconnect.findmyphone.request') {
-            this._handleRequest();
+        switch (packet.type) {
+            case 'kdeconnect.findmyphone.request':
+                this._handleRequest();
+                break;
         }
     }
 
@@ -53,48 +57,63 @@ var Plugin = GObject.registerClass({
     _handleRequest() {
         try {
             // If this is a second request, stop announcing and return
-            if (this._dialog) {
+            if (this._dialog !== null) {
                 this._dialog.response(Gtk.ResponseType.DELETE_EVENT);
                 return;
             }
 
-            this._dialog = new Dialog(this.device.name);
-            this._dialog.connect('response', () => this._dialog = null);
+            this._dialog = new Dialog({
+                device: this.device,
+                plugin: this,
+            });
+
+            this._dialog.connect('response', () => {
+                this._dialog = null;
+            });
         } catch (e) {
             this._cancelRequest();
             logError(e, this.device.name);
         }
     }
 
+    /**
+     * Cancel any ongoing ringing and destroy the dialog.
+     */
     _cancelRequest() {
-        if (this._dialog) {
+        if (this._dialog !== null)
             this._dialog.response(Gtk.ResponseType.DELETE_EVENT);
-        }
     }
 
     /**
-     * Request the remote device announce it's location
+     * Request that the remote device announce it's location
      */
     ring() {
         this.device.sendPacket({
             type: 'kdeconnect.findmyphone.request',
-            body: {}
+            body: {},
         });
     }
 
     destroy() {
         this._cancelRequest();
+
+        if (this._mixer !== undefined)
+            this._mixer = Components.release('pulseaudio');
+
+        if (this._player !== undefined)
+            this._player = Components.release('sound');
+
         super.destroy();
     }
 });
 
 
-/**
+/*
  * Used to ensure 'audible-bell' is enabled for fallback
  */
-const WM_SETTINGS = new Gio.Settings({
+const _WM_SETTINGS = new Gio.Settings({
     schema_id: 'org.gnome.desktop.wm.preferences',
-    path: '/org/gnome/desktop/wm/preferences/'
+    path: '/org/gnome/desktop/wm/preferences/',
 });
 
 
@@ -102,11 +121,28 @@ const WM_SETTINGS = new Gio.Settings({
  * A custom GtkMessageDialog for alerting of incoming requests
  */
 const Dialog = GObject.registerClass({
-    GTypeName: 'ZorinConnectFindMyPhoneDialog'
+    GTypeName: 'ZorinConnectFindMyPhoneDialog',
+    Properties: {
+        'device': GObject.ParamSpec.object(
+            'device',
+            'Device',
+            'The device associated with this window',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object
+        ),
+        'plugin': GObject.ParamSpec.object(
+            'plugin',
+            'Plugin',
+            'The plugin providing messages',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object
+        ),
+    },
 }, class Dialog extends Gtk.MessageDialog {
-    _init(name) {
+    _init(params) {
         super._init({
             buttons: Gtk.ButtonsType.CLOSE,
+            device: params.device,
             image: new Gtk.Image({
                 icon_name: 'phonelink-ring-symbolic',
                 pixel_size: 512,
@@ -114,21 +150,19 @@ const Dialog = GObject.registerClass({
                 hexpand: true,
                 valign: Gtk.Align.CENTER,
                 vexpand: true,
-                visible: true
+                visible: true,
             }),
-            urgency_hint: true
+            plugin: params.plugin,
+            urgency_hint: true,
         });
 
         this.set_keep_above(true);
         this.maximize();
         this.message_area.destroy();
 
-        // If the mixer is available start fading the volume up
-        let service = Gio.Application.get_default();
-        let mixer = service.components.get('pulseaudio');
-
-        if (mixer) {
-            this._stream = mixer.output;
+        // If an output stream is available start fading the volume up
+        if (this.plugin._mixer && this.plugin._mixer.output) {
+            this._stream = this.plugin._mixer.output;
 
             this._previousMuted = this._stream.muted;
             this._previousVolume = this._stream.volume;
@@ -138,16 +172,13 @@ const Dialog = GObject.registerClass({
 
         // Otherwise ensure audible-bell is enabled
         } else {
-            this._previousBell = WM_SETTINGS.get_boolean('audible-bell');
-            WM_SETTINGS.set_boolean('audible-bell', true);
+            this._previousBell = _WM_SETTINGS.get_boolean('audible-bell');
+            _WM_SETTINGS.set_boolean('audible-bell', true);
         }
 
         // Start the alarm
-        let sound = service.components.get('sound');
-
-        if (sound !== undefined) {
-            sound.loopSound('phone-incoming-call', this.cancellable);
-        }
+        if (this.plugin._player !== undefined)
+            this.plugin._player.loopSound('phone-incoming-call', this.cancellable);
 
         // Show the dialog
         this.show_all();
@@ -176,18 +207,39 @@ const Dialog = GObject.registerClass({
 
         // Restore the audible-bell
         } else {
-            WM_SETTINGS.set_boolean('audible-bell', this._previousBell);
+            _WM_SETTINGS.set_boolean('audible-bell', this._previousBell);
         }
 
         this.destroy();
     }
 
     get cancellable() {
-        if (this._cancellable === undefined) {
+        if (this._cancellable === undefined)
             this._cancellable = new Gio.Cancellable();
-        }
 
         return this._cancellable;
+    }
+
+    get device() {
+        if (this._device === undefined)
+            this._device = null;
+
+        return this._device;
+    }
+
+    set device(device) {
+        this._device = device;
+    }
+
+    get plugin() {
+        if (this._plugin === undefined)
+            this._plugin = null;
+
+        return this._plugin;
+    }
+
+    set plugin(plugin) {
+        this._plugin = plugin;
     }
 });
 

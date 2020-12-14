@@ -1,3 +1,8 @@
+subdir('firewalld')
+subdir('metainfo')
+subdir('webextension')
+
+
 # metadata.json
 configure_file(
   input: 'metadata.json.in',
@@ -6,11 +11,26 @@ configure_file(
   install_dir: extdatadir
 )
 
+# config.js
+configure_file(
+  input: 'config.js.in',
+  output: 'config.js',
+  configuration: extconfig,
+  install_dir: extdatadir
+)
+
 
 # Desktop Entry
 desktop_file = configure_file(
-  input: 'org.gnome.Shell.Extensions.ZorinConnect.desktop',
-  output: 'org.gnome.Shell.Extensions.ZorinConnect.desktop',
+  input: app_id + '.desktop.in',
+  output: app_id + '.desktop',
+  configuration: extconfig,
+  install_dir: join_paths(datadir, 'applications')
+)
+
+desktop_prefs_file = configure_file(
+  input: app_id + '.Preferences.desktop.in',
+  output: app_id + '.Preferences.desktop',
   configuration: extconfig,
   install_dir: join_paths(datadir, 'applications')
 )
@@ -19,15 +39,20 @@ desktop_utils = find_program('desktop-file-validate', required: false)
 
 if desktop_utils.found()
   test('Validate desktop file', desktop_utils,
-    args: [desktop_file]
+    args: [desktop_file],
+    suite: 'data',
+  )
+  test('Validate desktop file (Preferences)', desktop_utils,
+    args: [desktop_prefs_file],
+    suite: 'data',
   )
 endif
 
 
 # Application Icon
 install_data([
-  'icons/org.gnome.Shell.Extensions.ZorinConnect.svg',
-  'icons/org.gnome.Shell.Extensions.ZorinConnect-symbolic.svg'],
+  join_paths('icons', app_id + '.svg'),
+  join_paths('icons', app_id + '-symbolic.svg')],
   install_dir: join_paths(datadir, 'icons', 'hicolor', 'scalable', 'apps')
 )
 
@@ -43,82 +68,32 @@ else
   dbus_dir = join_paths(datadir, 'dbus-1', 'services')
 endif
 
-configure_file(
-  input: 'org.gnome.Shell.Extensions.ZorinConnect.service',
-  output: 'org.gnome.Shell.Extensions.ZorinConnect.service',
+dbus_service_file = configure_file(
+  input: app_id + '.service.in',
+  output: app_id + '.service',
   configuration: extconfig,
   install_dir: dbus_dir
 )
 
 
-# WebExtension Manifests
-if get_option('webextension')
-  nmh_manifest = 'org.gnome.shell.extensions.zorin_connect.json'
-
-  # Chrome
-  if get_option('chrome_nmhdir') != ''
-    chrome_nmhdir = get_option('chrome_nmhdir')
-  else
-    chrome_nmhdir = join_paths(sysconfdir, 'opt', 'chrome', 'native-messaging-hosts')
-  endif
-
-  chrome_nmh = configure_file(
-    input: 'org.gnome.shell.extensions.zorin_connect.json-chrome',
-    output: 'org.gnome.shell.extensions.zorin_connect.json-chrome',
-    configuration: extconfig
-  )
-
-  install_data(
-    chrome_nmh,
-    rename: join_paths(chrome_nmhdir, nmh_manifest)
-  )
-
-  # Chromium
-  if get_option('chromium_nmhdir') != ''
-    chromium_nmhdir = get_option('chromium_nmhdir')
-  else
-    chromium_nmhdir = join_paths(sysconfdir, 'chromium', 'native-messaging-hosts')
-  endif
-
-  chromium_nmh = configure_file(
-    input: 'org.gnome.shell.extensions.zorin_connect.json-chrome',
-    output: 'org.gnome.shell.extensions.zorin_connect.json-chromium',
-    configuration: extconfig
-  )
-
-  install_data(
-    chromium_nmh,
-    rename: join_paths(chromium_nmhdir, nmh_manifest)
-  )
-
-  # Mozilla
-  if get_option('mozilla_nmhdir') != ''
-    mozilla_nmhdir = get_option('mozilla_nmhdir')
-  else
-    mozilla_nmhdir = join_paths(libdir, 'mozilla', 'native-messaging-hosts')
-  endif
-
-  configure_file(
-    input: 'org.gnome.shell.extensions.zorin_connect.json-mozilla',
-    output: nmh_manifest,
-    configuration: extconfig,
-    install_dir: mozilla_nmhdir
-  )
-endif
-
-
 # GSettings
 install_data(
-    'org.gnome.Shell.Extensions.ZorinConnect.gschema.xml',
-    install_dir: gschemadir
+  app_id + '.gschema.xml',
+  install_dir: gschemadir
 )
 
 
 # GResource
 gnome.compile_resources(
-  'org.gnome.Shell.Extensions.ZorinConnect',
-  'org.gnome.Shell.Extensions.ZorinConnect.gresource.xml',
+  app_id,
+  app_id + '.gresource.xml',
   gresource_bundle: true,
   install: true,
-  install_dir: extdatadir
+  install_dir: extdatadir,
+  dependencies: [
+    desktop_file,
+    desktop_prefs_file,
+    dbus_service_file
+  ]
 )
+

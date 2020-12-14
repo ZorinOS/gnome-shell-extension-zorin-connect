@@ -2,8 +2,10 @@ Source: gnome-shell-extension-zorin-connect
 Section: gnome
 Priority: optional
 Maintainer: Artyom Zorin <azorin@zoringroup.com>
-Build-Depends: debhelper (>= 10),
+Build-Depends: appstream,
+               debhelper (>= 10),
                dh-translations,
+               gjs,
                meson (>= 0.40.1),
                libglib2.0-dev-bin,
                libglib2.0-dev,

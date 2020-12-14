@@ -14,12 +14,12 @@ const Session = class {
 
     async _initAsync() {
         try {
-            let userName = GLib.get_user_name();
-            let sessions = await this._listSessions();
+            const userName = GLib.get_user_name();
+            const sessions = await this._listSessions();
             let sessionPath = '/org/freedesktop/login1/session/auto';
 
             // eslint-disable-next-line no-unused-vars
-            for (let [num, uid, name, seat, objectPath] of sessions) {
+            for (const [num, uid, name, seat, objectPath] of sessions) {
                 if (name === userName) {
                     sessionPath = objectPath;
                     break;
@@ -34,17 +34,15 @@ const Session = class {
     }
 
     get idle() {
-        if (this._session === null) {
+        if (this._session === null)
             return false;
-        }
 
         return this._session.get_cached_property('IdleHint').unpack();
     }
 
     get locked() {
-        if (this._session === null) {
+        if (this._session === null)
             return false;
-        }
 
         return this._session.get_cached_property('LockedHint').unpack();
     }
@@ -69,7 +67,7 @@ const Session = class {
                 (connection, res) => {
                     try {
                         res = connection.call_finish(res);
-                        resolve(res.deep_unpack()[0]);
+                        resolve(res.deepUnpack()[0]);
                     } catch (e) {
                         reject(e);
                     }
@@ -79,11 +77,11 @@ const Session = class {
     }
 
     async _getSession(objectPath) {
-        let session = new Gio.DBusProxy({
+        const session = new Gio.DBusProxy({
             g_connection: this._connection,
             g_name: 'org.freedesktop.login1',
             g_object_path: objectPath,
-            g_interface_name: 'org.freedesktop.login1.Session'
+            g_interface_name: 'org.freedesktop.login1.Session',
         });
 
         // Initialize the proxy
@@ -106,9 +104,7 @@ const Session = class {
     }
 
     destroy() {
-        if (this._session !== null) {
-            this._session.run_dispose();
-        }
+        this._session = null;
     }
 };
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
 <interface domain="org.gnome.Shell.Extensions.ZorinConnect">
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk+" version="3.24"/>
   <object class="GtkPopover" id="rename-popover">
     <property name="can_focus">False</property>
     <child>
@@ -17,6 +16,9 @@
             <property name="halign">start</property>
             <property name="label" translatable="yes">Device Name</property>
             <property name="mnemonic_widget">rename-entry</property>
+            <accessibility>
+              <relation type="label-for" target="rename-entry"/>
+            </accessibility>
             <attributes>
               <attribute name="weight" value="bold"/>
             </attributes>
@@ -38,6 +40,9 @@
             <property name="input_purpose">name</property>
             <property name="width_chars">20</property>
             <signal name="activate" handler="_onSetServiceName" swapped="no"/>
+            <accessibility>
+              <relation type="labelled-by" target="rename-label"/>
+            </accessibility>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -68,7 +73,7 @@
   </object>
   <template class="ZorinConnectPreferencesWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
-    <property name="icon_name">org.gnome.Shell.Extensions.ZorinConnect</property>
+    <property name="icon_name">org.gnome.Shell.Extensions.ZorinConnect-symbolic</property>
     <property name="default_width">640</property>
     <property name="default_height">440</property>
     <child type="titlebar">
@@ -79,7 +84,7 @@
         <property name="has_subtitle">False</property>
         <property name="show_close_button">True</property>
         <child>
-          <object class="GtkButton" id="service-refresh">
+          <object class="GtkButton" id="refresh-button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -96,7 +101,7 @@
               </object>
             </child>
             <child internal-child="accessible">
-              <object class="AtkObject" id="service-refresh-atkobject">
+              <object class="AtkObject" id="refresh-button-atkobject">
                 <property name="AtkObject::accessible-name" translatable="yes">Refresh</property>
               </object>
             </child>
@@ -108,7 +113,6 @@
             <property name="visible">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Mobile Settings</property>
             <property name="valign">center</property>
             <signal name="clicked" handler="_onPrevious" swapped="no"/>
             <child>
@@ -150,6 +154,11 @@
                 <property name="icon_name">open-menu-symbolic</property>
               </object>
             </child>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="service-menu-atkobject">
+                <property name="AtkObject::accessible-name" translatable="yes">Service Menu</property>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="pack_type">end</property>
@@ -166,6 +175,11 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="icon_name">view-more-symbolic</property>
+              </object>
+            </child>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="device-menu-atkobject">
+                <property name="AtkObject::accessible-name" translatable="yes">Device Menu</property>
               </object>
             </child>
           </object>
@@ -657,11 +671,6 @@
           <relation type="controlled-by" target="prev-button"/>
           <relation type="controlled-by" target="device-list"/>
         </accessibility>
-        <child internal-child="accessible">
-          <object class="AtkObject" id="stack-atkobject">
-            <property name="AtkObject::accessible-role">layered-pane</property>
-          </object>
-        </child>
       </object>
     </child>
   </template>

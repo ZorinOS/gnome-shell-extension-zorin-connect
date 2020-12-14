@@ -1,3 +1,22 @@
+gnome-shell-extension-zorin-connect (44-1) focal; urgency=medium
+
+  * Build package in Zorin OS 16 repositories
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Mon, 14 Dec 2020 00:51:08 +0000
+
+gnome-shell-extension-zorin-connect (44) focal; urgency=medium
+
+  * Based on upstream version 44
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Sun, 13 Dec 2020 18:26:27 +0000
+
+gnome-shell-extension-zorin-connect (28.1) bionic; urgency=medium
+
+  * Fixed bug where scrolling down with the Remote Input plugin did not
+    work
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Tue, 21 Jan 2020 20:16:25 +0000
+
 gnome-shell-extension-zorin-connect (28.0.2) bionic; urgency=medium
 
   * Updated full colour icon

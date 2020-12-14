@@ -4,7 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const PluginsBase = imports.service.plugins.base;
+const PluginBase = imports.service.plugin;
 
 
 var Metadata = {
@@ -19,9 +19,9 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.ping']
-        }
-    }
+            outgoing: ['kdeconnect.ping'],
+        },
+    },
 };
 
 
@@ -30,8 +30,8 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/ping
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'ZorinConnectPingPlugin'
-}, class Plugin extends PluginsBase.Plugin {
+    GTypeName: 'ZorinConnectPingPlugin',
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'ping');
@@ -39,10 +39,10 @@ var Plugin = GObject.registerClass({
 
     handlePacket(packet) {
         // Notification
-        let notif = {
+        const notif = {
             title: this.device.name,
             body: _('Ping'),
-            icon: new Gio.ThemedIcon({name: `${this.device.icon_name}-symbolic`})
+            icon: new Gio.ThemedIcon({name: `${this.device.icon_name}`}),
         };
 
         if (packet.body.message) {
@@ -55,16 +55,13 @@ var Plugin = GObject.registerClass({
     }
 
     ping(message = '') {
-        debug(message);
-
-        let packet = {
+        const packet = {
             type: 'kdeconnect.ping',
-            body: {}
+            body: {},
         };
 
-        if (message.length) {
+        if (message.length)
             packet.body.message = message;
-        }
 
         this.device.sendPacket(packet);
     }

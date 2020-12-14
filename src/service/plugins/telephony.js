@@ -5,36 +5,31 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const PluginsBase = imports.service.plugins.base;
-const TelephonyUI = imports.service.ui.telephony;
+const Components = imports.service.components;
+const PluginBase = imports.service.plugin;
 
 
 var Metadata = {
     label: _('Telephony'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.Telephony',
-    incomingCapabilities: ['kdeconnect.telephony'],
+    incomingCapabilities: [
+        'kdeconnect.telephony',
+    ],
     outgoingCapabilities: [
         'kdeconnect.telephony.request',
-        'kdeconnect.telephony.request_mute'
+        'kdeconnect.telephony.request_mute',
     ],
     actions: {
-        legacyReply: {
-            label: _('Reply SMS'),
-            icon_name: 'sms-symbolic',
-
-            parameter_type: new GLib.VariantType('a{sv}'),
-            incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.sms.request']
-        },
         muteCall: {
+            // TRANSLATORS: Silence the actively ringing call
             label: _('Mute Call'),
             icon_name: 'audio-volume-muted-symbolic',
 
             parameter_type: null,
             incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.telephony.request_mute']
-        }
-    }
+            outgoing: ['kdeconnect.telephony.request_mute'],
+        },
+    },
 };
 
 
@@ -44,39 +39,22 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/TelephonyPlugin
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'ZorinConnectTelephonyPlugin'
-}, class Plugin extends PluginsBase.Plugin {
+    GTypeName: 'ZorinConnectTelephonyPlugin',
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'telephony');
+
+        // Neither of these are crucial for the plugin to work
+        this._mpris = Components.acquire('mpris');
+        this._mixer = Components.acquire('pulseaudio');
     }
 
-    get legacy_sms() {
-        // We have to do this lookup each time, because if we hold a reference
-        // to the plugin we don't know if it's disabled
-        let sms = this.device._plugins.get('sms');
-        return (sms && sms.settings.get_boolean('legacy-sms'));
-    }
-
-    async handlePacket(packet) {
-        try {
-            // This is the end of a 'ringing' or 'talking' event
-            if (packet.body.isCancel) {
-                let sender = packet.body.contactName || packet.body.phoneNumber;
-                this.device.hideNotification(`${packet.body.event}|${sender}`);
-                this._restoreMediaState();
-
-            // Only handle 'ringing' or 'talking' events, leave the notification
-            // plugin to handle 'missedCall' and 'sms' since they're repliable
-            } else if (['ringing', 'talking'].includes(packet.body.event)) {
+    handlePacket(packet) {
+        switch (packet.type) {
+            case 'kdeconnect.telephony':
                 this._handleEvent(packet);
-
-            // Legacy messaging support
-            } else if (packet.body.event === 'sms' && this.legacy_sms) {
-                this._handleLegacyMessage(packet);
-            }
-        } catch (e) {
-            logError(e);
+                break;
         }
     }
 
@@ -84,102 +62,127 @@ var Plugin = GObject.registerClass({
      * Change volume, microphone and media player state in response to an
      * incoming or answered call.
      *
-     * @param {String} eventType - 'ringing' or 'talking'
+     * @param {string} eventType - 'ringing' or 'talking'
      */
     _setMediaState(eventType) {
         // Mixer Volume
-        let pulseaudio = this.service.components.get('pulseaudio');
-
-        if (pulseaudio) {
+        if (this._mixer !== undefined) {
             switch (this.settings.get_string(`${eventType}-volume`)) {
+                case 'restore':
+                    this._mixer.restore();
+                    break;
+
                 case 'lower':
-                    pulseaudio.lowerVolume();
+                    this._mixer.lowerVolume();
                     break;
 
                 case 'mute':
-                    pulseaudio.muteVolume();
+                    this._mixer.muteVolume();
                     break;
             }
 
-            if (eventType === 'talking' && this.settings.get_boolean('talking-microphone')) {
-                pulseaudio.muteMicrophone();
-            }
+            if (eventType === 'talking' && this.settings.get_boolean('talking-microphone'))
+                this._mixer.muteMicrophone();
         }
 
         // Media Playback
-        let mpris = this.service.components.get('mpris');
-
-        if (mpris && this.settings.get_boolean(`${eventType}-pause`)) {
-            mpris.pauseAll();
-        }
+        if (this._mpris && this.settings.get_boolean(`${eventType}-pause`))
+            this._mpris.pauseAll();
     }
 
     /**
      * Restore volume, microphone and media player state (if changed), making
      * sure to unpause before raising volume.
+     *
+     * TODO: there's a possibility we might revert a media/mixer state set for
+     *       another device.
      */
     _restoreMediaState() {
         // Media Playback
-        let mpris = this.service.components.get('mpris');
-
-        if (mpris) {
-            mpris.unpauseAll();
-        }
+        if (this._mpris)
+            this._mpris.unpauseAll();
 
         // Mixer Volume
-        let pulseaudio = this.service.components.get('pulseaudio');
-
-        if (pulseaudio) {
-            pulseaudio.restore();
-        }
+        if (this._mixer)
+            this._mixer.restore();
     }
 
     /**
      * Load a Gdk.Pixbuf from base64 encoded data
      *
      * @param {string} data - Base64 encoded JPEG data
+     * @return {Gdk.Pixbuf|null} A contact photo
      */
     _getThumbnailPixbuf(data) {
-        let loader;
+        const loader = new GdkPixbuf.PixbufLoader();
 
         try {
             data = GLib.base64_decode(data);
-            loader = new GdkPixbuf.PixbufLoader();
             loader.write(data);
             loader.close();
         } catch (e) {
-            debug(e);
+            debug(e, this.device.name);
         }
 
         return loader.get_pixbuf();
     }
 
     /**
-     * Show a local notification, possibly with actions
+     * Handle a telephony event (ringing, talking), showing or hiding a
+     * notification and possibly adjusting the media/mixer state.
      *
-     * @param {object} packet - A telephony packet for this event
+     * @param {Core.Packet} packet - A `kdeconnect.telephony`
      */
     _handleEvent(packet) {
+        // Only handle 'ringing' or 'talking' events; leave the notification
+        // plugin to handle 'missedCall' since they're often repliable
+        if (!['ringing', 'talking'].includes(packet.body.event))
+            return;
+
+        // This is the end of a telephony event
+        if (packet.body.isCancel)
+            this._cancelEvent(packet);
+        else
+            this._notifyEvent(packet);
+    }
+
+    _cancelEvent(packet) {
+        // Ensure we have a sender
+        // TRANSLATORS: No name or phone number
+        let sender = _('Unknown Contact');
+
+        if (packet.body.contactName)
+            sender = packet.body.contactName;
+        else if (packet.body.phoneNumber)
+            sender = packet.body.phoneNumber;
+
+        this.device.hideNotification(`${packet.body.event}|${sender}`);
+        this._restoreMediaState();
+    }
+
+    _notifyEvent(packet) {
         let body;
         let buttons = [];
-        let icon = new Gio.ThemedIcon({name: 'call-start-symbolic'});
+        let icon = null;
         let priority = Gio.NotificationPriority.NORMAL;
 
         // Ensure we have a sender
         // TRANSLATORS: No name or phone number
         let sender = _('Unknown Contact');
 
-        if (packet.body.contactName) {
+        if (packet.body.contactName)
             sender = packet.body.contactName;
-        } else if (packet.body.phoneNumber) {
+        else if (packet.body.phoneNumber)
             sender = packet.body.phoneNumber;
-        }
 
         // If there's a photo, use it as the notification icon
-        if (packet.body.phoneThumbnail) {
+        if (packet.body.phoneThumbnail)
             icon = this._getThumbnailPixbuf(packet.body.phoneThumbnail);
-        }
 
+        if (icon === null)
+            icon = new Gio.ThemedIcon({name: 'call-start-symbolic'});
+
+        // Notify based based on the event type
         if (packet.body.event === 'ringing') {
             this._setMediaState('ringing');
 
@@ -187,9 +190,9 @@ var Plugin = GObject.registerClass({
             body = _('Incoming call');
             buttons = [{
                 action: 'muteCall',
-                // TRANSLATORS: Silence the phone ringer
+                // TRANSLATORS: Silence the actively ringing call
                 label: _('Mute'),
-                parameter: null
+                parameter: null,
             }];
             priority = Gio.NotificationPriority.URGENT;
         }
@@ -208,83 +211,31 @@ var Plugin = GObject.registerClass({
             body: body,
             icon: icon,
             priority: priority,
-            buttons: buttons
+            buttons: buttons,
         });
-    }
-
-    _handleLegacyMessage(packet) {
-        let action = null;
-        let icon = new Gio.ThemedIcon({name: 'sms-symbolic'});
-
-        // Ensure we have a sender
-        // TRANSLATORS: No name or phone number
-        let sender = _('Unknown Contact');
-
-        if (packet.body.contactName) {
-            sender = packet.body.contactName;
-        } else if (packet.body.phoneNumber) {
-            sender = packet.body.phoneNumber;
-        }
-
-        // If there's a photo, use it as the notification icon
-        if (packet.body.phoneThumbnail) {
-            icon = this._getThumbnailPixbuf(packet.body.phoneThumbnail);
-        }
-
-        // If there's a phone number we can make this repliable
-        if (packet.body.phoneNumber) {
-            action = {
-                name: 'legacyReply',
-                parameter: GLib.Variant.full_pack(packet)
-            };
-        }
-
-        // Show notification
-        this.device.showNotification({
-            id: `${packet.body.event}|${sender}`,
-            title: sender,
-            body: packet.body.messageBody,
-            icon: icon,
-            priority: Gio.NotificationPriority.NORMAL,
-            action: action
-        });
-    }
-
-    legacyReply(packet) {
-        try {
-            let plugin = this.device._plugins.get('sms');
-
-            if (plugin === undefined) {
-                throw new Error('SMS Plugin is disabled');
-            }
-
-            let dialog = new TelephonyUI.LegacyMessagingDialog({
-                device: this.device,
-                message: {
-                    date: packet.id,
-                    addresses: [{address: packet.body.phoneNumber}],
-                    body: packet.body.messageBody,
-                    sender: packet.body.contactName || _('Unknown Contact'),
-                    type: 1 // MessageBox.INBOX
-                },
-                plugin: plugin
-            });
-            dialog.present();
-        } catch (e) {
-            logError(e);
-        }
     }
 
     /**
-     * Silence an incoming call
+     * Silence an incoming call and restore the previous mixer/media state, if
+     * applicable.
      */
     muteCall() {
         this.device.sendPacket({
             type: 'kdeconnect.telephony.request_mute',
-            body: {}
+            body: {},
         });
 
         this._restoreMediaState();
+    }
+
+    destroy() {
+        if (this._mixer !== undefined)
+            this._mixer = Components.release('pulseaudio');
+
+        if (this._mpris !== undefined)
+            this._mpris = Components.release('mpris');
+
+        super.destroy();
     }
 });
 

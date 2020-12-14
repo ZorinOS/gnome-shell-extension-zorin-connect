@@ -3,19 +3,28 @@
   <gresource prefix="/org/gnome/Shell/Extensions/ZorinConnect">
     <!-- UI -->
     <file compressed="true">application.css</file>
-    <file compressed="true" preprocess="xml-stripblanks">gtk/menus.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/connect.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/connect-dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/contacts-address-row.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/contact-chooser.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/conversation.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/device-preferences.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/legacy-messaging-dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-message.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation-summary.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/messaging-conversation.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/messaging-window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/mousepad-input-dialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/notification-reply-dialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-command-editor.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-device-panel.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-section-row.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-shortcut-editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/preferences-window.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/telephony.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/service-device-chooser.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/service-error-dialog.ui</file>
 
     <!-- DBus Service Files -->
     <file compressed="true">org.gnome.Shell.Extensions.ZorinConnect.desktop</file>
-    <file compressed="true">org.gnome.Shell.Extensions.ZorinConnect.service</file>
+    <file compressed="true">org.gnome.Shell.Extensions.ZorinConnect.Preferences.desktop</file>
+    <file compressed="true">org.gnome.Shell.Extensions.ZorinConnect.service.in</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.ZorinConnect.xml</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.ZorinConnect.sdp.xml</file>
 
@@ -30,7 +39,7 @@
 
     <!-- Device Icons (Fallbacks) c/o Numix
 
-         TODO: GNOME currently doesn't have an icon for `laptop`
+         NOTE: GNOME currently doesn't have an icon for `laptop`
                The stock icon for `tablet` is actually a wacom tablet
     -->
     <file compressed="true" preprocess="xml-stripblanks">icons/laptop-symbolic.svg</file>
@@ -51,8 +60,8 @@
     <file compressed="true" preprocess="xml-stripblanks">images/enter-keyboard-shortcut.svg</file>
 
     <!-- WebExtension Manifests & Badges -->
-    <file compressed="true">org.gnome.shell.extensions.zorin_connect.json-chrome</file>
-    <file compressed="true">org.gnome.shell.extensions.zorin_connect.json-mozilla</file>
+    <file compressed="true">webextension/org.gnome.shell.extensions.zorin_connect.json.google.in</file>
+    <file compressed="true">webextension/org.gnome.shell.extensions.zorin_connect.json.mozilla.in</file>
     <file compressed="true">images/chrome-badge.png</file>
     <file compressed="true">images/firefox-badge.png</file>
     <file compressed="true">images/play-store-badge.png</file>

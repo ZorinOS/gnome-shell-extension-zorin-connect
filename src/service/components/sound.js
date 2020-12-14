@@ -3,21 +3,21 @@
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
 
 
-/**
+/*
  * Used to ensure 'audible-bell' is enabled for fallback
  */
 const WM_SETTINGS = new Gio.Settings({
     schema_id: 'org.gnome.desktop.wm.preferences',
-    path: '/org/gnome/desktop/wm/preferences/'
+    path: '/org/gnome/desktop/wm/preferences/',
 });
 
 
-var Sound = class Sound {
+var Player = class Player {
 
     constructor() {
+        this._playing = new Set();
     }
 
     get backend() {
@@ -33,7 +33,7 @@ var Sound = class Sound {
             } catch (e) {
                 if (GLib.find_program_in_path('canberra-gtk-play') !== null) {
                     this._canberra = new Gio.SubprocessLauncher({
-                        flags: Gio.SubprocessFlags.NONE
+                        flags: Gio.SubprocessFlags.NONE,
                     });
                     this._backend = 'libcanberra';
                 } else {
@@ -45,17 +45,9 @@ var Sound = class Sound {
         return this._backend;
     }
 
-    get playing() {
-        if (this._playing === undefined) {
-            this._playing = new Set();
-        }
-
-        return this._playing;
-    }
-
     _canberraPlaySound(name, cancellable) {
         return new Promise((resolve, reject) => {
-            let proc = this._canberra.spawnv(['canberra-gtk-play', '-i', name]);
+            const proc = this._canberra.spawnv(['canberra-gtk-play', '-i', name]);
 
             proc.wait_check_async(cancellable, (proc, res) => {
                 try {
@@ -68,9 +60,8 @@ var Sound = class Sound {
     }
 
     async _canberraLoopSound(name, cancellable) {
-        while (!cancellable.is_cancelled()) {
+        while (!cancellable.is_cancelled())
             await this._canberraPlaySound(name, cancellable);
-        }
     }
 
     _gsoundPlaySound(name, cancellable) {
@@ -90,15 +81,13 @@ var Sound = class Sound {
     }
 
     async _gsoundLoopSound(name, cancellable) {
-        while (!cancellable.is_cancelled()) {
+        while (!cancellable.is_cancelled())
             await this._gsoundPlaySound(name, cancellable);
-        }
     }
 
     _gdkPlaySound(name, cancellable) {
-        if (this._display === undefined) {
+        if (this._display === undefined)
             this._display = Gdk.Display.get_default();
-        }
 
         let count = 0;
 
@@ -130,11 +119,10 @@ var Sound = class Sound {
 
     async playSound(name, cancellable) {
         try {
-            if (!(cancellable instanceof Gio.Cancellable)) {
+            if (!(cancellable instanceof Gio.Cancellable))
                 cancellable = new Gio.Cancellable();
-            }
 
-            this.playing.add(cancellable);
+            this._playing.add(cancellable);
 
             switch (this.backend) {
                 case 'gsound':
@@ -149,21 +137,19 @@ var Sound = class Sound {
                     await this._gdkPlaySound(name, cancellable);
             }
         } catch (e) {
-            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
+            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
                 logError(e);
-            }
         } finally {
-            this.playing.delete(cancellable);
+            this._playing.delete(cancellable);
         }
     }
 
     async loopSound(name, cancellable) {
         try {
-            if (!(cancellable instanceof Gio.Cancellable)) {
+            if (!(cancellable instanceof Gio.Cancellable))
                 cancellable = new Gio.Cancellable();
-            }
 
-            this.playing.add(cancellable);
+            this._playing.add(cancellable);
 
             switch (this.backend) {
                 case 'gsound':
@@ -178,18 +164,16 @@ var Sound = class Sound {
                     await this._gdkLoopSound(name, cancellable);
             }
         } catch (e) {
-            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
+            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
                 logError(e);
-            }
         } finally {
-            this.playing.delete(cancellable);
+            this._playing.delete(cancellable);
         }
     }
 
     destroy() {
-        for (let cancellable of this.playing) {
+        for (const cancellable of this._playing)
             cancellable.cancel();
-        }
     }
 };
 
@@ -197,5 +181,5 @@ var Sound = class Sound {
 /**
  * The service class for this component
  */
-var Component = Sound;
+var Component = Player;
 

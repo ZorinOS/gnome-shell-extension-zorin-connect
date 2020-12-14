@@ -1,13 +1,11 @@
 'use strict';
 
-const Atspi = imports.gi.Atspi;
 const Gdk = imports.gi.Gdk;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
 
-const PluginsBase = imports.service.plugins.base;
+const Components = imports.service.components;
+const {InputDialog} = imports.service.ui.mousepad;
+const PluginBase = imports.service.plugin;
 
 
 var Metadata = {
@@ -16,12 +14,12 @@ var Metadata = {
     incomingCapabilities: [
         'kdeconnect.mousepad.echo',
         'kdeconnect.mousepad.request',
-        'kdeconnect.mousepad.keyboardstate'
+        'kdeconnect.mousepad.keyboardstate',
     ],
     outgoingCapabilities: [
         'kdeconnect.mousepad.echo',
         'kdeconnect.mousepad.request',
-        'kdeconnect.mousepad.keyboardstate'
+        'kdeconnect.mousepad.keyboardstate',
     ],
     actions: {
         keyboard: {
@@ -29,10 +27,13 @@ var Metadata = {
             icon_name: 'input-keyboard-symbolic',
 
             parameter_type: null,
-            incoming: ['kdeconnect.mousepad.echo', 'kdeconnect.mousepad.keyboardstate'],
-            outgoing: ['kdeconnect.mousepad.request']
-        }
-    }
+            incoming: [
+                'kdeconnect.mousepad.echo',
+                'kdeconnect.mousepad.keyboardstate',
+            ],
+            outgoing: ['kdeconnect.mousepad.request'],
+        },
+    },
 };
 
 
@@ -71,7 +72,7 @@ const KeyMap = new Map([
     [29, Gdk.KEY_F9],
     [30, Gdk.KEY_F10],
     [31, Gdk.KEY_F11],
-    [32, Gdk.KEY_F12]
+    [32, Gdk.KEY_F12],
 ]);
 
 
@@ -91,64 +92,44 @@ var Plugin = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             false
         ),
-        'share-control': GObject.ParamSpec.boolean(
-            'share-control',
-            'Share Control',
-            'Share control of mouse & keyboard',
-            GObject.ParamFlags.READWRITE,
-            false
-        )
-    }
-}, class Plugin extends PluginsBase.Plugin {
+    },
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'mousepad');
 
-        this._input = this.service.components.get('input');
+        this._input = Components.acquire('input');
 
-        this.settings.bind(
-            'share-control',
-            this,
-            'share-control',
-            Gio.SettingsBindFlags.GET
+        this._shareControlChangedId = this.settings.connect(
+            'changed::share-control',
+            this._sendState.bind(this)
         );
+    }
 
-        this._stateId = 0;
+    get state() {
+        if (this._state === undefined)
+            this._state = false;
+
+        return this._state;
     }
 
     connected() {
         super.connected();
 
-        this.sendState();
+        this._sendState();
     }
 
     disconnected() {
         super.disconnected();
 
-        // Set the keyboard state to inactive
         this._state = false;
-        this._stateId = 0;
         this.notify('state');
-    }
-
-    get state() {
-        if (this._state === undefined) {
-            this._state = false;
-        }
-
-        return this._state;
-    }
-
-    get virtual_keyboard() {
-        return this._virtual_keyboard;
     }
 
     handlePacket(packet) {
         switch (packet.type) {
             case 'kdeconnect.mousepad.request':
-                if (this.share_control) {
-                    this._handleInput(packet.body);
-                }
+                this._handleInput(packet.body);
                 break;
 
             case 'kdeconnect.mousepad.echo':
@@ -161,7 +142,15 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    /**
+     * Handle a input event.
+     *
+     * @param {Object} input - The body of a `kdeconnect.mousepad.request`
+     */
     _handleInput(input) {
+        if (!this.settings.get_boolean('share-control'))
+            return;
+
         let keysym;
         let modifiers = 0;
 
@@ -178,26 +167,32 @@ var Plugin = GObject.registerClass({
 
             case (input.hasOwnProperty('key') || input.hasOwnProperty('specialKey')):
                 // NOTE: \u0000 sometimes sent in advance of a specialKey packet
-                if (input.key && input.key === '\u0000') return;
+                if (input.key && input.key === '\u0000')
+                    return;
 
                 // Modifiers
-                if (input.alt || input.ctrl || input.shift || input.super) {
-                    if (input.alt) modifiers |= Gdk.ModifierType.MOD1_MASK;
-                    if (input.ctrl) modifiers |= Gdk.ModifierType.CONTROL_MASK;
-                    if (input.shift) modifiers |= Gdk.ModifierType.SHIFT_MASK;
-                    if (input.super) modifiers |= Gdk.ModifierType.SUPER_MASK;
-                }
+                if (input.alt)
+                    modifiers |= Gdk.ModifierType.MOD1_MASK;
+
+                if (input.ctrl)
+                    modifiers |= Gdk.ModifierType.CONTROL_MASK;
+
+                if (input.shift)
+                    modifiers |= Gdk.ModifierType.SHIFT_MASK;
+
+                if (input.super)
+                    modifiers |= Gdk.ModifierType.SUPER_MASK;
 
                 // Regular key (printable ASCII or Unicode)
                 if (input.key) {
                     this._input.pressKey(input.key, modifiers);
-                    this.sendEcho(input);
+                    this._sendEcho(input);
 
                 // Special key (eg. non-printable ASCII)
                 } else if (input.specialKey && KeyMap.has(input.specialKey)) {
                     keysym = KeyMap.get(input.specialKey);
                     this._input.pressKey(keysym, modifiers);
-                    this.sendEcho(input);
+                    this._sendEcho(input);
                 }
                 break;
 
@@ -231,45 +226,54 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Send an echo/ACK of @input, if requested
+     * Handle an echo/ACK of a event we sent, displaying it the dialog entry.
      *
-     * @param {object} input - 'body' of a 'kdeconnect.mousepad.request' packet
+     * @param {Object} input - The body of a `kdeconnect.mousepad.echo`
      */
-    sendEcho(input) {
-        if (input.sendAck) {
-            delete input.sendAck;
-            input.isAck = true;
-
-            this.device.sendPacket({
-                type: 'kdeconnect.mousepad.echo',
-                body: input
-            });
-        }
-    }
-
     _handleEcho(input) {
-        if (!this._dialog || !this._dialog.visible) {
+        if (!this._dialog || !this._dialog.visible)
             return;
-        }
 
-        if (input.alt || input.ctrl || input.super) {
+        // Skip modifiers
+        if (input.alt || input.ctrl || input.super)
             return;
-        }
 
         if (input.key) {
+            this._dialog._isAck = true;
             this._dialog.text.buffer.text += input.key;
+            this._dialog._isAck = false;
         } else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace) {
             this._dialog.text.emit('backspace');
         }
     }
 
+    /**
+     * Handle a state change from the remote keyboard. This is an indication
+     * that the remote keyboard is ready to accept input.
+     *
+     * @param {Object} packet - A `kdeconnect.mousepad.keyboardstate` packet
+     */
     _handleState(packet) {
-        // FIXME: ensure we don't get packets out of order
-        if (packet.id > this._stateId) {
-            this._state = packet.body.state;
-            this._stateId = packet.id;
-            this.notify('state');
-        }
+        this._state = !!packet.body.state;
+        this.notify('state');
+    }
+
+    /**
+     * Send an echo/ACK of @input, if requested
+     *
+     * @param {Object} input - The body of a 'kdeconnect.mousepad.request'
+     */
+    _sendEcho(input) {
+        if (!input.sendAck)
+            return;
+
+        delete input.sendAck;
+        input.isAck = true;
+
+        this.device.sendPacket({
+            type: 'kdeconnect.mousepad.echo',
+            body: input,
+        });
     }
 
     /**
@@ -277,12 +281,12 @@ var Plugin = GObject.registerClass({
      *
      * @param {boolean} state - Whether we're ready to accept input
      */
-    sendState() {
+    _sendState() {
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.keyboardstate',
             body: {
-                state: this.share_control
-            }
+                state: this.settings.get_boolean('share-control'),
+            },
         });
     }
 
@@ -290,333 +294,26 @@ var Plugin = GObject.registerClass({
      * Open the Keyboard Input dialog
      */
     keyboard() {
-        if (!this._dialog) {
-            this._dialog = new KeyboardInputDialog({
+        if (this._dialog === undefined) {
+            this._dialog = new InputDialog({
                 device: this.device,
-                plugin: this
+                plugin: this,
             });
         }
 
         this._dialog.present();
     }
-});
 
+    destroy() {
+        if (this._input !== undefined)
+            this._input = Components.release('input');
 
-/**
- * A map of Gdk to "KDE Connect" keyvals
- */
-const ReverseKeyMap = new Map([
-    [Gdk.KEY_BackSpace, 1],
-    [Gdk.KEY_Tab, 2],
-    [Gdk.KEY_Linefeed, 3],
-    [Gdk.KEY_Left, 4],
-    [Gdk.KEY_Up, 5],
-    [Gdk.KEY_Right, 6],
-    [Gdk.KEY_Down, 7],
-    [Gdk.KEY_Page_Up, 8],
-    [Gdk.KEY_Page_Down, 9],
-    [Gdk.KEY_Home, 10],
-    [Gdk.KEY_End, 11],
-    [Gdk.KEY_Return, 12],
-    [Gdk.KEY_Delete, 13],
-    [Gdk.KEY_Escape, 14],
-    [Gdk.KEY_Sys_Req, 15],
-    [Gdk.KEY_Scroll_Lock, 16],
-    [Gdk.KEY_F1, 21],
-    [Gdk.KEY_F2, 22],
-    [Gdk.KEY_F3, 23],
-    [Gdk.KEY_F4, 24],
-    [Gdk.KEY_F5, 25],
-    [Gdk.KEY_F6, 26],
-    [Gdk.KEY_F7, 27],
-    [Gdk.KEY_F8, 28],
-    [Gdk.KEY_F9, 29],
-    [Gdk.KEY_F10, 30],
-    [Gdk.KEY_F11, 31],
-    [Gdk.KEY_F12, 32]
-]);
+        if (this._dialog !== undefined)
+            this._dialog.destroy();
 
+        this.settings.disconnect(this._shareControlChangedId);
 
-/**
- * A list of keyvals we consider modifiers
- */
-const MOD_KEYS = [
-    Gdk.KEY_Alt_L,
-    Gdk.KEY_Alt_R,
-    Gdk.KEY_Caps_Lock,
-    Gdk.KEY_Control_L,
-    Gdk.KEY_Control_R,
-    Gdk.KEY_Meta_L,
-    Gdk.KEY_Meta_R,
-    Gdk.KEY_Num_Lock,
-    Gdk.KEY_Shift_L,
-    Gdk.KEY_Shift_R,
-    Gdk.KEY_Super_L,
-    Gdk.KEY_Super_R
-];
-
-
-/**
- * Some convenience functions for checking keyvals for modifiers
- */
-const isAlt = (key) => [Gdk.KEY_Alt_L, Gdk.KEY_Alt_R].includes(key);
-const isCtrl = (key) => [Gdk.KEY_Control_L, Gdk.KEY_Control_R].includes(key);
-const isShift = (key) => [Gdk.KEY_Shift_L, Gdk.KEY_Shift_R].includes(key);
-const isSuper = (key) => [Gdk.KEY_Super_L, Gdk.KEY_Super_R].includes(key);
-
-
-var KeyboardInputDialog = GObject.registerClass({
-    GTypeName: 'ZorinConnectMousepadKeyboardInputDialog',
-    Properties: {
-        'device': GObject.ParamSpec.object(
-            'device',
-            'Device',
-            'The device associated with this window',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            GObject.Object
-        ),
-        'plugin': GObject.ParamSpec.object(
-            'plugin',
-            'Plugin',
-            'The mousepad plugin associated with this window',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            GObject.Object
-        )
-    }
-}, class KeyboardInputDialog extends Gtk.Dialog {
-
-    _init(params) {
-        super._init(Object.assign({
-            use_header_bar: true,
-            default_width: 480,
-            window_position: Gtk.WindowPosition.CENTER
-        }, params));
-
-        let headerbar = this.get_titlebar();
-        headerbar.title = _('Keyboard');
-        headerbar.subtitle = this.device.name;
-
-        // Main Box
-        let content = this.get_content_area();
-        content.border_width = 0;
-
-        // Infobar
-        this.infobar = new Gtk.Revealer();
-        content.add(this.infobar);
-
-        let bar = new Gtk.InfoBar({message_type: Gtk.MessageType.WARNING});
-        this.infobar.add(bar);
-
-        let infoicon = new Gtk.Image({icon_name: 'dialog-warning-symbolic'});
-        bar.get_content_area().add(infoicon);
-
-        let infolabel = new Gtk.Label({label: _('Keyboard not ready')});
-        bar.get_content_area().add(infolabel);
-
-        // Content
-        let layout = new Gtk.Grid({
-            column_spacing: 6,
-            margin: 6
-        });
-        content.add(layout);
-
-        // Modifier Buttons
-        this.shift_label = new Gtk.ShortcutLabel({
-            accelerator: Gtk.accelerator_name(0, Gdk.ModifierType.SHIFT_MASK),
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.START,
-            sensitive: false
-        });
-        layout.attach(this.shift_label, 0, 0, 1, 1);
-
-        this.ctrl_label = new Gtk.ShortcutLabel({
-            accelerator: Gtk.accelerator_name(0, Gdk.ModifierType.CONTROL_MASK),
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.START,
-            sensitive: false
-        });
-        layout.attach(this.ctrl_label, 0, 1, 1, 1);
-
-        this.alt_label = new Gtk.ShortcutLabel({
-            accelerator: Gtk.accelerator_name(0, Gdk.ModifierType.MOD1_MASK),
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.START,
-            sensitive: false
-        });
-        layout.attach(this.alt_label, 0, 2, 1, 1);
-
-        this.super_label = new Gtk.ShortcutLabel({
-            accelerator: Gtk.accelerator_name(0, Gdk.ModifierType.SUPER_MASK),
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.START,
-            sensitive: false
-        });
-        layout.attach(this.super_label, 0, 3, 1, 1);
-
-        // Text Input
-        let scroll = new Gtk.ScrolledWindow({
-            hscrollbar_policy: Gtk.PolicyType.NEVER,
-            shadow_type: Gtk.ShadowType.IN
-        });
-        layout.attach(scroll, 1, 0, 1, 4);
-
-        this.text = new Gtk.TextView({
-            border_width: 6,
-            hexpand: true,
-            vexpand: true,
-            visible: true
-        });
-        scroll.add(this.text);
-
-        this.infobar.connect('notify::reveal-child', this._onState.bind(this));
-        this.plugin.bind_property('state', this.infobar, 'reveal-child', 6);
-
-        this.show_all();
-    }
-
-    vfunc_delete_event(event) {
-        this._ungrab();
-        return this.hide_on_delete();
-    }
-
-    vfunc_key_release_event(event) {
-        if (!this.plugin.state) {
-            return true;
-        }
-
-        let keyvalLower = Gdk.keyval_to_lower(event.keyval);
-        let realMask = event.state & Gtk.accelerator_get_default_mod_mask();
-
-        this.alt_label.sensitive = !isAlt(keyvalLower) && (realMask & Gdk.ModifierType.MOD1_MASK);
-        this.ctrl_label.sensitive = !isCtrl(keyvalLower) && (realMask & Gdk.ModifierType.CONTROL_MASK);
-        this.shift_label.sensitive = !isShift(keyvalLower) && (realMask & Gdk.ModifierType.SHIFT_MASK);
-        this.super_label.sensitive = !isSuper(keyvalLower) && (realMask & Gdk.ModifierType.SUPER_MASK);
-
-        return super.vfunc_key_release_event(event);
-    }
-
-    vfunc_key_press_event(event) {
-        if (!this.plugin.state) {
-            return true;
-        }
-
-        let keyvalLower = Gdk.keyval_to_lower(event.keyval);
-        let realMask = event.state & Gtk.accelerator_get_default_mod_mask();
-
-        this.alt_label.sensitive = isAlt(keyvalLower) || (realMask & Gdk.ModifierType.MOD1_MASK);
-        this.ctrl_label.sensitive = isCtrl(keyvalLower) || (realMask & Gdk.ModifierType.CONTROL_MASK);
-        this.shift_label.sensitive = isShift(keyvalLower) || (realMask & Gdk.ModifierType.SHIFT_MASK);
-        this.super_label.sensitive = isSuper(keyvalLower) || (realMask & Gdk.ModifierType.SUPER_MASK);
-
-        // Wait for a real key before sending
-        if (MOD_KEYS.includes(keyvalLower)) {
-            return false;
-        }
-
-        // Normalize Tab
-        if (keyvalLower === Gdk.KEY_ISO_Left_Tab) {
-            keyvalLower = Gdk.KEY_Tab;
-        }
-
-        // Put shift back if it changed the case of the key, not otherwise.
-        if (keyvalLower !== event.keyval) {
-            realMask |= Gdk.ModifierType.SHIFT_MASK;
-        }
-
-        // HACK: we don't want to use SysRq as a keybinding (but we do want
-        // Alt+Print), so we avoid translation from Alt+Print to SysRq
-        if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.MOD1_MASK) !== 0) {
-            keyvalLower = Gdk.KEY_Print;
-        }
-
-        // CapsLock isn't supported as a keybinding modifier, so keep it from
-        // confusing us
-        realMask &= ~Gdk.ModifierType.LOCK_MASK;
-
-        if (keyvalLower !== 0) {
-            debug(`keyval: ${event.keyval}, mask: ${realMask}`);
-
-            let request = {
-                alt: !!(realMask & Gdk.ModifierType.MOD1_MASK),
-                ctrl: !!(realMask & Gdk.ModifierType.CONTROL_MASK),
-                shift: !!(realMask & Gdk.ModifierType.SHIFT_MASK),
-                super: !!(realMask & Gdk.ModifierType.SUPER_MASK),
-                sendAck: true
-            };
-
-            // specialKey
-            if (ReverseKeyMap.has(event.keyval)) {
-                request.specialKey = ReverseKeyMap.get(event.keyval);
-
-            // key
-            } else {
-                let codePoint = Gdk.keyval_to_unicode(event.keyval);
-                request.key = String.fromCodePoint(codePoint);
-            }
-
-            this.device.sendPacket({
-                type: 'kdeconnect.mousepad.request',
-                body: request
-            });
-
-            // Pass these key combinations rather than using the echo reply
-            if (request.alt || request.ctrl || request.super) {
-                return super.vfunc_key_press_event(event);
-            }
-        }
-
-        return false;
-    }
-
-    vfunc_window_state_event(event) {
-        if (this.plugin.state && !!(event.new_window_state & Gdk.WindowState.FOCUSED)) {
-            this._grab();
-        } else {
-            this._ungrab();
-        }
-
-        return super.vfunc_window_state_event(event);
-    }
-
-    _onState(widget) {
-        if (this.plugin.state && this.is_active) {
-            this._grab();
-        } else {
-            this._ungrab();
-        }
-    }
-
-    _grab() {
-        if (!this.visible || this._device) return;
-
-        let seat = Gdk.Display.get_default().get_default_seat();
-        let status = seat.grab(
-            this.get_window(),
-            Gdk.SeatCapabilities.KEYBOARD,
-            false,
-            null,
-            null,
-            null
-        );
-
-        if (status !== Gdk.GrabStatus.SUCCESS) {
-            logError(new Error('Grabbing keyboard failed'));
-            return;
-        }
-
-        this._device = seat.get_keyboard();
-        this.grab_add();
-        this.text.has_focus = true;
-    }
-
-    _ungrab() {
-        if (this._device) {
-            this._device.get_seat().ungrab();
-            this._device = null;
-            this.grab_remove();
-        }
-
-        this.text.buffer.text = '';
+        super.destroy();
     }
 });
 

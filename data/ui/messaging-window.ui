@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
 <interface domain="org.gnome.Shell.Extensions.ZorinConnect">
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk+" version="3.24"/>
   <template class="ZorinConnectMessagingWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
+    <property name="icon_name">org.gnome.Shell.Extensions.ZorinConnect-symbolic</property>
     <property name="default_width">640</property>
     <property name="default_height">480</property>
     <property name="show_menubar">False</property>
@@ -29,6 +29,11 @@
                 <property name="can_focus">False</property>
                 <property name="valign">center</property>
                 <property name="icon_name">list-add-symbolic</property>
+              </object>
+            </child>
+            <child internal-child="accessible">
+              <object class="AtkObject">
+                <property name="AtkObject::accessible-name" translatable="yes">New Conversation</property>
               </object>
             </child>
             <accelerator key="n" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
@@ -64,7 +69,7 @@
                         <property name="can_focus">False</property>
                         <property name="width_request">200</property>
                         <property name="vexpand">True</property>
-                        <signal name="row-selected" handler="_onThreadSelected" swapped="no"/>
+                        <signal name="row-activated" handler="_onThreadSelected" swapped="no"/>
                         <child type="placeholder">
                           <object class="GtkGrid" id="thread-list-placeholder">
                             <property name="visible">True</property>

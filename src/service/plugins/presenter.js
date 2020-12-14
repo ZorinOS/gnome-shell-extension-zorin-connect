@@ -2,7 +2,8 @@
 
 const GObject = imports.gi.GObject;
 
-const PluginsBase = imports.service.plugins.base;
+const Components = imports.service.components;
+const PluginBase = imports.service.plugin;
 
 
 var Metadata = {
@@ -10,7 +11,7 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.Presenter',
     incomingCapabilities: ['kdeconnect.presenter'],
     outgoingCapabilities: [],
-    actions: {}
+    actions: {},
 };
 
 
@@ -20,13 +21,13 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/PresenterPlugin/
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'ZorinConnectPresenterPlugin'
-}, class Plugin extends PluginsBase.Plugin {
+    GTypeName: 'ZorinConnectPresenterPlugin',
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'presenter');
 
-        this._input = this.service.components.get('input');
+        this._input = Components.acquire('input');
     }
 
     handlePacket(packet) {
@@ -39,6 +40,13 @@ var Plugin = GObject.registerClass({
             // Currently unsupported and unnecessary as we just re-use the mouse
             // pointer instead of showing an arbitrary window.
         }
+    }
+
+    destroy() {
+        if (this._input !== undefined)
+            this._input = Components.release('input');
+
+        super.destroy();
     }
 });
 

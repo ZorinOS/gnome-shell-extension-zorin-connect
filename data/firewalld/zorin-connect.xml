@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Zorin Connect</short>
+  <description>Connect your mobile device with your Zorin OS computer</description>
+  <port port="1716" protocol="tcp"/>
+  <port port="1716" protocol="udp"/>
+  <port port="1739-1764" protocol="tcp"/>
+  <port port="1739-1764" protocol="udp"/>
+</service>
+

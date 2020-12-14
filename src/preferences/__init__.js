@@ -1,22 +1,41 @@
 'use strict';
 
-const Gtk = imports.gi.Gtk;
+const Gettext = imports.gettext;
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+
+const Config = imports.config;
 
 
-// TODO: required for GJS 1.52 (GNOME 3.28)
-Gtk.Widget.prototype.connectTemplate = function() {
-    this.$templateHandlers = [];
+// Ensure config.js is setup properly
+const userDir = GLib.build_filenamev([GLib.get_user_data_dir(), 'gnome-shell']);
 
-    Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
-        this.$templateHandlers.push([
-            obj,
-            obj.connect(signalName, this[handlerName].bind(this))
-        ]);
-    });
-};
+if (Config.PACKAGE_DATADIR.startsWith(userDir)) {
+    Config.IS_USER = true;
 
-Gtk.Widget.prototype.disconnectTemplate = function() {
-    Gtk.Widget.set_connect_func.call(this, function() {});
-    this.$templateHandlers.map(([obj, id]) => obj.disconnect(id));
-};
+    Config.PACKAGE_LOCALEDIR = `${Config.PACKAGE_DATADIR}/locale`;
+    Config.GSETTINGS_SCHEMA_DIR = `${Config.PACKAGE_DATADIR}/schemas`;
+}
+
+
+// Init Gettext
+String.prototype.format = imports.format.format;
+Gettext.bindtextdomain(Config.APP_ID, Config.PACKAGE_LOCALEDIR);
+globalThis._ = GLib.dgettext.bind(null, Config.APP_ID);
+globalThis.ngettext = GLib.dngettext.bind(null, Config.APP_ID);
+
+
+// Init GResources
+Gio.Resource.load(
+    GLib.build_filenamev([Config.PACKAGE_DATADIR, `${Config.APP_ID}.gresource`])
+)._register();
+
+
+// Init GSchema
+Config.GSCHEMA = Gio.SettingsSchemaSource.new_from_directory(
+    Config.GSETTINGS_SCHEMA_DIR,
+    Gio.SettingsSchemaSource.get_default(),
+    false
+);
 

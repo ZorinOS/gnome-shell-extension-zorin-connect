@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.gnome.Shell.Extensions.ZorinConnect</id>
+
+  <name>Zorin Connect</name>
+  <summary>KDE Connect implementation for GNOME</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0-or-later</project_license>
+
+  <url type="homepage">https://github.com/ZorinOS/gnome-shell-extension-zorin-connect/</url>
+
+  <developer_name>Zorin Connect Team</developer_name>
+
+  <launchable type="desktop-id">org.gnome.Shell.Extensions.ZorinConnect.desktop</launchable>
+  <launchable type="desktop-id">org.gnome.Shell.Extensions.ZorinConnect.Preferences.desktop</launchable>
+
+  <provides>
+    <dbus type="session">org.gnome.Shell.Extensions.ZorinConnect</dbus>
+  </provides>
+
+  <requires>
+    <id>org.gnome.Shell</id>
+  </requires>
+
+  <content_rating type="oars-1.0"/>
+
+  <description>
+    <p>
+      Zorin Connect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows.
+    </p>
+    <p>
+      With Zorin Connect you can securely connect to mobile devices and other desktops to:
+    </p>
+    <ul>
+      <li>Share files, links and text</li>
+      <li>Send and receive messages</li>
+      <li>Sync clipboard content</li>
+      <li>Sync contacts</li>
+      <li>Sync notifications</li>
+      <li>Control media players</li>
+      <li>Control system volume</li>
+      <li>Execute predefined commands</li>
+      <li>And more…</li>
+    </ul>
+  </description>
+</component>

@@ -12,21 +12,20 @@ const GObject = imports.gi.GObject;
 const System = imports.system;
 
 
-var NativeMessagingHost = GObject.registerClass({
-    GTypeName: 'ZorinConnectNativeMessagingHost'
+const NativeMessagingHost = GObject.registerClass({
+    GTypeName: 'ZorinConnectNativeMessagingHost',
 }, class NativeMessagingHost extends Gio.Application {
 
     _init() {
         super._init({
             application_id: 'org.gnome.Shell.Extensions.ZorinConnect.NativeMessagingHost',
-            flags: Gio.ApplicationFlags.NON_UNIQUE
+            flags: Gio.ApplicationFlags.NON_UNIQUE,
         });
     }
 
     get devices() {
-        if (this._devices === undefined) {
+        if (this._devices === undefined)
             this._devices = {};
-        }
 
         return this._devices;
     }
@@ -40,89 +39,75 @@ var NativeMessagingHost = GObject.registerClass({
         this.hold();
 
         // IO Channels
-        this.stdin = new Gio.DataInputStream({
+        this._stdin = new Gio.DataInputStream({
             base_stream: new Gio.UnixInputStream({fd: 0}),
-            byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
+            byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN,
         });
 
-        this.stdout = new Gio.DataOutputStream({
+        this._stdout = new Gio.DataOutputStream({
             base_stream: new Gio.UnixOutputStream({fd: 1}),
-            byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
+            byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN,
         });
 
-        let source = this.stdin.base_stream.create_source(null);
+        const source = this._stdin.base_stream.create_source(null);
         source.set_callback(this.receive.bind(this));
         source.attach(null);
 
-        this._init_async();
-    }
-
-    async _init_async(obj, res) {
+        // Device Manager
         try {
-            this.manager = await new Promise((resolve, reject) => {
-                Gio.DBusObjectManagerClient.new_for_bus(
-                    Gio.BusType.SESSION,
-                    Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
-                    'org.gnome.Shell.Extensions.ZorinConnect',
-                    '/org/gnome/Shell/Extensions/ZorinConnect',
-                    null,
-                    null,
-                    (manager, res) => {
-                        try {
-                            resolve(Gio.DBusObjectManagerClient.new_for_bus_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-
-            // Add currently managed devices
-            for (let object of this.manager.get_objects()) {
-                for (let iface of object.get_interfaces()) {
-                    this._onInterfaceAdded(this.manager, object, iface);
-                }
-            }
-
-            // Watch for new and removed devices
-            this.manager.connect(
-                'interface-added',
-                this._onInterfaceAdded.bind(this)
+            this._manager = Gio.DBusObjectManagerClient.new_for_bus_sync(
+                Gio.BusType.SESSION,
+                Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
+                'org.gnome.Shell.Extensions.ZorinConnect',
+                '/org/gnome/Shell/Extensions/ZorinConnect',
+                null,
+                null
             );
-            this.manager.connect(
-                'object-removed',
-                this._onObjectRemoved.bind(this)
-            );
-
-            // Watch for device property changes
-            this.manager.connect(
-                'interface-proxy-properties-changed',
-                this.sendDeviceList.bind(this)
-            );
-
-            // Watch for service restarts
-            this.manager.connect(
-                'notify::name-owner',
-                this.sendDeviceList.bind(this)
-            );
-
-            this.send({type: 'connected', data: true});
         } catch (e) {
+            logError(e);
             this.quit();
         }
+
+        // Add currently managed devices
+        for (const object of this._manager.get_objects()) {
+            for (const iface of object.get_interfaces())
+                this._onInterfaceAdded(this._manager, object, iface);
+        }
+
+        // Watch for new and removed devices
+        this._manager.connect(
+            'interface-added',
+            this._onInterfaceAdded.bind(this)
+        );
+        this._manager.connect(
+            'object-removed',
+            this._onObjectRemoved.bind(this)
+        );
+
+        // Watch for device property changes
+        this._manager.connect(
+            'interface-proxy-properties-changed',
+            this.sendDeviceList.bind(this)
+        );
+
+        // Watch for service restarts
+        this._manager.connect(
+            'notify::name-owner',
+            this.sendDeviceList.bind(this)
+        );
+
+        this.send({
+            type: 'connected',
+            data: (this._manager.name_owner !== null),
+        });
     }
 
     receive() {
         try {
             // Read the message
-            let length = this.stdin.read_int32(null);
-            let message = this.stdin.read_bytes(length, null).toArray();
-
-            if (message instanceof Uint8Array) {
-                message = imports.byteArray.toString(message);
-            }
-
-            message = JSON.parse(message);
+            const length = this._stdin.read_int32(null);
+            const bytes = this._stdin.read_bytes(length, null).toArray();
+            const message = JSON.parse(imports.byteArray.toString(bytes));
 
             // A request for a list of devices
             if (message.type === 'devices') {
@@ -131,14 +116,13 @@ var NativeMessagingHost = GObject.registerClass({
             // A request to invoke an action
             } else if (message.type === 'share') {
                 let actionName;
-                let device = this.devices[message.data.device];
+                const device = this.devices[message.data.device];
 
                 if (device) {
-                    if (message.data.action === 'share') {
+                    if (message.data.action === 'share')
                         actionName = 'shareUri';
-                    } else if (message.data.action === 'telephony') {
+                    else if (message.data.action === 'telephony')
                         actionName = 'shareSms';
-                    }
 
                     device.actions.activate_action(
                         actionName,
@@ -147,7 +131,7 @@ var NativeMessagingHost = GObject.registerClass({
                 }
             }
 
-            return true;
+            return GLib.SOURCE_CONTINUE;
         } catch (e) {
             this.quit();
         }
@@ -155,9 +139,9 @@ var NativeMessagingHost = GObject.registerClass({
 
     send(message) {
         try {
-            let data = JSON.stringify(message);
-            this.stdout.put_int32(data.length, null);
-            this.stdout.put_string(data, null);
+            const data = JSON.stringify(message);
+            this._stdout.put_int32(data.length, null);
+            this._stdout.put_string(data, null);
         } catch (e) {
             this.quit();
         }
@@ -165,16 +149,15 @@ var NativeMessagingHost = GObject.registerClass({
 
     sendDeviceList() {
         // Inform the WebExtension we're disconnected from the service
-        if (this.manager && this.manager.name_owner === null) {
-            this.send({type: 'connected', data: false});
-            return;
-        }
+        if (this._manager && this._manager.name_owner === null)
+            return this.send({type: 'connected', data: false});
 
-        let available = [];
+        // Collect all the devices with supported actions
+        const available = [];
 
-        for (let device of Object.values(this.devices)) {
-            let share = device.actions.get_action_enabled('shareUri');
-            let telephony = device.actions.get_action_enabled('shareSms');
+        for (const device of Object.values(this.devices)) {
+            const share = device.actions.get_action_enabled('shareUri');
+            const telephony = device.actions.get_action_enabled('shareSms');
 
             if (share || telephony) {
                 available.push({
@@ -182,7 +165,7 @@ var NativeMessagingHost = GObject.registerClass({
                     name: device.name,
                     type: device.type,
                     share: share,
-                    telephony: telephony
+                    telephony: telephony,
                 });
             }
         }
@@ -202,13 +185,13 @@ var NativeMessagingHost = GObject.registerClass({
         Object.defineProperties(iface, {
             'name': {
                 get: this._proxyGetter.bind(iface, 'Name'),
-                enumerable: true
+                enumerable: true,
             },
             // TODO: phase this out for icon-name
             'type': {
                 get: this._proxyGetter.bind(iface, 'Type'),
-                enumerable: true
-            }
+                enumerable: true,
+            },
         });
 
         iface.actions = Gio.DBusActionGroup.get(

@@ -10,9 +10,6 @@
     </key>
 
     <!-- Service Settings -->
-    <key name="public-name" type="s">
-      <default>""</default>
-    </key>
     <key name="id" type="s">
       <default>""</default>
     </key>
@@ -21,9 +18,6 @@
     </key>
     <key name="devices" type="as">
       <default>[]</default>
-    </key>
-    <key name="donotdisturb" type="i">
-      <default>0</default>
     </key>
     <key name="debug" type="b">
       <default>false</default>
@@ -52,7 +46,7 @@
       <default>{}</default>
     </key>
     <key name="menu-actions" type="as">
-      <default>["sms", "ring", "mount", "commands", "share", "photo"]</default>
+      <default>["sms", "ring", "mount", "commands", "share", "photo", "keyboard"]</default>
     </key>
     <key name="name" type="s">
       <default>""</default>
@@ -141,7 +135,11 @@
       <default>{}</default>
     </key>
   </schema>
-  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.SFTP"/>
+  <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.SFTP">
+    <key name="automount" type="b">
+      <default>true</default>
+    </key>
+  </schema>
   <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.Share">
     <key name="receive-files" type="b">
       <default>true</default>

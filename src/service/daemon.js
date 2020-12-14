@@ -2,6 +2,9 @@
 
 'use strict';
 
+// Allow TLSv1.0 certificates
+imports.gi.GLib.setenv('G_TLS_GNUTLS_PRIORITY', 'NORMAL:%COMPAT:+VERS-TLS1.0', true);
+
 imports.gi.versions.Gdk = '3.0';
 imports.gi.versions.GdkPixbuf = '2.0';
 imports.gi.versions.Gio = '2.0';
@@ -10,7 +13,6 @@ imports.gi.versions.GLib = '2.0';
 imports.gi.versions.GObject = '2.0';
 imports.gi.versions.Gtk = '3.0';
 imports.gi.versions.Pango = '1.0';
-imports.gi.versions.UPowerGlib = '1.0';
 
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
@@ -18,264 +20,71 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-// Find the root datadir of the extension
+
+// Bootstrap
 function get_datadir() {
-    let m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
+    const m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
-window.zorin_connect = {extdatadir: get_datadir()};
-imports.searchPath.unshift(zorin_connect.extdatadir);
-imports._zorin_connect;
+imports.searchPath.unshift(get_datadir());
+imports.config.PACKAGE_DATADIR = imports.searchPath[0];
+
 
 // Local Imports
-const Core = imports.service.protocol.core;
-const Device = imports.service.device;
-
+const Config = imports.config;
+const Manager = imports.service.manager;
 const ServiceUI = imports.service.ui.service;
 
 
+/**
+ * Class representing the Zorin Connect service daemon.
+ */
 const Service = GObject.registerClass({
     GTypeName: 'ZorinConnectService',
-    Properties: {
-        'discoverable': GObject.ParamSpec.boolean(
-            'discoverable',
-            'Discoverable',
-            'Whether the service responds to discovery requests',
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
-        'id': GObject.ParamSpec.string(
-            'id',
-            'Id',
-            'The service id',
-            GObject.ParamFlags.READWRITE,
-            null
-        ),
-        'name': GObject.ParamSpec.string(
-            'name',
-            'deviceName',
-            'The name announced to the network',
-            GObject.ParamFlags.READWRITE,
-            'ZorinConnect'
-        )
-    }
 }, class Service extends Gtk.Application {
 
     _init() {
         super._init({
-            application_id: zorin_connect.app_id,
-            flags: Gio.ApplicationFlags.HANDLES_OPEN
+            application_id: 'org.gnome.Shell.Extensions.ZorinConnect',
+            flags: Gio.ApplicationFlags.HANDLES_OPEN,
+            resource_base_path: '/org/gnome/Shell/Extensions/ZorinConnect',
         });
 
-        GLib.set_prgname('Zorin Connect');
-        GLib.set_application_name('Zorin Connect');
+        GLib.set_prgname('zorin-connect');
+        GLib.set_application_name('zorin-Connect');
 
-        // Track devices with id as key
-        this._devices = new Map();
-        
         // Command-line
         this._initOptions();
     }
 
-    get backends() {
-        if (this._backends === undefined) {
-            this._backends = new Map();
-        }
-
-        return this._backends;
-    }
-
-    get components() {
-        if (this._components === undefined) {
-            this._components = new Map();
-        }
-
-        return this._components;
-    }
-
-    get devices() {
-        return Array.from(this._devices.values());
-    }
-
-    get identity() {
-        if (this._identity === undefined) {
-            this._identity = new Core.Packet({
-                id: 0,
-                type: 'kdeconnect.identity',
-                body: {
-                    deviceId: this.id,
-                    deviceName: this.name,
-                    deviceType: this._getDeviceType(),
-                    protocolVersion: 7,
-                    incomingCapabilities: [],
-                    outgoingCapabilities: []
-                }
+    get settings() {
+        if (this._settings === undefined) {
+            this._settings = new Gio.Settings({
+                settings_schema: Config.GSCHEMA.lookup(Config.APP_ID, true),
             });
-
-            for (let name in imports.service.plugins) {
-                let meta = imports.service.plugins[name].Metadata;
-
-                if (!meta) continue;
-
-                meta.incomingCapabilities.map(type => {
-                    this._identity.body.incomingCapabilities.push(type);
-                });
-
-                meta.outgoingCapabilities.map(type => {
-                    this._identity.body.outgoingCapabilities.push(type);
-                });
-            }
         }
 
-        return this._identity;
+        return this._settings;
     }
 
-    /**
-     * Helpers
-     */
-    _getDeviceType() {
-        try {
-            let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
-
-            if (type instanceof Uint8Array) {
-                type = imports.byteArray.toString(type);
-            }
-
-            type = Number(type);
-
-            if ([8, 9, 10, 14].includes(type)) {
-                return 'laptop';
-            }
-
-            return 'desktop';
-        } catch (e) {
-            return 'desktop';
-        }
-    }
-
-    /**
-     * Return a device for @packet, creating it and adding it to the list of
-     * of known devices if it doesn't exist.
-     *
-     * @param {kdeconnect.identity} packet - An identity packet for the device
-     * @return {Device.Device} - A device object
-     */
-    _ensureDevice(packet) {
-        let device = this._devices.get(packet.body.deviceId);
-
-        if (device === undefined) {
-            debug(`Adding ${packet.body.deviceName}`);
-
-            // TODO: Remove when all clients support bluetooth-like discovery
-            //
-            // If this is the third unpaired device to connect, we disable
-            // discovery to avoid choking on networks with many devices
-            let unpaired = Array.from(this._devices.values()).filter(dev => {
-                return !dev.paired;
-            });
-
-            if (unpaired.length === 3 && this.discoverable) {
-                this.discoverable = false;
-
-                let error = new Error();
-                error.name = 'DiscoveryWarning';
-                this.notify_error(error);
-            }
-
-            device = new Device.Device(packet);
-            this._devices.set(device.id, device);
-
-            // Notify
-            this.settings.set_strv(
-                'devices',
-                Array.from(this._devices.keys())
-            );
-        }
-
-        return device;
-    }
-
-    /**
-     * Permanently remove a device.
-     *
-     * Removes the device from the list of known devices, deletes all GSettings
-     * and files.
-     *
-     * @param {String} id - The id of the device to delete
-     */
-    _removeDevice(id) {
-        // Delete all GSettings
-        let settings_path = '/org/gnome/shell/extensions/zorin-connect/' + id + '/';
-        GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
-
-        // Delete the cache
-        let cache = GLib.build_filenamev([zorin_connect.cachedir, id]);
-        Gio.File.rm_rf(cache);
-
-        // Forget the device
-        this._devices.delete(id);
-        this.settings.set_strv(
-            'devices',
-            Array.from(this._devices.keys())
-        );
-    }
-
-    /**
-     * GSettings
-     */
-    _initSettings() {
-        this.settings = new Gio.Settings({
-            settings_schema: zorin_connect.gschema.lookup(zorin_connect.app_id, true)
-        });
-
-        // TODO: added v25, remove after a few releases
-        let publicName = this.settings.get_string('public-name');
-
-        if (publicName.length > 0) {
-            this.settings.set_string('name', publicName);
-            this.settings.reset('public-name');
-        }
-
-        // Bound Properties
-        this.settings.bind('discoverable', this, 'discoverable', 0);
-        this.settings.bind('id', this, 'id', 0);
-        this.settings.bind('name', this, 'name', 0);
-
-        // Set the default name to the computer's hostname
-        if (this.name.length === 0) {
-            this.settings.set_string('name', GLib.get_host_name());
-        }
-
-        // Keep identity updated and broadcast any name changes
-        this._nameChangedId = this.settings.connect(
-            'changed::name',
-            this._onNameChanged.bind(this)
-        );
-    }
-
-    _onNameChanged(settings, key) {
-        this.identity.body.deviceName = this.name;
-        this._identify();
-    }
-
-    /**
+    /*
      * GActions
      */
     _initActions() {
-        let actions = [
-            ['connect', this._identify.bind(this), 's'],
-            ['device', this._device.bind(this), '(ssbv)'],
-            ['error', this._error.bind(this), 'a{ss}'],
-            ['preferences', this._preferences],
-            ['quit', () => this.quit()],
-            ['refresh', this._identify.bind(this)]
+        const actions = [
+            ['connect', this._identify.bind(this), new GLib.VariantType('s')],
+            ['device', this._device.bind(this), new GLib.VariantType('(ssbv)')],
+            ['error', this._error.bind(this), new GLib.VariantType('a{ss}')],
+            ['preferences', this._preferences, null],
+            ['quit', () => this.quit(), null],
+            ['refresh', this._identify.bind(this), null],
         ];
 
-        for (let [name, callback, type] of actions) {
-            let action = new Gio.SimpleAction({
+        for (const [name, callback, type] of actions) {
+            const action = new Gio.SimpleAction({
                 name: name,
-                parameter_type: (type) ? new GLib.VariantType(type) : null
+                parameter_type: type,
             });
             action.connect('activate', callback);
             this.add_action(action);
@@ -286,12 +95,8 @@ const Service = GObject.registerClass({
      * A wrapper for Device GActions. This is used to route device notification
      * actions to their device, since GNotifications need an 'app' level action.
      *
-     * @param {Gio.Action} action - ...
-     * @param {GLib.Variant(av)} parameter - ...
-     * @param {GLib.Variant(s)} parameter[0] - Device Id or '*' for all
-     * @param {GLib.Variant(s)} parameter[1] - GAction name
-     * @param {GLib.Variant(b)} parameter[2] - %false if the parameter is null
-     * @param {GLib.Variant(v)} parameter[3] - GAction parameter
+     * @param {Gio.Action} action - The GAction
+     * @param {GLib.Variant} parameter - The activation parameter
      */
     _device(action, parameter) {
         try {
@@ -299,24 +104,19 @@ const Service = GObject.registerClass({
 
             // Select the appropriate device(s)
             let devices;
-            let id = parameter[0].unpack();
+            const id = parameter[0].unpack();
 
-            if (id === '*') {
-                devices = this._devices.values();
-            } else {
-                devices = [this._devices.get(id)];
-            }
+            if (id === '*')
+                devices = this.manager.devices.values();
+            else
+                devices = [this.manager.devices.get(id)];
 
-            // Unpack the action data
-            let name = parameter[1].unpack();
-            let target = parameter[2].unpack() ? parameter[3].unpack() : null;
+            // Unpack the action data and activate the action
+            const name = parameter[1].unpack();
+            const target = parameter[2].unpack() ? parameter[3].unpack() : null;
 
-            // Activate the action on each available device
-            for (let device of devices) {
-                if (device) {
-                    device.activate_action(name, target);
-                }
-            }
+            for (const device of devices)
+                device.activate_action(name, target);
         } catch (e) {
             logError(e);
         }
@@ -324,25 +124,21 @@ const Service = GObject.registerClass({
 
     _error(action, parameter) {
         try {
-            let error = parameter.deep_unpack();
-            let dialog = new Gtk.MessageDialog({
-                text: error.message,
-                secondary_text: error.stack,
-                buttons: Gtk.ButtonsType.CLOSE,
-                message_type: Gtk.MessageType.ERROR,
-            });
-            dialog.set_keep_above(true);
+            const error = parameter.deepUnpack();
 
-            let [message, stack] = dialog.get_message_area().get_children();
-            message.halign = Gtk.Align.START;
-            message.selectable = true;
-            stack.selectable = true;
+            // If there's a URL, we have better information in the Wiki
+            if (error.url !== undefined) {
+                Gio.AppInfo.launch_default_for_uri_async(
+                    error.url,
+                    null,
+                    null,
+                    null
+                );
+                return;
+            }
 
-            dialog.connect('response', (dialog, response_id) => {
-                dialog.destroy();
-            });
-
-            dialog.show();
+            const dialog = new ServiceUI.ErrorDialog(error);
+            dialog.present();
         } catch (e) {
             logError(e);
         }
@@ -350,201 +146,28 @@ const Service = GObject.registerClass({
 
     _identify(action, parameter) {
         try {
-            // If we're passed a parameter, try and find a backend for it
-            if (parameter instanceof GLib.Variant) {
-                let uri = parameter.unpack();
-                let [scheme, address] = uri.split('://');
+            let uri = null;
 
-                let backend = this.backends.get(scheme);
+            if (parameter instanceof GLib.Variant)
+                uri = parameter.unpack();
 
-                if (backend) {
-                    backend.broadcast(address);
-                }
-
-            // If we're not discoverable, only try to reconnect known devices
-            } else if (!this.discoverable) {
-                this._reconnect();
-
-            // Otherwise have each backend broadcast to it's network
-            } else {
-                for (let backend of this.backends.values()) {
-                    backend.broadcast();
-                }
-            }
+            this.manager.identify(uri);
         } catch (e) {
             logError(e);
         }
     }
 
     _preferences() {
-        let proc = new Gio.Subprocess({
-            argv: [zorin_connect.extdatadir + '/zorin-connect-preferences']
-        });
-        proc.init(null);
-        proc.wait_async(null, null);
-    }
-
-    /**
-     * A GSourceFunc that tries to reconnect to each paired device, while
-     * pruning unpaired devices that have disconnected.
-     */
-    _reconnect() {
-        for (let [id, device] of this._devices.entries()) {
-            switch (true) {
-                case device.connected:
-                    break;
-
-                case device.paired:
-                    device.activate();
-                    break;
-
-                default:
-                    this._removeDevice(id);
-                    device.destroy();
-            }
-        }
-
-        return GLib.SOURCE_CONTINUE;
-    }
-
-    /**
-     * Components
-     */
-    _initComponents() {
-        for (let name in imports.service.components) {
-            try {
-                let module = imports.service.components[name];
-
-                if (module.hasOwnProperty('Component')) {
-                    let component = new module.Component();
-                    this.components.set(name, component);
-                }
-            } catch (e) {
-                logError(e, `'${name}' Component`);
-            }
-        }
-    }
-
-    /**
-     * Backends
-     *
-     * These are the implementations of Core.ChannelService that emit
-     * Core.ChannelService::channel with objects implementing Core.Channel.
-     */
-    _onChannel(backend, channel) {
-        try {
-            let device = this._devices.get(channel.identity.body.deviceId);
-
-            switch (true) {
-                // Proceed if this is an existing device...
-                case (device !== undefined):
-                    break;
-
-                // Or the service is discoverable...
-                case this.discoverable:
-                    device = this._ensureDevice(channel.identity);
-                    break;
-
-                // ...otherwise bail
-                default:
-                    debug(`${channel.identity.body.deviceName}: not allowed`);
-                    return false;
-            }
-
-            channel.attach(device);
-            return true;
-        } catch (e) {
-            logError(e, backend.name);
-            return false;
-        }
-    }
-
-    _initBackends() {
-        let backends = [
-            //'bluetooth',
-            'lan'
-        ];
-
-        for (let name of backends) {
-            try {
-                // Try to create the backend and track it if successful
-                let module = imports.service.protocol[name];
-                let backend = new module.ChannelService();
-                this.backends.set(name, backend);
-
-                // Connect to the backend
-                backend.__channelId = backend.connect(
-                    'channel',
-                    this._onChannel.bind(this)
-                );
-
-                // Now try to start the backend, allowing us to retry if we fail
-                backend.start();
-            } catch (e) {
-                this.notify_error(e);
-            }
-        }
-    }
-
-    /**
-     * Override Gio.Application.send_notification() to respect donotdisturb
-     */
-    send_notification(id, notification) {
-        if (!this._notificationSettings) {
-            this._notificationSettings = new Gio.Settings({
-                schema_id: 'org.gnome.desktop.notifications.application',
-                path: '/org/gnome/desktop/notifications/application/org-gnome-shell-extensions-zorin-connect/'
-            });
-        }
-
-        let now = GLib.DateTime.new_now_local().to_unix();
-        let dnd = (this.settings.get_int('donotdisturb') <= now);
-
-        // TODO: Maybe the 'enable-sound-alerts' should be left alone/queried
-        this._notificationSettings.set_boolean('enable-sound-alerts', dnd);
-        this._notificationSettings.set_boolean('show-banners', dnd);
-
-        super.send_notification(id, notification);
-    }
-
-    /**
-     * Remove a local libnotify or Gtk notification.
-     *
-     * @param {String|Number} id - Gtk (string) or libnotify id (uint32)
-     * @param {String|null} application - Application Id if Gtk or null
-     */
-    remove_notification(id, application = null) {
-        let name, path, method, variant;
-
-        if (application !== null) {
-            name = 'org.gtk.Notifications';
-            method = 'RemoveNotification';
-            path = '/org/gtk/Notifications';
-            variant = new GLib.Variant('(ss)', [application, id]);
-        } else {
-            name = 'org.freedesktop.Notifications';
-            path = '/org/freedesktop/Notifications';
-            method = 'CloseNotification';
-            variant = new GLib.Variant('(u)', [id]);
-        }
-
-        Gio.DBus.session.call(
-            name, path, name, method, variant, null,
-            Gio.DBusCallFlags.NONE, -1, null,
-            (connection, res) => {
-                try {
-                    connection.call_finish(res);
-                } catch (e) {
-                    logError(e);
-                }
-            }
+        Gio.Subprocess.new(
+            [`${Config.PACKAGE_DATADIR}/zorin-connect-preferences`],
+            Gio.SubprocessFlags.NONE
         );
     }
 
     /**
      * Report a service-level error
      *
-     * @param {object} error - An Error or object with name, message and stack
+     * @param {Object} error - An Error or object with name, message and stack
      */
     notify_error(error) {
         try {
@@ -552,58 +175,44 @@ const Service = GObject.registerClass({
             logError(error);
 
             // Create an new notification
-            let id, title, body, icon, priority, time;
-            let notif = new Gio.Notification();
+            let id, body, priority;
+            const notif = new Gio.Notification();
+            const icon = new Gio.ThemedIcon({name: 'dialog-error'});
+            let target = null;
 
-            switch (error.name) {
-                // A TLS certificate failure
-                case 'AuthenticationError':
-                    id = `"${error.deviceName}"@${error.deviceHost}`;
-                    title = _('Authentication Failure');
-                    time = GLib.DateTime.new_now_local().format('%F %R');
-                    body = `"${error.deviceName}"@${error.deviceHost} (${time})`;
-                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
-                    priority = Gio.NotificationPriority.URGENT;
-                    break;
+            if (error.name === undefined)
+                error.name = 'Error';
 
-                case 'LanError':
-                    id = error.name;
-                    title = _('Network Error');
-                    icon = new Gio.ThemedIcon({name: 'network-error'});
-                    priority = Gio.NotificationPriority.URGENT;
-                    break;
+            if (error.url !== undefined) {
+                id = error.url;
+                body = _('Click for help troubleshooting');
+                priority = Gio.NotificationPriority.URGENT;
 
-                case 'DiscoveryWarning':
-                    id = 'discovery-warning';
-                    title = _('Discovery Disabled');
-                    body = _('Discovery has been disabled due to the number of devices on this network.');
-                    icon = new Gio.ThemedIcon({name: 'dialog-warning'});
-                    priority = Gio.NotificationPriority.NORMAL;
-                    notif.set_default_action('app.settings');
-                    break;
+                target = new GLib.Variant('a{ss}', {
+                    name: error.name.trim(),
+                    message: error.message.trim(),
+                    stack: error.stack.trim(),
+                    url: error.url,
+                });
+            } else {
+                id = error.message.trim();
+                body = _('Click for more information');
+                priority = Gio.NotificationPriority.HIGH;
 
-                default:
-                    id = `${Date.now()}`;
-                    title = error.name.trim();
-                    body = _('Click for more information');
-                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
-                    error = new GLib.Variant('a{ss}', {
-                        name: error.name.trim(),
-                        message: error.message.trim(),
-                        stack: error.stack.trim()
-                    });
-                    notif.set_default_action_and_target('app.error', error);
-                    priority = Gio.NotificationPriority.HIGH;
+                target = new GLib.Variant('a{ss}', {
+                    name: error.name.trim(),
+                    message: error.message.trim(),
+                    stack: error.stack.trim(),
+                });
             }
 
-            // Create an urgent notification
-            notif.set_title(`Zorin Connect: ${title}`);
+            notif.set_title(`Zorin Connect: ${error.name.trim()}`);
             notif.set_body(body);
             notif.set_icon(icon);
             notif.set_priority(priority);
+            notif.set_default_action_and_target('app.error', target);
 
-            // Bypass override
-            super.send_notification(id, notif);
+            this.send_notification(id, notif);
         } catch (e) {
             logError(e);
         }
@@ -620,13 +229,13 @@ const Service = GObject.registerClass({
 
         // Watch *this* file and stop the service if it's updated/uninstalled
         this._serviceMonitor = Gio.File.new_for_path(
-            zorin_connect.extdatadir + '/service/daemon.js'
+            `${Config.PACKAGE_DATADIR}/service/daemon.js`
         ).monitor(Gio.FileMonitorFlags.WATCH_MOVES, null);
         this._serviceMonitor.connect('changed', () => this.quit());
 
         // Init some resources
-        let provider = new Gtk.CssProvider();
-        provider.load_from_resource(zorin_connect.app_path + '/application.css');
+        const provider = new Gtk.CssProvider();
+        provider.load_from_resource(`${Config.APP_PATH}/application.css`);
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             provider,
@@ -635,42 +244,41 @@ const Service = GObject.registerClass({
 
         // Ensure our handlers are registered
         try {
-            let appInfo = Gio.DesktopAppInfo.new(`${zorin_connect.app_id}.desktop`);
+            const appInfo = Gio.DesktopAppInfo.new(`${Config.APP_ID}.desktop`);
             appInfo.add_supports_type('x-scheme-handler/sms');
             appInfo.add_supports_type('x-scheme-handler/tel');
         } catch (e) {
-            logError(e);
+            debug(e);
         }
 
         // GActions & GSettings
-        this._initSettings();
         this._initActions();
-        this._initComponents();
-        this._initBackends();
 
-        // Load cached devices
-        for (let id of this.settings.get_strv('devices')) {
-            let device = new Device.Device({body: {deviceId: id}});
-            this._devices.set(id, device);
-        }
-
-        // Reconnect to paired devices every 5 seconds
-        GLib.timeout_add_seconds(300, 5, this._reconnect.bind(this));
+        this.manager.start();
     }
 
     vfunc_dbus_register(connection, object_path) {
-        this.objectManager = new Gio.DBusObjectManagerServer({
+        if (!super.vfunc_dbus_register(connection, object_path))
+            return false;
+
+        this.manager = new Manager.Manager({
             connection: connection,
-            object_path: object_path
+            object_path: object_path,
         });
-        
+
         return true;
+    }
+
+    vfunc_dbus_unregister(connection, object_path) {
+        this.manager.destroy();
+
+        super.vfunc_dbus_unregister(connection, object_path);
     }
 
     vfunc_open(files, hint) {
         super.vfunc_open(files, hint);
 
-        for (let file of files) {
+        for (const file of files) {
             let action, parameter, title;
 
             try {
@@ -698,10 +306,10 @@ const Service = GObject.registerClass({
                 }
 
                 // Show chooser dialog
-                new ServiceUI.DeviceChooserDialog({
+                new ServiceUI.DeviceChooser({
                     title: title,
-                    action: action,
-                    parameter: parameter
+                    action_name: action,
+                    action_target: parameter,
                 });
             } catch (e) {
                 logError(e, `Zorin Connect: Opening ${file.get_uri()}`);
@@ -711,34 +319,22 @@ const Service = GObject.registerClass({
 
     vfunc_shutdown() {
         // Dispose GSettings
-        this.settings.disconnect(this._nameChangedId);
-        this.settings.run_dispose();
+        if (this._settings !== undefined)
+            this.settings.run_dispose();
 
-        // Destroy the backends first to avoid any further connections
-        for (let [name, backend] of this.backends) {
-            try {
-                backend.destroy();
-            } catch (e) {
-                logError(e, `'${name}' Backend`);
-            }
-        }
+        this.manager.stop();
 
-        // We must unexport the devices before ::dbus-unregister is emitted
-        this._devices.forEach(device => device.destroy());
+        // Exhaust the event loop to ensure any pending operations complete
+        const context = GLib.MainContext.default();
 
-        // Destroy the components last
-        for (let [name, component] of this.components) {
-            try {
-                component.destroy();
-            } catch (e) {
-                logError(e, `'${name}' Component`);
-            }
-        }
+        while (context.iteration(false))
+            continue;
 
-        // Chain up last (application->priv->did_shutdown)
+        // Force a GC to prevent any more calls back into JS, then chain-up
+        imports.system.gc();
         super.vfunc_shutdown();
     }
-    
+
     /*
      * CLI
      */
@@ -754,7 +350,7 @@ const Service = GObject.registerClass({
             _('List available devices'),
             null
         );
-        
+
         this.add_main_option(
             'list-all',
             'a'.charCodeAt(0),
@@ -763,7 +359,7 @@ const Service = GObject.registerClass({
             _('List all devices'),
             null
         );
-        
+
         this.add_main_option(
             'device',
             'd'.charCodeAt(0),
@@ -778,7 +374,7 @@ const Service = GObject.registerClass({
          */
         this.add_main_option(
             'pair',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
             _('Pair'),
@@ -787,7 +383,7 @@ const Service = GObject.registerClass({
 
         this.add_main_option(
             'unpair',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
             _('Unpair'),
@@ -799,16 +395,16 @@ const Service = GObject.registerClass({
          */
         this.add_main_option(
             'message',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING_ARRAY,
             _('Send SMS'),
             '<phone-number>'
         );
-        
+
         this.add_main_option(
             'message-body',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
             _('Message Body'),
@@ -820,16 +416,16 @@ const Service = GObject.registerClass({
          */
         this.add_main_option(
             'notification',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
             _('Send Notification'),
             '<title>'
         );
-        
+
         this.add_main_option(
             'notification-appname',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
             _('Notification App Name'),
@@ -838,7 +434,7 @@ const Service = GObject.registerClass({
 
         this.add_main_option(
             'notification-body',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
             _('Notification Body'),
@@ -847,7 +443,7 @@ const Service = GObject.registerClass({
 
         this.add_main_option(
             'notification-icon',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
             _('Notification Icon'),
@@ -856,7 +452,7 @@ const Service = GObject.registerClass({
 
         this.add_main_option(
             'notification-id',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING,
             _('Notification ID'),
@@ -865,25 +461,25 @@ const Service = GObject.registerClass({
 
         this.add_main_option(
             'photo',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
             _('Photo'),
             null
         );
-        
+
         this.add_main_option(
             'ping',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
             _('Ping'),
             null
         );
-        
+
         this.add_main_option(
             'ring',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.NONE,
             _('Ring'),
@@ -895,7 +491,7 @@ const Service = GObject.registerClass({
          */
         this.add_main_option(
             'share-file',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.FILENAME_ARRAY,
             _('Share File'),
@@ -904,13 +500,22 @@ const Service = GObject.registerClass({
 
         this.add_main_option(
             'share-link',
-            null,
+            0,
             GLib.OptionFlags.NONE,
             GLib.OptionArg.STRING_ARRAY,
             _('Share Link'),
             '<URL>'
         );
-        
+
+        this.add_main_option(
+            'share-text',
+            0,
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            _('Share Text'),
+            '<text>'
+        );
+
         /*
          * Misc
          */
@@ -925,11 +530,10 @@ const Service = GObject.registerClass({
     }
 
     _cliAction(id, name, parameter = null) {
-        let parameters = [];
+        const parameters = [];
 
-        if (parameter instanceof GLib.Variant) {
+        if (parameter instanceof GLib.Variant)
             parameters[0] = parameter;
-        }
 
         id = id.replace(/\W+/g, '_');
 
@@ -945,9 +549,9 @@ const Service = GObject.registerClass({
             null
         );
     }
-    
+
     _cliListDevices(full = true) {
-        let result = Gio.DBus.session.call_sync(
+        const result = Gio.DBus.session.call_sync(
             'org.gnome.Shell.Extensions.ZorinConnect',
             '/org/gnome/Shell/Extensions/ZorinConnect',
             'org.freedesktop.DBus.ObjectManager',
@@ -959,103 +563,100 @@ const Service = GObject.registerClass({
             null
         );
 
-        let variant = result.unpack()[0].unpack();
+        const variant = result.unpack()[0].unpack();
         let device;
 
         for (let object of Object.values(variant)) {
-            object = object.full_unpack();
+            object = object.recursiveUnpack();
             device = object['org.gnome.Shell.Extensions.ZorinConnect.Device'];
-            
-            if (full) {
+
+            if (full)
                 print(`${device.Id}\t${device.Name}\t${device.Connected}\t${device.Paired}`);
-            } else if (device.Connected && device.Paired) {
+            else if (device.Connected && device.Paired)
                 print(device.Id);
-            }
         }
     }
 
     _cliMessage(id, options) {
-        if (!options.contains('message-body')) {
+        if (!options.contains('message-body'))
             throw new TypeError('missing --message-body option');
-        }
 
-        let address = options.lookup_value('message', null).deep_unpack();
-        let body = options.lookup_value('message-body', null).deep_unpack();
+        // TODO: currently we only support single-recipient messaging
+        const addresses = options.lookup_value('message', null).deepUnpack();
+        const body = options.lookup_value('message-body', null).deepUnpack();
 
-        this._cliAction(id, 'sendSms', GLib.Variant.new('(ss)', [address, body]));
+        this._cliAction(
+            id,
+            'sendSms',
+            GLib.Variant.new('(ss)', [addresses[0], body])
+        );
     }
 
     _cliNotify(id, options) {
-        let title = options.lookup_value('notification', null).unpack();
+        const title = options.lookup_value('notification', null).unpack();
         let body = '';
         let icon = null;
         let nid = `${Date.now()}`;
-        let appName = zorin_connect.settings.get_string('name');
+        let appName = 'Zorin Connect CLI';
 
-        if (options.contains('notification-id')) {
+        if (options.contains('notification-id'))
             nid = options.lookup_value('notification-id', null).unpack();
-        }
 
-        if (options.contains('notification-body')) {
+        if (options.contains('notification-body'))
             body = options.lookup_value('notification-body', null).unpack();
-        }
 
-        if (options.contains('notification-app')) {
+        if (options.contains('notification-appname'))
             appName = options.lookup_value('notification-appname', null).unpack();
-        }
 
         if (options.contains('notification-icon')) {
             icon = options.lookup_value('notification-icon', null).unpack();
             icon = Gio.Icon.new_for_string(icon);
+        } else {
+            icon = new Gio.ThemedIcon({
+                name: 'org.gnome.Shell.Extensions.ZorinConnect',
+            });
         }
 
-        let notif = {
-            appName: appName,
-            id: nid,
-            title: title,
-            text: body,
-            ticker: `${title}: ${body}`,
-            time: `${Date.now()}`,
-            isClearable: true,
-            icon: icon
-        };
-
-        let parameter = GLib.Variant.full_pack(notif);
-        this._cliAction(id, 'sendNotification', parameter);
-    }
-    
-    _cliShareFile(device, options) {
-        let files = options.lookup_value('share-file', null);
-
-        debug(files.print(true));
-
-        files = files.deep_unpack();
-
-        files.map(file => {
-            if (file instanceof Uint8Array) {
-                file = imports.byteArray.toString(file);
-            }
-
-            this._cliAction(device, 'shareFile', GLib.Variant.new('(sb)', [file, false]));
+        const notification = new GLib.Variant('a{sv}', {
+            appName: GLib.Variant.new_string(appName),
+            id: GLib.Variant.new_string(nid),
+            title: GLib.Variant.new_string(title),
+            text: GLib.Variant.new_string(body),
+            ticker: GLib.Variant.new_string(`${title}: ${body}`),
+            time: GLib.Variant.new_string(`${Date.now()}`),
+            isClearable: GLib.Variant.new_boolean(true),
+            icon: icon.serialize(),
         });
+
+        this._cliAction(id, 'sendNotification', notification);
+    }
+
+    _cliShareFile(device, options) {
+        const files = options.lookup_value('share-file', null).deepUnpack();
+
+        for (let file of files) {
+            file = imports.byteArray.toString(file);
+            this._cliAction(device, 'shareFile', GLib.Variant.new('(sb)', [file, false]));
+        }
     }
 
     _cliShareLink(device, options) {
-        let uris = options.lookup_value('share-link', null).deep_unpack();
+        const uris = options.lookup_value('share-link', null).unpack();
 
-        uris.map(uri => {
-            if (uri instanceof Uint8Array) {
-                uri = imports.byteArray.toString(uri);
-            }
-            
-            this._cliAction(device, 'shareUri', GLib.Variant.new_string(uri));
-        });
+        for (const uri of uris)
+            this._cliAction(device, 'shareUri', uri);
+    }
+
+    _cliShareText(device, options) {
+        const text = options.lookup_value('share-text', null).unpack();
+
+        this._cliAction(device, 'shareText', GLib.Variant.new_string(text));
     }
 
     vfunc_handle_local_options(options) {
         try {
             if (options.contains('version')) {
-                print(`Zorin Connect ${zorin_connect.metadata.version}`);
+                print(`Zorin Connect ${Config.PACKAGE_VERSION}`);
                 return 0;
             }
 
@@ -1073,15 +674,15 @@ const Service = GObject.registerClass({
 
             // We need a device for anything else; exit since this is probably
             // the daemon being started.
-            if (!options.contains('device')) {
+            if (!options.contains('device'))
                 return -1;
-            }
 
-            let id = options.lookup_value('device', null).unpack();
+            const id = options.lookup_value('device', null).unpack();
 
             // Pairing
             if (options.contains('pair')) {
                 this._cliAction(id, 'pair');
+                return 0;
             }
 
             if (options.contains('unpair')) {
@@ -1090,33 +691,29 @@ const Service = GObject.registerClass({
             }
 
             // Plugins
-            if (options.contains('message')) {
+            if (options.contains('message'))
                 this._cliMessage(id, options);
-            }
 
-            if (options.contains('notification')) {
+            if (options.contains('notification'))
                 this._cliNotify(id, options);
-            }
 
-            if (options.contains('photo')) {
+            if (options.contains('photo'))
                 this._cliAction(id, 'photo');
-            }
 
-            if (options.contains('ping')) {
+            if (options.contains('ping'))
                 this._cliAction(id, 'ping', GLib.Variant.new_string(''));
-            }
 
-            if (options.contains('ring')) {
+            if (options.contains('ring'))
                 this._cliAction(id, 'ring');
-            }
 
-            if (options.contains('share-file')) {
+            if (options.contains('share-file'))
                 this._cliShareFile(id, options);
-            }
 
-            if (options.contains('share-link')) {
-                this._cliShareFile(id, options);
-            }
+            if (options.contains('share-link'))
+                this._cliShareLink(id, options);
+
+            if (options.contains('share-text'))
+                this._cliShareLink(id, options);
 
             return 0;
         } catch (e) {

@@ -1,1 +1,3 @@
 usr/share
+debian/zorin-connect /etc/ufw/applications.d/
+debian/zorin-connect.gufw /etc/gufw/app_profiles/

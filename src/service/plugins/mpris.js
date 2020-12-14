@@ -4,8 +4,11 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const PluginsBase = imports.service.plugins.base;
-const DBus = imports.service.components.dbus;
+const Components = imports.service.components;
+const Config = imports.config;
+const DBus = imports.service.utils.dbus;
+const MPRIS = imports.service.components.mpris;
+const PluginBase = imports.service.plugin;
 
 
 var Metadata = {
@@ -13,7 +16,7 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.MPRIS',
     incomingCapabilities: ['kdeconnect.mpris', 'kdeconnect.mpris.request'],
     outgoingCapabilities: ['kdeconnect.mpris', 'kdeconnect.mpris.request'],
-    actions: {}
+    actions: {},
 };
 
 
@@ -24,52 +27,39 @@ var Metadata = {
  * See also:
  *     https://specifications.freedesktop.org/mpris-spec/latest/
  *     https://github.com/GNOME/gnome-shell/blob/master/js/ui/mpris.js
- *     https://github.com/JasonLG1979/gnome-shell-extensions-mediaplayer/wiki/Known-Player-Bugs
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'ZorinConnectMPRISPlugin',
-}, class Plugin extends PluginsBase.Plugin {
+}, class Plugin extends PluginBase.Plugin {
 
     _init(device) {
         super._init(device, 'mpris');
 
-        try {
-            this._mpris = this.service.components.get('mpris');
+        this._players = new Map();
+        this._transferring = new WeakSet();
+        this._updating = new WeakSet();
 
-            this._notifyPlayersId = this._mpris.connect(
-                'notify::players',
-                this._sendPlayerList.bind(this)
-            );
+        this._mpris = Components.acquire('mpris');
 
-            this._playerChangedId = this._mpris.connect(
-                'player-changed',
-                this._onPlayerChanged.bind(this)
-            );
+        this._playerAddedId = this._mpris.connect(
+            'player-added',
+            this._sendPlayerList.bind(this)
+        );
 
-            this._playerSeekedId = this._mpris.connect(
-                'player-seeked',
-                this._onPlayerSeeked.bind(this)
-            );
-        } catch (e) {
-            this.destroy();
-            throw e;
-        }
-    }
+        this._playerRemovedId = this._mpris.connect(
+            'player-removed',
+            this._sendPlayerList.bind(this)
+        );
 
-    get players() {
-        if (this._players === undefined) {
-            this._players = new Map();
-        }
+        this._playerChangedId = this._mpris.connect(
+            'player-changed',
+            this._onPlayerChanged.bind(this)
+        );
 
-        return this._players;
-    }
-
-    handlePacket(packet) {
-        if (packet.type === 'kdeconnect.mpris.request') {
-            this._handleRequest(packet);
-        } else if (packet.type === 'kdeconnect.mpris') {
-            this._handleStatus(packet);
-        }
+        this._playerSeekedId = this._mpris.connect(
+            'player-seeked',
+            this._onPlayerSeeked.bind(this)
+        );
     }
 
     connected() {
@@ -79,104 +69,145 @@ var Plugin = GObject.registerClass({
         this._sendPlayerList();
     }
 
-    _handleStatus(packet) {
-        try {
-            if (packet.body.hasOwnProperty('playerList')) {
-                this._handlePlayerList(packet.body.playerList);
-            } else if (packet.body.hasOwnProperty('player')) {
-                this._handlePlayerState(packet.body);
-            }
-        } catch (e) {
-            debug(e, `${this.device.name}: MPRIS`);
+    disconnected() {
+        super.disconnected();
+
+        for (const [identity, player] of this._players) {
+            this._players.delete(identity);
+            player.destroy();
+        }
+    }
+
+    handlePacket(packet) {
+        switch (packet.type) {
+            case 'kdeconnect.mpris':
+                this._handleUpdate(packet);
+                break;
+
+            case 'kdeconnect.mpris.request':
+                this._handleRequest(packet);
+                break;
         }
     }
 
     /**
-     * Handle a player list update
+     * Handle a remote player update.
      *
-     * @param {array} playerList - A list of remote player names
+     * @param {Core.Packet} packet - A `kdeconnect.mpris`
+     */
+    _handleUpdate(packet) {
+        try {
+            if (packet.body.hasOwnProperty('playerList'))
+                this._handlePlayerList(packet.body.playerList);
+            else if (packet.body.hasOwnProperty('player'))
+                this._handlePlayerUpdate(packet);
+        } catch (e) {
+            debug(e, this.device.name);
+        }
+    }
+
+    /**
+     * Handle an updated list of remote players.
+     *
+     * @param {string[]} playerList - A list of remote player names
      */
     _handlePlayerList(playerList) {
-        for (let player of this.players.values()) {
+        // Destroy removed players before adding new ones
+        for (const player of this._players.values()) {
             if (!playerList.includes(player.Identity)) {
-                this.players.delete(player.Identity);
+                this._players.delete(player.Identity);
                 player.destroy();
             }
         }
 
-        for (let identity of playerList) {
-            this._device.sendPacket({
+        for (const identity of playerList) {
+            if (!this._players.has(identity)) {
+                const player = new PlayerRemote(this.device, identity);
+                this._players.set(identity, player);
+            }
+
+            // Always request player updates; packets are cheap
+            this.device.sendPacket({
                 type: 'kdeconnect.mpris.request',
                 body: {
                     player: identity,
                     requestNowPlaying: true,
-                    requestVolume: true
-                }
+                    requestVolume: true,
+                },
             });
         }
     }
 
     /**
-     * Handle a player state update
+     * Handle an update for a remote player.
      *
-     * @param {object} state - The body of a kdeconnect.mpris packet
+     * @param {Object} packet - A `kdeconnect.mpris` packet
      */
-    _handlePlayerState(state) {
-        let player = this.players.get(state.player);
+    _handlePlayerUpdate(packet) {
+        const player = this._players.get(packet.body.player);
 
-        if (player === undefined) {
-            player = new RemotePlayer(this.device, state);
-            this.players.set(state.player, player);
-        } else {
-            player.parseState(state);
-        }
+        if (player === undefined)
+            return;
+
+        if (packet.body.hasOwnProperty('transferringAlbumArt'))
+            player.handleAlbumArt(packet);
+        else
+            player.update(packet.body);
     }
 
     /**
-     * Request the list of player identities
+     * Request a list of remote players.
      */
     _requestPlayerList() {
         this.device.sendPacket({
             type: 'kdeconnect.mpris.request',
             body: {
-                requestPlayerList: true
-            }
+                requestPlayerList: true,
+            },
         });
     }
 
+    /**
+     * Handle a request for player information or action.
+     *
+     * @param {Core.Packet} packet - a `kdeconnect.mpris.request`
+     * @return {undefined} no return value
+     */
     _handleRequest(packet) {
         // A request for the list of players
-        if (packet.body.requestPlayerList) {
-            this._sendPlayerList();
+        if (packet.body.hasOwnProperty('requestPlayerList'))
+            return this._sendPlayerList();
 
         // A request for an unknown player; send the list of players
-        } else if (!this._mpris.players.has(packet.body.player)) {
-            this._sendPlayerList();
+        if (!this._mpris.hasPlayer(packet.body.player))
+            return this._sendPlayerList();
 
         // An album art request
-        } else if (packet.body.hasOwnProperty('albumArtUrl')) {
-            this._sendAlbumArt(packet);
+        if (packet.body.hasOwnProperty('albumArtUrl'))
+            return this._sendAlbumArt(packet);
 
         // A player command
-        } else {
-            this._handleCommand(packet);
-        }
+        this._handleCommand(packet);
     }
 
     /**
      * Handle an incoming player command or information request
      *
-     * @param {kdeconnect.mpris.request} - A command for a specific player
+     * @param {Core.Packet} packet - A `kdeconnect.mpris.request`
      */
     async _handleCommand(packet) {
-        if (this._updating || !this.settings.get_boolean('share-players')) {
+        if (!this.settings.get_boolean('share-players'))
             return;
-        }
+
+        let player;
 
         try {
-            this._updating = true;
+            player = this._mpris.getPlayer(packet.body.player);
 
-            let player = this._mpris.players.get(packet.body.player);
+            if (player === undefined || this._updating.has(player))
+                return;
+
+            this._updating.add(player);
 
             // Player Actions
             if (packet.body.hasOwnProperty('action')) {
@@ -191,162 +222,164 @@ var Plugin = GObject.registerClass({
                         break;
 
                     default:
-                        logError(new Error(`unknown action: ${packet.body.action}`));
+                        debug(`unknown action: ${packet.body.action}`);
                 }
             }
 
             // Player Properties
-            if (packet.body.hasOwnProperty('setVolume')) {
+            if (packet.body.hasOwnProperty('setVolume'))
                 player.Volume = packet.body.setVolume / 100;
-            }
 
-            if (packet.body.hasOwnProperty('Seek')) {
-                await player.Seek(packet.body.Seek);
-            }
+            if (packet.body.hasOwnProperty('Seek'))
+                await player.Seek(packet.body.Seek * 1000);
 
             if (packet.body.hasOwnProperty('SetPosition')) {
-                let offset = (packet.body.SetPosition * 1000) - player.Position;
+                const offset = (packet.body.SetPosition * 1000) - player.Position;
                 await player.Seek(offset);
             }
 
             // Information Request
             let hasResponse = false;
 
-            let response = {
+            const response = {
                 type: 'kdeconnect.mpris',
-                body: {}
+                body: {
+                    player: packet.body.player,
+                },
             };
 
             if (packet.body.hasOwnProperty('requestNowPlaying')) {
                 hasResponse = true;
 
-                response.body = {
+                Object.assign(response.body, {
                     pos: Math.floor(player.Position / 1000),
                     isPlaying: (player.PlaybackStatus === 'Playing'),
                     canPause: player.CanPause,
                     canPlay: player.CanPlay,
                     canGoNext: player.CanGoNext,
                     canGoPrevious: player.CanGoPrevious,
-                    canSeek: player.CanSeek
-                };
+                    canSeek: player.CanSeek,
+                });
 
-                Object.assign(response.body, this._getPlayerMetadata(player));
+                const metadata = player.Metadata;
+
+                if (metadata.hasOwnProperty('mpris:artUrl')) {
+                    const file = Gio.File.new_for_uri(metadata['mpris:artUrl']);
+                    response.body.albumArtUrl = file.get_uri();
+                }
+
+                if (metadata.hasOwnProperty('mpris:length')) {
+                    const trackLen = Math.floor(metadata['mpris:length'] / 1000);
+                    response.body.length = trackLen;
+                }
+
+                if (metadata.hasOwnProperty('xesam:artist')) {
+                    const artists = metadata['xesam:artist'];
+                    response.body.artist = artists.join(', ');
+                }
+
+                if (metadata.hasOwnProperty('xesam:title'))
+                    response.body.title = metadata['xesam:title'];
+
+                if (metadata.hasOwnProperty('xesam:album'))
+                    response.body.album = metadata['xesam:album'];
+
+                // Now Playing
+                if (response.body.artist && response.body.title) {
+                    response.body.nowPlaying = [
+                        response.body.artist,
+                        response.body.title,
+                    ].join(' - ');
+                } else if (response.body.artist) {
+                    response.body.nowPlaying = response.body.artist;
+                } else if (response.body.title) {
+                    response.body.nowPlaying = response.body.title;
+                } else {
+                    response.body.nowPlaying = _('Unknown');
+                }
             }
 
             if (packet.body.hasOwnProperty('requestVolume')) {
                 hasResponse = true;
-                response.body.volume = player.Volume * 100;
+                response.body.volume = Math.floor(player.Volume * 100);
             }
 
-            if (hasResponse) {
-                response.body.player = packet.body.player;
+            if (hasResponse)
                 this.device.sendPacket(response);
-            }
         } catch (e) {
-            logError(e);
+            debug(e, this.device.name);
         } finally {
-            this._updating = false;
+            this._updating.delete(player);
         }
-    }
-
-    /**
-     * Get the track metadata for a player
-     *
-     * @param {Gio.DBusProxy} player - The player to get track info for
-     * @return {Object} - An object of track data in MPRIS packet body format
-     */
-    _getPlayerMetadata(player) {
-        let metadata = {};
-
-        try {
-            if (player.Metadata !== null) {
-                let nowPlaying = player.Metadata['xesam:title'];
-
-                if (player.Metadata.hasOwnProperty('xesam:artist')) {
-                    nowPlaying = `${player.Metadata['xesam:artist']} - ${nowPlaying}`;
-                }
-
-                metadata.nowPlaying = nowPlaying;
-
-                if (player.Metadata.hasOwnProperty('mpris:artUrl')) {
-                    metadata.albumArtUrl = player.Metadata['mpris:artUrl'];
-                }
-
-                if (player.Metadata.hasOwnProperty('mpris:length')) {
-                    metadata.length = Math.floor(player.Metadata['mpris:length'] / 1000);
-                }
-            }
-        } catch (e) {
-            logError(e);
-        }
-
-        return metadata;
     }
 
     _onPlayerChanged(mpris, player) {
-        if (!this.settings.get_boolean('share-players')) {
+        if (!this.settings.get_boolean('share-players'))
             return;
-        }
 
         this._handleCommand({
             body: {
                 player: player.Identity,
                 requestNowPlaying: true,
-                requestVolume: true
-            }
+                requestVolume: true,
+            },
         });
     }
 
-    _onPlayerSeeked(mpris, player) {
+    _onPlayerSeeked(mpris, player, offset) {
+        // TODO: although we can handle full seeked signals, kdeconnect-android
+        //       does not, and expects a position update instead
         this.device.sendPacket({
             type: 'kdeconnect.mpris',
             body: {
                 player: player.Identity,
-                pos: Math.floor(player.Position / 1000)
-            }
+                pos: Math.floor(player.Position / 1000),
+                // Seek: Math.floor(offset / 1000),
+            },
         });
     }
 
     async _sendAlbumArt(packet) {
+        let player;
+
         try {
             // Reject concurrent requests for album art
-            if (this._transferring) {
-                return;
-            }
+            player = this._mpris.getPlayer(packet.body.player);
 
-            let player = this._mpris.players.get(packet.body.player);
-
-            if (player.Metadata === null) {
+            if (player === undefined || this._transferring.has(player))
                 return;
-            }
 
             // Ensure the requested albumArtUrl matches the current mpris:artUrl
-            if (packet.body.albumArtUrl !== player.Metadata['mpris:artUrl']) {
+            const metadata = player.Metadata;
+
+            if (!metadata.hasOwnProperty('mpris:artUrl'))
                 return;
-            }
 
-            // Start the transfer process
-            this._transferring = true;
+            const file = Gio.File.new_for_uri(metadata['mpris:artUrl']);
+            const request = Gio.File.new_for_uri(packet.body.albumArtUrl);
 
-            let file = Gio.File.new_for_uri(packet.body.albumArtUrl);
+            if (file.get_uri() !== request.get_uri())
+                throw RangeError(`invalid URI "${packet.body.albumArtUrl}"`);
 
-            let transfer = this.device.createTransfer({
-                input_stream: file.read(null),
-                size: file.query_info('standard::size', 0, null).get_size()
-            });
+            // Transfer the album art
+            this._transferring.add(player);
 
-            await transfer.upload({
+            const transfer = this.device.createTransfer();
+
+            transfer.addFile({
                 type: 'kdeconnect.mpris',
                 body: {
                     transferringAlbumArt: true,
                     player: packet.body.player,
-                    albumArtUrl: packet.body.albumArtUrl
-                }
-            });
+                    albumArtUrl: packet.body.albumArtUrl,
+                },
+            }, file);
+
+            await transfer.start();
         } catch (e) {
-            debug(e, 'transferring album art');
+            debug(e, this.device.name);
         } finally {
-            this._transferring = false;
+            this._transferring.delete(player);
         }
     }
 
@@ -357,31 +390,30 @@ var Plugin = GObject.registerClass({
     _sendPlayerList() {
         let playerList = [];
 
-        if (this.settings.get_boolean('share-players')) {
-            playerList = this._mpris.identities;
-        }
+        if (this.settings.get_boolean('share-players'))
+            playerList = this._mpris.getIdentities();
 
         this.device.sendPacket({
             type: 'kdeconnect.mpris',
             body: {
                 playerList: playerList,
-                supportAlbumArtPayload: true
-            }
+                supportAlbumArtPayload: true,
+            },
         });
     }
 
     destroy() {
-        try {
-            this._mpris.disconnect(this._notifyPlayersId);
+        if (this._mpris !== undefined) {
+            this._mpris.disconnect(this._playerAddedId);
+            this._mpris.disconnect(this._playerRemovedId);
             this._mpris.disconnect(this._playerChangedId);
             this._mpris.disconnect(this._playerSeekedId);
-        } catch (e) {
-            // Silence errors
+            this._mpris = Components.release('mpris');
         }
 
-        for (let [identity, player] of this.players.entries()) {
+        for (const [identity, player] of this._players) {
+            this._players.delete(identity);
             player.destroy();
-            this.players.delete(identity);
         }
 
         super.destroy();
@@ -392,194 +424,209 @@ var Plugin = GObject.registerClass({
 /*
  * A class for mirroring a remote Media Player on DBus
  */
-const MPRISIface = zorin_connect.dbusinfo.lookup_interface('org.mpris.MediaPlayer2');
-const MPRISPlayerIface = zorin_connect.dbusinfo.lookup_interface('org.mpris.MediaPlayer2.Player');
+const MPRISIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2');
+const MPRISPlayerIface = Config.DBUS.lookup_interface('org.mpris.MediaPlayer2.Player');
 
 
-var RemotePlayer = GObject.registerClass({
-    GTypeName: 'ZorinConnectMPRISRemotePlayer',
-    Properties: {
-        'PlaybackStatus': GObject.ParamSpec.string(
-            'PlaybackStatus',
-            'Playback Status',
-            'The current playback status.',
-            GObject.ParamFlags.READABLE,
-            null
-        ),
-        'LoopStatus': GObject.ParamSpec.string(
-            'LoopStatus',
-            'Loop Status',
-            'The current loop status.',
-            GObject.ParamFlags.READWRITE,
-            null
-        ),
-        'Rate': GObject.ParamSpec.double(
-            'Rate',
-            'Rate',
-            'The current playback rate.',
-            GObject.ParamFlags.READWRITE,
-            0.0, 1.0,
-            1.0
-        ),
-        'Shuffle': GObject.ParamSpec.boolean(
-            'Shuffle',
-            'Shuffle',
-            'Whether track changes are linear.',
-            GObject.ParamFlags.READWRITE,
-            null
-        ),
-        'Metadata': GObject.param_spec_variant(
-            'Metadata',
-            'Metadata',
-            'The metadata of the current element.',
-            new GLib.VariantType('a{sv}'),
-            null,
-            GObject.ParamFlags.READABLE
-        ),
-        'Volume': GObject.ParamSpec.double(
-            'Volume',
-            'Volume',
-            'The volume level.',
-            GObject.ParamFlags.READWRITE,
-            0.0, 1.0,
-            1.0
-        ),
-        'Position': GObject.ParamSpec.int64(
-            'Position',
-            'Position',
-            'The current track position in microseconds.',
-            GObject.ParamFlags.READABLE,
-            0, Number.MAX_SAFE_INTEGER,
-            0
-        ),
-        'CanGoNext': GObject.ParamSpec.boolean(
-            'CanGoNext',
-            'Can Go Next',
-            'Whether the client can call the Next method.',
-            GObject.ParamFlags.READABLE,
-            null
-        ),
-        'CanGoPrevious': GObject.ParamSpec.boolean(
-            'CanGoPrevious',
-            'Can Go Previous',
-            'Whether the client can call the Previous method.',
-            GObject.ParamFlags.READABLE,
-            null
-        ),
-        'CanPlay': GObject.ParamSpec.boolean(
-            'CanPlay',
-            'Can Play',
-            'Whether playback can be started using Play or PlayPause.',
-            GObject.ParamFlags.READABLE,
-            null
-        ),
-        'CanPause': GObject.ParamSpec.boolean(
-            'CanPause',
-            'Can Pause',
-            'Whether playback can be paused using Play or PlayPause.',
-            GObject.ParamFlags.READABLE,
-            null
-        ),
-        'CanSeek': GObject.ParamSpec.boolean(
-            'CanSeek',
-            'Can Seek',
-            'Whether the client can control the playback position using Seek and SetPosition.',
-            GObject.ParamFlags.READABLE,
-            null
-        ),
-        'CanControl': GObject.ParamSpec.boolean(
-            'CanControl',
-            'Can Control',
-            'Whether the media player may be controlled over this interface.',
-            GObject.ParamFlags.READABLE,
-            null
-        )
-    },
-    Signals: {
-        'Seeked': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [GObject.TYPE_INT64]
-        }
-    }
-}, class RemotePlayer extends GObject.Object {
+const PlayerRemote = GObject.registerClass({
+    GTypeName: 'ZorinConnectMPRISPlayerRemote',
+}, class PlayerRemote extends MPRIS.Player {
 
-    _init(device, initialState) {
+    _init(device, identity) {
         super._init();
 
-        this._isPlaying = false;
         this._device = device;
-        this.parseState(initialState);
+        this._Identity = identity;
+        this._isPlaying = false;
 
-        // Own name
-        let name = [device.name, this.Identity].join('').replace(/[\W]*/g, '');
+        this._artist = null;
+        this._title = null;
+        this._album = null;
+        this._length = 0;
+        this._artUrl = null;
 
-        this._ownerId = Gio.bus_own_name(
-            Gio.BusType.SESSION,
-            `org.mpris.MediaPlayer2.ZorinConnect.${name}`,
-            Gio.BusNameOwnerFlags.NONE,
-            this._onBusAcquired.bind(this),
-            this._onNameAcquired.bind(this),
-            this._onNameLost.bind(this)
-        );
+        this._ownerId = 0;
+        this._connection = null;
+        this._applicationIface = null;
+        this._playerIface = null;
     }
 
-    _onBusAcquired(connection, name) {
-        debug(arguments);
+    _getFile(albumArtUrl) {
+        const hash = GLib.compute_checksum_for_string(GLib.ChecksumType.MD5,
+            albumArtUrl, -1);
+        const path = GLib.build_filenamev([Config.CACHEDIR, hash]);
 
-        this._applicationIface = new DBus.Interface({
-            g_instance: this,
-            g_connection: Gio.DBus.session,
-            g_object_path: '/org/mpris/MediaPlayer2',
-            g_interface_info: MPRISIface
-        });
-
-        this._playerIface = new DBus.Interface({
-            g_instance: this,
-            g_connection: Gio.DBus.session,
-            g_object_path: '/org/mpris/MediaPlayer2',
-            g_interface_info: MPRISPlayerIface
-        });
+        return Gio.File.new_for_uri(`file://${path}`);
     }
 
-    _onNameAcquired(connection, name) {
+    _requestAlbumArt(state) {
+        if (this._artUrl === state.albumArtUrl)
+            return;
+
+        const file = this._getFile(state.albumArtUrl);
+
+        if (file.query_exists(null)) {
+            this._artUrl = file.get_uri();
+            this._Metadata = undefined;
+            this.notify('Metadata');
+        } else {
+            this.device.sendPacket({
+                type: 'kdeconnect.mpris.request',
+                body: {
+                    player: this.Identity,
+                    albumArtUrl: state.albumArtUrl,
+                },
+            });
+        }
     }
 
-    _onNameLost(connection, name) {
-        debug(arguments);
-    }
-
-    parseState(state) {
-        this._Identity = state.player;
-
-        // Metadata
+    _updateMetadata(state) {
         let metadataChanged = false;
 
-        if (state.hasOwnProperty('title')) {
+        if (state.hasOwnProperty('artist')) {
+            if (this._artist !== state.artist) {
+                this._artist = state.artist;
+                metadataChanged = true;
+            }
+        } else if (this._artist) {
+            this._artist = null;
             metadataChanged = true;
-            this._title = state.title;
         }
 
-        if (state.hasOwnProperty('artist')) {
+        if (state.hasOwnProperty('title')) {
+            if (this._title !== state.title) {
+                this._title = state.title;
+                metadataChanged = true;
+            }
+        } else if (this._title) {
+            this._title = null;
             metadataChanged = true;
-            this._artist = state.artist;
         }
 
         if (state.hasOwnProperty('album')) {
+            if (this._album !== state.album) {
+                this._album = state.album;
+                metadataChanged = true;
+            }
+        } else if (this._album) {
+            this._album = null;
             metadataChanged = true;
-            this._album = state.album;
         }
 
         if (state.hasOwnProperty('length')) {
+            if (this._length !== state.length * 1000) {
+                this._length = state.length * 1000;
+                metadataChanged = true;
+            }
+        } else if (this._length) {
+            this._length = 0;
             metadataChanged = true;
-            this._length = state.length * 1000;
         }
 
-        // Probably a good idea to update this before emitting the length change
-        if (state.hasOwnProperty('pos')) {
-            this._Position = state.pos * 1000;
+        if (state.hasOwnProperty('albumArtUrl')) {
+            this._requestAlbumArt(state);
+        } else if (this._artUrl) {
+            this._artUrl = null;
+            metadataChanged = true;
         }
 
-        if (metadataChanged) this.notify('Metadata');
+        if (metadataChanged) {
+            this._Metadata = undefined;
+            this.notify('Metadata');
+        }
+    }
+
+    async export() {
+        try {
+            if (this._connection === null) {
+                this._connection = await DBus.newConnection();
+
+                if (this._applicationIface === null) {
+                    this._applicationIface = new DBus.Interface({
+                        g_instance: this,
+                        g_connection: this._connection,
+                        g_object_path: '/org/mpris/MediaPlayer2',
+                        g_interface_info: MPRISIface,
+                    });
+                }
+
+                if (this._playerIface === null) {
+                    this._playerIface = new DBus.Interface({
+                        g_instance: this,
+                        g_connection: this._connection,
+                        g_object_path: '/org/mpris/MediaPlayer2',
+                        g_interface_info: MPRISPlayerIface,
+                    });
+                }
+            }
+
+            if (this._ownerId !== 0)
+                return;
+
+            const name = [
+                this.device.name,
+                this.Identity,
+            ].join('').replace(/[\W]*/g, '');
+
+            this._ownerId = Gio.bus_own_name_on_connection(
+                this._connection,
+                `org.mpris.MediaPlayer2.ZorinConnect.${name}`,
+                Gio.BusNameOwnerFlags.NONE,
+                null,
+                null
+            );
+        } catch (e) {
+            debug(e, this.Identity);
+        }
+    }
+
+    unexport() {
+        if (this._ownerId === 0)
+            return;
+
+        Gio.bus_unown_name(this._ownerId);
+        this._ownerId = 0;
+    }
+
+    /**
+     * Download album art for the current track of the remote player.
+     *
+     * @param {Core.Packet} packet - A `kdeconnect.mpris` packet
+     */
+    async handleAlbumArt(packet) {
+        let file;
+
+        try {
+            file = this._getFile(packet.body.albumArtUrl);
+
+            // Transfer the album art
+            const transfer = this.device.createTransfer();
+            transfer.addFile(packet, file);
+
+            await transfer.start();
+
+            this._artUrl = file.get_uri();
+            this._Metadata = undefined;
+            this.notify('Metadata');
+        } catch (e) {
+            debug(e, this.device.name);
+
+            if (file)
+                file.delete_async(GLib.PRIORITY_DEFAULT, null, null);
+        }
+    }
+
+    /**
+     * Update the internal state of the media player.
+     *
+     * @param {Core.Packet} state - The body of a `kdeconnect.mpris` packet
+     */
+    update(state) {
+        this.freeze_notify();
+
+        // Metadata
+        if (state.hasOwnProperty('nowPlaying'))
+            this._updateMetadata(state);
 
         // Playback Status
         if (state.hasOwnProperty('isPlaying')) {
@@ -617,9 +664,22 @@ var RemotePlayer = GObject.registerClass({
             }
         }
 
+        if (state.hasOwnProperty('pos'))
+            this._Position = state.pos * 1000;
+
         if (state.hasOwnProperty('volume')) {
-            this.volume = state.volume / 100;
+            if (this.Volume !== state.volume / 100) {
+                this._Volume = state.volume / 100;
+                this.notify('Volume');
+            }
         }
+
+        this.thaw_notify();
+
+        if (!this._isPlaying && !this.CanControl)
+            this.unexport();
+        else
+            this.export();
     }
 
     /*
@@ -630,303 +690,188 @@ var RemotePlayer = GObject.registerClass({
     }
 
     /*
-     * The org.mpris.MediaPlayer2 Interface
-     */
-    get CanQuit() {
-        return false;
-    }
-
-    get Fullscreen() {
-        return false;
-    }
-
-    get CanSetFullscreen() {
-        return false;
-    }
-
-    get CanRaise() {
-        return false;
-    }
-
-    get HasTrackList() {
-        return false;
-    }
-
-    get Identity() {
-        return this._Identity;
-    }
-
-    get DesktopEntry() {
-        return 'org.gnome.Shell.Extensions.ZorinConnect';
-    }
-
-    get SupportedUriSchemes() {
-        return [];
-    }
-
-    get SupportedMimeTypes() {
-        return [];
-    }
-
-    Raise() {
-    }
-
-    Quit() {
-    }
-
-    /*
      * The org.mpris.MediaPlayer2.Player Interface
      */
-
-    // 'Playing', 'Paused', 'Stopped'
-    get PlaybackStatus() {
-        if (this._isPlaying) {
-            return 'Playing';
-        } else {
-            return 'Stopped';
-        }
-    }
-
-    // 'None', 'Track', 'Playlist'
-    get LoopStatus() {
-        return 'None';
-    }
-
-    set LoopStatus(status) {
-        this.notify('LoopStatus');
-    }
-
-    get Rate() {
-        return 1.0;
-    }
-
-    set Rate(rate) {
-        this.notify('Rate');
-    }
-
-    get Shuffle() {
-        return false;
-    }
-
-    set Shuffle(mode) {
-        this.notify('Shuffle');
+    get CanControl() {
+        return (this.CanPlay || this.CanPause);
     }
 
     get Metadata() {
-        if (this._metadata === undefined) {
-            this._metadata = {};
+        if (this._Metadata === undefined) {
+            this._Metadata = {};
+
+            if (this._artist) {
+                this._Metadata['xesam:artist'] = new GLib.Variant('as',
+                    [this._artist]);
+            }
+
+            if (this._title) {
+                this._Metadata['xesam:title'] = new GLib.Variant('s',
+                    this._title);
+            }
+
+            if (this._album) {
+                this._Metadata['xesam:album'] = new GLib.Variant('s',
+                    this._album);
+            }
+
+            if (this._artUrl) {
+                this._Metadata['mpris:artUrl'] = new GLib.Variant('s',
+                    this._artUrl);
+            }
+
+            this._Metadata['mpris:length'] = new GLib.Variant('x',
+                this._length);
         }
 
-        Object.assign(this._metadata, {
-            'xesam:artist': new GLib.Variant('as', [this._artist || '']),
-            'xesam:album': new GLib.Variant('s', this._album || ''),
-            'xesam:title': new GLib.Variant('s', this._title || ''),
-            'mpris:length': new GLib.Variant('x', this._length || 0)
-        });
-
-        return this._metadata;
+        return this._Metadata;
     }
 
-    get Volume() {
-        if (this._Volume === undefined) {
-            this._Volume = 1.0;
-        }
+    get PlaybackStatus() {
+        if (this._isPlaying)
+            return 'Playing';
 
-        return this._Volume;
+        return 'Stopped';
     }
 
     set Volume(level) {
-        if (this._Volume !== level) {
-            this._Volume = level;
-            this.notify('Volume');
+        if (this._Volume === level)
+            return;
 
-            this.device.sendPacket({
-                type: 'kdeconnect.mpris.request',
-                body: {
-                    player: this.Identity,
-                    setVolume: this.Volume * 100
-                }
-            });
-        }
-    }
-
-    get Position() {
-        if (this._Position === undefined) {
-            this._Position = 0;
-        }
-
-        return this._Position;
-    }
-
-    get MinimumRate() {
-        return 1.0;
-    }
-
-    get MaximumRate() {
-        return 1.0;
-    }
-
-    get CanGoNext() {
-        if (this._CanGoNext === undefined) {
-            this._CanGoNext = false;
-        }
-
-        return this._CanGoNext;
-    }
-
-    get CanGoPrevious() {
-        if (this._CanGoPrevious === undefined) {
-            this._CanGoPrevious = false;
-        }
-
-        return this._CanGoPrevious;
-    }
-
-    get CanPlay() {
-        if (this._CanPlay === undefined) {
-            this._CanPlay = false;
-        }
-
-        return this._CanPlay;
-    }
-
-    get CanPause() {
-        if (this._CanPause === undefined) {
-            this._CanPause = false;
-        }
-
-        return this._CanPause;
-    }
-
-    get CanSeek() {
-        if (this._CanSeek === undefined) {
-            this._CanSeek = false;
-        }
-
-        return this._CanSeek;
-    }
-
-    get CanControl() {
-        if (this._CanControl === undefined) {
-            this._CanControl = false;
-        }
-
-        return true;
-    }
-
-    Next() {
-        if (!this.CanControl || !this.CanGoNext) return;
+        this._Volume = level;
+        this.notify('Volume');
 
         this.device.sendPacket({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                action: 'Next'
-            }
+                setVolume: Math.floor(this.Volume * 100),
+            },
         });
     }
 
-    Previous() {
-        if (!this.CanControl || !this.CanGoPrevious) return;
+    Next() {
+        if (!this.CanGoNext)
+            return;
 
         this.device.sendPacket({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                action: 'Previous'
-            }
+                action: 'Next',
+            },
         });
     }
 
     Pause() {
-        if (!this.CanControl || !this.CanGoPause) return;
+        if (!this.CanPause)
+            return;
 
         this.device.sendPacket({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                action: 'Pause'
-            }
-        });
-    }
-
-    PlayPause() {
-        if (!this.CanControl || !this.CanPause) return;
-
-        this.device.sendPacket({
-            type: 'kdeconnect.mpris.request',
-            body: {
-                player: this.Identity,
-                action: 'PlayPause'
-            }
-        });
-    }
-
-    Stop() {
-        if (!this.CanControl) return;
-
-        this.device.sendPacket({
-            type: 'kdeconnect.mpris.request',
-            body: {
-                player: this.Identity,
-                action: 'Stop'
-            }
+                action: 'Pause',
+            },
         });
     }
 
     Play() {
-        if (!this.CanControl || !this.CanPlay) return;
+        if (!this.CanPlay)
+            return;
 
         this.device.sendPacket({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                action: 'Next'
-            }
+                action: 'Play',
+            },
+        });
+    }
+
+    PlayPause() {
+        if (!this.CanPlay && !this.CanPause)
+            return;
+
+        this.device.sendPacket({
+            type: 'kdeconnect.mpris.request',
+            body: {
+                player: this.Identity,
+                action: 'PlayPause',
+            },
+        });
+    }
+
+    Previous() {
+        if (!this.CanGoPrevious)
+            return;
+
+        this.device.sendPacket({
+            type: 'kdeconnect.mpris.request',
+            body: {
+                player: this.Identity,
+                action: 'Previous',
+            },
         });
     }
 
     Seek(offset) {
-        if (!this.CanControl || !this.CanSeek) return;
+        if (!this.CanSeek)
+            return;
 
         this.device.sendPacket({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                Seek: offset
-            }
+                Seek: offset,
+            },
         });
     }
 
     SetPosition(trackId, position) {
         debug(`${this._Identity}: SetPosition(${trackId}, ${position})`);
 
-        if (!this.CanControl || !this.CanSeek) return;
+        if (!this.CanControl || !this.CanSeek)
+            return;
 
         this.device.sendPacket({
             type: 'kdeconnect.mpris.request',
             body: {
                 player: this.Identity,
-                SetPosition: position / 1000
-            }
+                SetPosition: position / 1000,
+            },
         });
     }
 
-    OpenUri(uri) {
-        debug(`OpenUri(${uri}): Not Supported`);
+    Stop() {
+        if (!this.CanControl)
+            return;
+
+        this.device.sendPacket({
+            type: 'kdeconnect.mpris.request',
+            body: {
+                player: this.Identity,
+                action: 'Stop',
+            },
+        });
     }
 
     destroy() {
-        if (this._ownerId != 0) {
-            Gio.bus_unown_name(this._ownerId);
-        }
+        this.unexport();
 
-        if (this._applicationIface) {
-            this._applicationIface.destroy();
-        }
+        if (this._connection) {
+            this._connection.close(null, null);
+            this._connection = null;
 
-        if (this._playerIface) {
-            this._playerIface.destroy();
+            if (this._applicationIface) {
+                this._applicationIface.destroy();
+                this._applicationIface = null;
+            }
+
+            if (this._playerIface) {
+                this._playerIface.destroy();
+                this._playerIface = null;
+            }
         }
     }
 });
