@@ -45,8 +45,9 @@ if not os.path.exists(LOCALE_DIR):
     LOCALE_DIR = None
 
 try:
-    i18n = gettext.translation(SERVICE_NAME,
-                               localedir=LOCALE_DIR)
+    i18n = gettext.translation('zorin-connect',
+                               '/usr/share/locale',
+                               fallback=True)
     _ = i18n.gettext
 
 except (IOError, OSError) as e:

@@ -1,3 +1,33 @@
+gnome-shell-extension-zorin-connect (53) focal; urgency=medium
+
+  * RunCommand Plugin fix menu item replacement
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Mon, 21 Mar 2022 23:02:46 +0000
+
+gnome-shell-extension-zorin-connect (45) focal; urgency=medium
+
+  * Rebased on new upstream release version 45
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Sun, 28 Mar 2021 22:31:36 +0100
+
+gnome-shell-extension-zorin-connect (44.2) focal; urgency=medium
+
+  * Changed to python3-nautilus as a dependency
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Thu, 11 Mar 2021 18:43:40 +0000
+
+gnome-shell-extension-zorin-connect (44.1-1) focal; urgency=medium
+
+  * Rebuild
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Sun, 21 Feb 2021 17:33:29 +0000
+
+gnome-shell-extension-zorin-connect (44.1) focal; urgency=medium
+
+  * Changed Nautilus extension gettext location
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Sun, 21 Feb 2021 17:13:38 +0000
+
 gnome-shell-extension-zorin-connect (44-1) focal; urgency=medium
 
   * Build package in Zorin OS 16 repositories

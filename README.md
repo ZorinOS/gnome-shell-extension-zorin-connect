@@ -12,5 +12,5 @@ Zorin Connect provides several features to integrate your phone and your compute
 
 The extension seamlessly connects your computer and your mobile device over your local network, securely with RSA encryption.
 
-This extension is based on the [GSConnect](https://github.com/andyholmes/gnome-shell-extension-gsconnect)
+This extension is based on the [GSConnect](https://github.com/GSConnect/gnome-shell-extension-gsconnect)
  Gnome Shell extension.
