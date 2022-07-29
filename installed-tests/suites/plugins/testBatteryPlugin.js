@@ -157,12 +157,6 @@ describe('The battery plugin', function () {
     });
 
     describe('sends local statistics', function () {
-        it('when enabled', async function () {
-            localPlugin.settings.set_boolean('send-statistics', true);
-
-            await remotePlugin.awaitPacket('kdeconnect.battery');
-        });
-
         it('when they change', async function () {
             localPlugin._upower.update({
                 charging: true,
