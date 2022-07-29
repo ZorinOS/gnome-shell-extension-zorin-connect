@@ -1,3 +1,10 @@
+gnome-shell-extension-zorin-connect (53.1) focal; urgency=medium
+
+  * Set battery send-statistics and clipboard receive-content on by
+    default
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Fri, 29 Jul 2022 23:38:11 +0100
+
 gnome-shell-extension-zorin-connect (53) focal; urgency=medium
 
   * RunCommand Plugin fix menu item replacement

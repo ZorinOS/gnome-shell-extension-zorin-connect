@@ -76,7 +76,7 @@
 
   <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.Battery">
     <key name="send-statistics" type="b">
-      <default>false</default>
+      <default>true</default>
     </key>
     <key name="low-battery-notification" type="b">
       <default>true</default>
@@ -87,7 +87,7 @@
   </schema>
   <schema id="org.gnome.Shell.Extensions.ZorinConnect.Plugin.Clipboard">
     <key name="receive-content" type="b">
-      <default>false</default>
+      <default>true</default>
     </key>
     <key name="send-content" type="b">
       <default>false</default>
