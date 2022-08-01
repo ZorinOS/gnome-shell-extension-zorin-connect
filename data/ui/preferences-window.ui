@@ -375,8 +375,8 @@
                                 <property name="uri">https://addons.mozilla.org/firefox/addon/zorin-connect/</property>
                                 <child>
                                   <object class="GtkImage" id="webextension-image-firefox">
-                                    <property name="width_request">172</property>
-                                    <property name="height_request">60</property>
+                                    <property name="width_request">195</property>
+                                    <property name="height_request">58</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="resource">/org/gnome/Shell/Extensions/ZorinConnect/images/firefox-badge.png</property>
@@ -408,7 +408,7 @@
                                 <property name="uri">https://chrome.google.com/webstore/detail/zorin-connect/nfcnjkekppjddipfnfbbohdocpgjnmee</property>
                                 <child>
                                   <object class="GtkImage" id="webextension-image-chrome">
-                                    <property name="width_request">206</property>
+                                    <property name="width_request">195</property>
                                     <property name="height_request">58</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>

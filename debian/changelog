@@ -1,3 +1,9 @@
+gnome-shell-extension-zorin-connect (53.3) focal; urgency=medium
+
+  * Updated border add-on and mobile app badges
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Mon, 01 Aug 2022 21:22:40 +0100
+
 gnome-shell-extension-zorin-connect (53.2) focal; urgency=medium
 
   * Updated automated tests
