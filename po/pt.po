@@ -1126,3 +1126,6 @@ msgstr "Serviço indisponível"
 #: webextension/gettext.js:39
 msgid "Open in Browser"
 msgstr "Abrir no navegador"
+
+msgid "Mobile Application"
+msgstr "Aplicativo Móvel"
