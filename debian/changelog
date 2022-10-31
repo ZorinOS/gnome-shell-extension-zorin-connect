@@ -1,3 +1,9 @@
+gnome-shell-extension-zorin-connect (53.5) focal; urgency=medium
+
+  * Updated Portuguese translation
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Mon, 31 Oct 2022 15:11:21 +0000
+
 gnome-shell-extension-zorin-connect (53.4) focal; urgency=medium
 
   * Added Portuguese translation
