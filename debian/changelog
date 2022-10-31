@@ -1,3 +1,9 @@
+gnome-shell-extension-zorin-connect (53.4) focal; urgency=medium
+
+  * Added Portuguese translation
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Mon, 31 Oct 2022 12:44:24 +0000
+
 gnome-shell-extension-zorin-connect (53.3) focal; urgency=medium
 
   * Updated border add-on and mobile app badges
