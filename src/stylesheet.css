@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
 
 /* Device Menu
 
@@ -33,6 +38,19 @@ PopupMenu.PopupMenuSection.zorin-connect-device-section
 }
 
 .zorin-connect-device-battery StIcon {
+    icon-size: 16px;
+}
+
+/* Signal Strength Widget */
+.zorin-connect-device-signal-strength {
+    spacing: 3px;
+}
+
+.zorin-connect-device-signal-strength StLabel {
+    font-size: 0.75em;
+}
+
+.zorin-connect-device-signal-strength StIcon {
     icon-size: 16px;
 }
 

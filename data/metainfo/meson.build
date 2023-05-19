@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 # AppStream MetaInfo
 metainfo_file = i18n.merge_file(
   input: app_id + '.metainfo.xml.in',

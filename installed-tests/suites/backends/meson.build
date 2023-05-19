@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 backend_tests_execdir = join_paths(installed_tests_execdir, 'backends')
 backend_tests_metadir = join_paths(installed_tests_metadir, 'backends')
 

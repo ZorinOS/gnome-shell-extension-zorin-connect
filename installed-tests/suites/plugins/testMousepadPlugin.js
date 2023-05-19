@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Utils = imports.fixtures.utils;
@@ -60,7 +64,7 @@ describe('The mousepad plugin', function () {
             spyOn(remotePlugin._input, 'releasePointer');
             spyOn(remotePlugin._input, 'movePointer');
             spyOn(remotePlugin._input, 'scrollPointer');
-            spyOn(remotePlugin._input, 'pressKey');
+            spyOn(remotePlugin._input, 'pressKeys');
         }
     });
 
@@ -110,7 +114,7 @@ describe('The mousepad plugin', function () {
             });
 
             await remotePlugin.awaitPacket('kdeconnect.mousepad.request');
-            expect(remotePlugin._input.pressKey).toHaveBeenCalledWith('a', 0);
+            expect(remotePlugin._input.pressKeys).toHaveBeenCalledWith('a', 0);
         });
 
         it('with modifiers', async function () {
@@ -126,7 +130,7 @@ describe('The mousepad plugin', function () {
             });
 
             await remotePlugin.awaitPacket('kdeconnect.mousepad.request');
-            expect(remotePlugin._input.pressKey).toHaveBeenCalledWith('b',
+            expect(remotePlugin._input.pressKeys).toHaveBeenCalledWith('b',
                 keyModifiers);
         });
 
@@ -137,7 +141,7 @@ describe('The mousepad plugin', function () {
             });
 
             await remotePlugin.awaitPacket('kdeconnect.mousepad.request');
-            expect(remotePlugin._input.pressKey).toHaveBeenCalledWith(
+            expect(remotePlugin._input.pressKeys).toHaveBeenCalledWith(
                 Gdk.KEY_BackSpace, 0);
         });
 
@@ -154,7 +158,7 @@ describe('The mousepad plugin', function () {
             });
 
             await remotePlugin.awaitPacket('kdeconnect.mousepad.request');
-            expect(remotePlugin._input.pressKey).toHaveBeenCalledWith(
+            expect(remotePlugin._input.pressKeys).toHaveBeenCalledWith(
                 Gdk.KEY_Tab, specialModifiers);
         });
 

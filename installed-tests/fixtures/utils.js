@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 imports.gi.versions.Gdk = '3.0';
@@ -136,7 +140,7 @@ function isSubset(obj, subset) {
             return false;
 
         // We were only checking for the key itself
-        if (typeof val === undefined)
+        if (typeof val === 'undefined')
             continue;
 
         if (Array.isArray(val)) {

@@ -1,5 +1,9 @@
 #!/usr/bin/env gjs
 
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 imports.gi.versions.Gio = '2.0';

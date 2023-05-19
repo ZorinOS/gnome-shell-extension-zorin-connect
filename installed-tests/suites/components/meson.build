@@ -1,12 +1,16 @@
+# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 component_tests_execdir = join_paths(installed_tests_execdir, 'components')
 component_tests_metadir = join_paths(installed_tests_metadir, 'components')
 
 # Component Suites
 component_tests = [
-  # 'ClipboardComponent',
+  'ClipboardComponent',
   # 'ContactsComponent',
   # 'InputComponent',
-  # 'MprisComponent',
+  'MprisComponent',
   # 'NotificationComponent',
   # 'PulseaudioComponent',
   # 'SessionComponent',

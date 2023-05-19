@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const GdkPixbuf = imports.gi.GdkPixbuf;
@@ -11,6 +15,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Telephony'),
+    description: _('Be notified about calls and adjust system volume during ringing/ongoing calls'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.Telephony',
     incomingCapabilities: [
         'kdeconnect.telephony',
@@ -238,4 +243,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

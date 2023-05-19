@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
 # WebExtension Manifests
 if get_option('webextension')
   nmh_manifest = 'org.gnome.shell.extensions.zorin_connect.json'

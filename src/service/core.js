@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gio = imports.gi.Gio;
@@ -83,14 +87,14 @@ var Packet = class Packet {
     /**
      * Update the packet from a dictionary or string of JSON
      *
-     * @param {Object|string} source - Source data
+     * @param {Object|string} data - Source data
      */
-    update(source) {
+    update(data) {
         try {
             if (typeof data === 'string')
-                Object.assign(this, JSON.parse(source));
+                Object.assign(this, JSON.parse(data));
             else
-                Object.assign(this, source);
+                Object.assign(this, data);
         } catch (e) {
             throw Error(`Malformed data: ${e.message}`);
         }
@@ -427,6 +431,9 @@ var ChannelService = GObject.registerClass({
                 continue;
 
             const meta = imports.service.plugins[name].Metadata;
+
+            if (meta === undefined)
+                continue;
 
             for (const type of meta.incomingCapabilities)
                 this._identity.body.incomingCapabilities.push(type);

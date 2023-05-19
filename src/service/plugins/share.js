@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const GdkPixbuf = imports.gi.GdkPixbuf;
@@ -13,6 +17,7 @@ const URI = imports.service.utils.uri;
 var Metadata = {
     label: _('Share'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.Share',
+    description: _('Share files and URLs between devices'),
     incomingCapabilities: ['kdeconnect.share.request'],
     outgoingCapabilities: ['kdeconnect.share.request'],
     actions: {
@@ -163,7 +168,7 @@ var Plugin = GObject.registerClass({
             });
 
             // We'll show a notification (success or failure)
-            let title, body, iconName;
+            let title, body, action, iconName;
             let buttons = [];
 
             try {
@@ -175,11 +180,15 @@ var Plugin = GObject.registerClass({
                     packet.body.filename,
                     this.device.name
                 );
+                action = {
+                    name: 'showPathInFolder',
+                    parameter: new GLib.Variant('s', file.get_uri()),
+                };
                 buttons = [
                     {
-                        label: _('Open Folder'),
-                        action: 'openPath',
-                        parameter: new GLib.Variant('s', file.get_parent().get_uri()),
+                        label: _('Show File Location'),
+                        action: 'showPathInFolder',
+                        parameter: new GLib.Variant('s', file.get_uri()),
                     },
                     {
                         label: _('Open File'),
@@ -194,6 +203,8 @@ var Plugin = GObject.registerClass({
                     Gio.AppInfo.launch_default_for_uri_async(uri, null, null, null);
                 }
             } catch (e) {
+                debug(e, this.device.name);
+
                 title = _('Transfer Failed');
                 // TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
                 body = _('Failed to receive “%s” from %s').format(
@@ -211,6 +222,7 @@ var Plugin = GObject.registerClass({
                 id: transfer.uuid,
                 title: title,
                 body: body,
+                action: action,
                 buttons: buttons,
                 icon: new Gio.ThemedIcon({name: iconName}),
             });
@@ -478,4 +490,3 @@ var FileChooserDialog = GObject.registerClass({
         this.destroy();
     }
 });
-

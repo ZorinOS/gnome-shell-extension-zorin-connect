@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gio = imports.gi.Gio;
@@ -10,6 +14,7 @@ const PluginBase = imports.service.plugin;
 var Metadata = {
     label: _('Run Commands'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.RunCommand',
+    description: _('Run commands on your paired device or let the device run predefined commands on this PC'),
     incomingCapabilities: [
         'kdeconnect.runcommand',
         'kdeconnect.runcommand.request',
@@ -247,4 +252,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

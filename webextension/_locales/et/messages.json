@@ -4,7 +4,7 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Jaga linke Zorin Connect, otse brauserisse või SMSi teel.",
+        "message": "Jaga linke Zorin Connectiga, otse brauserisse või SMSi teel.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {

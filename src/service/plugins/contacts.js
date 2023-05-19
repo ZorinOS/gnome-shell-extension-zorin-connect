@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const GLib = imports.gi.GLib;
@@ -20,6 +24,7 @@ try {
 
 var Metadata = {
     label: _('Contacts'),
+    description: _('Access contacts of the paired device'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.Contacts',
     incomingCapabilities: [
         'kdeconnect.contacts.response_uids_timestamps',
@@ -453,4 +458,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

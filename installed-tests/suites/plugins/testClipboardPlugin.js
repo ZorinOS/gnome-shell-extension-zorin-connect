@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Utils = imports.fixtures.utils;
@@ -94,19 +98,19 @@ describe('The clipboard plugin', function () {
         expect(remotePlugin._remoteBuffer).toBe('bar');
     });
 
-    it('will pull content when allowed', async function () {
-        localPlugin._clipboard.text = 'qux';
-
-        await remotePlugin.awaitPacket('kdeconnect.clipboard');
-        expect(remotePlugin._clipboard.text).toBe('qux');
-    });
-
     it('will not pull content when not allowed', async function () {
-        remotePlugin.settings.set_boolean('receive-content', false);
         localPlugin._clipboard.text = 'baz';
 
         await remotePlugin.awaitPacket('kdeconnect.clipboard');
         expect(remotePlugin._clipboard.text).not.toBe('baz');
+    });
+
+    it('will pull content when allowed', async function () {
+        remotePlugin.settings.set_boolean('receive-content', true);
+        localPlugin._clipboard.text = 'qux';
+
+        await remotePlugin.awaitPacket('kdeconnect.clipboard');
+        expect(remotePlugin._clipboard.text).toBe('qux');
     });
 
     it('disables its GActions when disconnected', function () {

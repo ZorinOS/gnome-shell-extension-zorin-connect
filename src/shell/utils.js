@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const ByteArray = imports.byteArray;
@@ -20,8 +24,10 @@ function getIcon(name) {
         // Setup the desktop icons
         const settings = imports.gi.St.Settings.get();
         getIcon._desktop = new imports.gi.Gtk.IconTheme();
+        //getIcon._desktop.set_theme_name(settings.gtk_icon_theme); TODO: Replace "set_custom_theme" with "set_theme_name" after GNOME Shell 43
         getIcon._desktop.set_custom_theme(settings.gtk_icon_theme);
         settings.connect('notify::gtk-icon-theme', (settings_, key_) => {
+            //getIcon._desktop.set_theme_name(settings_.gtk_icon_theme); TODO: Ditto
             getIcon._desktop.set_custom_theme(settings_.gtk_icon_theme);
         });
 
@@ -163,7 +169,11 @@ function installService() {
         [`${confDir}/google-chrome-beta/NativeMessagingHosts/`, google],
         [`${confDir}/google-chrome-unstable/NativeMessagingHosts/`, google],
         [`${confDir}/BraveSoftware/Brave-Browser/NativeMessagingHosts/`, google],
+        [`${confDir}/BraveSoftware/Brave-Browser-Beta/NativeMessagingHosts/`, google],
+        [`${confDir}/BraveSoftware/Brave-Browser-Nightly/NativeMessagingHosts/`, google],
         [`${homeDir}/.mozilla/native-messaging-hosts/`, mozilla],
+        [`${homeDir}/.config/microsoft-edge-dev/NativeMessagingHosts`, google],
+        [`${homeDir}/.config/microsoft-edge-beta/NativeMessagingHosts`, google],
     ];
 
     // If running as a user extension, ensure the DBus service, desktop entry,
@@ -197,8 +207,8 @@ function installService() {
         for (const [dirname, contents] of manifests)
             _installFile(dirname, manifestFile, contents);
 
-    // Otherwise, if running as a system extension, ensure anything previously
-    // installed when running as a user extension is removed.
+        // Otherwise, if running as a system extension, ensure anything previously
+        // installed when running as a user extension is removed.
     } else {
         GLib.unlink(GLib.build_filenamev([dbusDir, dbusFile]));
         GLib.unlink(GLib.build_filenamev([appDir, appFile]));

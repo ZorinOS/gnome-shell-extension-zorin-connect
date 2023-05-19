@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+#DEBHELPER#
+
+case "$1" in
+    purge|remove)
+
+    # Avoid a piuparts error. See https://bugs.debian.org/888549
+    rm -f /etc/opt/chrome/native-messaging-hosts/org.gnome.shell.extensions.zorin_connect.json
+    for dir in /etc/opt/chrome/native-messaging-hosts /etc/opt/chrome; do
+        if [ -d "$dir" ]; then
+            rmdir --ignore-fail-on-non-empty "$dir"
+        fi
+    done
+    mkdir -p /etc/opt/
+esac
+
+exit 0

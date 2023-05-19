@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gio = imports.gi.Gio;
@@ -9,6 +13,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Ping'),
+    description: _('Send and receive pings'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.Ping',
     incomingCapabilities: ['kdeconnect.ping'],
     outgoingCapabilities: ['kdeconnect.ping'],
@@ -66,4 +71,3 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket(packet);
     }
 });
-

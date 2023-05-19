@@ -1,8 +1,13 @@
 #!/usr/bin/env gjs
 
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 // Allow TLSv1.0 certificates
+// See https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues/930
 imports.gi.GLib.setenv('G_TLS_GNUTLS_PRIORITY', 'NORMAL:%COMPAT:+VERS-TLS1.0', true);
 
 imports.gi.versions.Gdk = '3.0';
@@ -52,7 +57,7 @@ const Service = GObject.registerClass({
         });
 
         GLib.set_prgname('zorin-connect');
-        GLib.set_application_name('zorin-Connect');
+        GLib.set_application_name('Zorin Connect');
 
         // Command-line
         this._initOptions();
@@ -713,7 +718,7 @@ const Service = GObject.registerClass({
                 this._cliShareLink(id, options);
 
             if (options.contains('share-text'))
-                this._cliShareLink(id, options);
+                this._cliShareText(id, options);
 
             return 0;
         } catch (e) {

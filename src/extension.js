@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gio = imports.gi.Gio;
@@ -7,7 +11,8 @@ const Gtk = imports.gi.Gtk;
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
-const AggregateMenu = Main.panel.statusArea.aggregateMenu;
+const QuickSettingsMenu = Main.panel.statusArea.quickSettings;
+const QuickSettings = imports.ui.quickSettings;
 
 // Bootstrap
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
@@ -20,6 +25,7 @@ const Config = Extension.imports.config;
 const Device = Extension.imports.shell.device;
 const Keybindings = Extension.imports.shell.keybindings;
 const Notification = Extension.imports.shell.notification;
+const Input = Extension.imports.shell.input;
 const Remote = Extension.imports.utils.remote;
 
 Extension.getIcon = Utils.getIcon;
@@ -29,12 +35,22 @@ Extension.getIcon = Utils.getIcon;
  * A System Indicator used as the hub for spawning device indicators and
  * indicating that the extension is active when there are none.
  */
-const ServiceIndicator = GObject.registerClass({
+const ServiceToggle = GObject.registerClass({
     GTypeName: 'ZorinConnectServiceIndicator',
-}, class ServiceIndicator extends PanelMenu.SystemIndicator {
+}, class ServiceToggle extends QuickSettings.QuickMenuToggle {
 
     _init() {
-        super._init();
+        super._init({
+            //title: 'Zorin Connect', TODO: Replace "label" with "title" after GNOME Shell 43
+            label: 'Zorin Connect',
+            toggleMode: true,
+        });
+
+        this.set({iconName: 'org.gnome.Shell.Extensions.ZorinConnect-symbolic'});
+
+        // Set QuickMenuToggle header.
+        this.menu.setHeader('org.gnome.Shell.Extensions.ZorinConnect-symbolic', 'Zorin Connect',
+            _('Sync between your devices'));
 
         this._menus = {};
 
@@ -48,6 +64,11 @@ const ServiceIndicator = GObject.registerClass({
             ),
             path: '/org/gnome/shell/extensions/zorin-connect/',
         });
+
+        // Bind the toggle to enabled key
+        this.settings.bind('enabled',
+            this, 'checked',
+            Gio.SettingsBindFlags.DEFAULT);
 
         this._enabledId = this.settings.connect(
             'changed::enabled',
@@ -77,29 +98,6 @@ const ServiceIndicator = GObject.registerClass({
             this._onServiceChanged.bind(this)
         );
 
-        // Service Indicator
-        this._indicator = this._addIndicator();
-        this._indicator.gicon = Extension.getIcon(
-            'org.gnome.Shell.Extensions.ZorinConnect-symbolic'
-        );
-        this._indicator.visible = false;
-
-        AggregateMenu._indicators.insert_child_at_index(this, 0);
-        AggregateMenu._zorin_connect = this;
-
-        // Service Menu
-        this._item = new PopupMenu.PopupSubMenuMenuItem(_('Mobile Devices'), true);
-        this._item.icon.gicon = this._indicator.gicon;
-        this._item.label.clutter_text.x_expand = true;
-        this.menu.addMenuItem(this._item);
-
-        // Find current index of network menu
-        const menuItems = AggregateMenu.menu._getMenuItems();
-        const networkMenuIndex = menuItems.indexOf(AggregateMenu._network.menu);
-        const menuIndex = networkMenuIndex > -1 ? networkMenuIndex : 3;
-        // Place our menu below the network menu
-        AggregateMenu.menu.addMenuItem(this.menu, menuIndex + 1);
-
         // Service Menu -> Devices Section
         this.deviceSection = new PopupMenu.PopupMenuSection();
         this.deviceSection.actor.add_style_class_name('zorin-connect-device-section');
@@ -109,19 +107,15 @@ const ServiceIndicator = GObject.registerClass({
             'visible',
             Gio.SettingsBindFlags.INVERT_BOOLEAN
         );
-        this._item.menu.addMenuItem(this.deviceSection);
+        this.menu.addMenuItem(this.deviceSection);
 
         // Service Menu -> Separator
-        this._item.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-
-        // Service Menu -> "Turn On/Off"
-        this._enableItem = this._item.menu.addAction(
-            _('Turn On'),
-            this._enable.bind(this)
-        );
+        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
         // Service Menu -> "Mobile Settings"
-        this._item.menu.addAction(_('Mobile Settings'), this._preferences);
+        this.menu.addSettingsAction(
+            _('Mobile Settings'),
+            'org.gnome.Shell.Extensions.ZorinConnect.Preferences.desktop');
 
         // Prime the service
         this._initService();
@@ -138,29 +132,6 @@ const ServiceIndicator = GObject.registerClass({
         }
     }
 
-    _enable() {
-        try {
-            const enabled = this.settings.get_boolean('enabled');
-
-            // If the service state matches the enabled setting, we should
-            // toggle the service by toggling the setting
-            if (this.service.active === enabled)
-                this.settings.set_boolean('enabled', !enabled);
-
-            // Otherwise, we should change the service to match the setting
-            else if (this.service.active)
-                this.service.stop();
-            else
-                this.service.start();
-        } catch (e) {
-            logError(e, 'Zorin Connect');
-        }
-    }
-
-    _preferences() {
-        Gio.Subprocess.new([`${Extension.path}/zorin-connect-preferences`], 0);
-    }
-
     _sync() {
         const available = this.service.devices.filter(device => {
             return (device.connected && device.paired);
@@ -168,7 +139,7 @@ const ServiceIndicator = GObject.registerClass({
         const panelMode = this.settings.get_boolean('show-indicators');
 
         // Hide status indicator if in Panel mode or no devices are available
-        this._indicator.visible = (!panelMode && available.length);
+        serviceIndicator._indicator.visible = (!panelMode && available.length);
 
         // Show device indicators in Panel mode if available
         for (const device of this.service.devices) {
@@ -182,49 +153,20 @@ const ServiceIndicator = GObject.registerClass({
             menu._title.actor.visible = !panelMode && isAvailable;
         }
 
-        // One connected device in User Menu mode
-        if (!panelMode && available.length === 1) {
-            const device = available[0];
-
-            // Hide the menu title and move it to the submenu item
-            this._menus[device.g_object_path]._title.actor.visible = false;
-            this._item.label.text = device.name;
-
-            // Destroy any other device's battery
-            if (this._item._battery && this._item._battery.device !== device) {
-                this._item._battery.destroy();
-                this._item._battery = null;
-            }
-
-            // Add the battery to the submenu item
-            if (!this._item._battery) {
-                this._item._battery = new Device.Battery({
-                    device: device,
-                    opacity: 128,
-                });
-                this._item.actor.insert_child_below(
-                    this._item._battery,
-                    this._item._triangleBin
-                );
-            }
+        // Set subtitle on Quick Settings tile
+        /* TODO: Remove after GNOME Shell 43
+        if (available.length === 1) {
+            this.subtitle = available[0].name;
+        } else if (available.length > 1) {
+            // TRANSLATORS: %d is the number of devices connected
+            this.subtitle = Extension.ngettext(
+                '%d Connected',
+                '%d Connected',
+                available.length
+            ).format(available.length);
         } else {
-            if (available.length > 1) {
-                // TRANSLATORS: %d is the number of devices connected
-                this._item.label.text = Extension.ngettext(
-                    '%d Connected',
-                    '%d Connected',
-                    available.length
-                ).format(available.length);
-            } else {
-                this._item.label.text = _('Mobile Devices');
-            }
-
-            // Destroy any battery in the submenu item
-            if (this._item._battery) {
-                this._item._battery.destroy();
-                this._item._battery = null;
-            }
-        }
+            this.subtitle = null;
+        }*/
     }
 
     _onDeviceChanged(device, changed, invalidated) {
@@ -348,17 +290,9 @@ const ServiceIndicator = GObject.registerClass({
 
     async _onServiceChanged(service, pspec) {
         try {
-            if (this.service.active) {
-                // TRANSLATORS: A menu option to deactivate the extension
-                this._enableItem.label.text = _('Turn Off');
-            } else {
-                // TRANSLATORS: A menu option to activate the extension
-                this._enableItem.label.text = _('Turn On');
-
-                // If it's enabled, we should try to restart now
-                if (this.settings.get_boolean('enabled'))
-                    await this.service.start();
-            }
+            // If it's enabled, we should try to restart now
+            if (this.settings.get_boolean('enabled'))
+                await this.service.start();
         } catch (e) {
             logError(e, 'Zorin Connect');
         }
@@ -374,6 +308,8 @@ const ServiceIndicator = GObject.registerClass({
             for (const device of this.service.devices)
                 this._onDeviceRemoved(this.service, device, false);
 
+            if (!this.settings.get_boolean('keep-alive-when-locked'))
+                this.service.stop();
             this.service.destroy();
         }
 
@@ -386,17 +322,49 @@ const ServiceIndicator = GObject.registerClass({
         this.settings.run_dispose();
 
         // Destroy the PanelMenu.SystemIndicator actors
-        this._item.destroy();
         this.menu.destroy();
 
-        delete AggregateMenu._zorin_connect;
         super.destroy();
     }
 });
 
+const ServiceIndicator = GObject.registerClass(
+class ServiceIndicator extends QuickSettings.SystemIndicator {
+    _init() {
+        super._init();
+
+        // Create the icon for the indicator
+        this._indicator = this._addIndicator();
+        this._indicator.icon_name = 'org.gnome.Shell.Extensions.ZorinConnect-symbolic';
+        // Hide the indicator by default
+        this._indicator.visible = false;
+
+        // Create the toggle menu and associate it with the indicator
+        this.quickSettingsItems.push(new ServiceToggle());
+
+        // Add the indicator to the panel and the toggle to the menu
+        QuickSettingsMenu._indicators.insert_child_at_index(this, 0);
+        QuickSettingsMenu._addItems(this.quickSettingsItems);
+
+        // Ensure the tile(s) are above the background apps menu
+        /* TODO: Remove after GNOME Shell 43
+        for (const item of this.quickSettingsItems) {
+            QuickSettingsMenu.menu._grid.set_child_below_sibling(item,
+                QuickSettingsMenu._backgroundApps.quickSettingsItems[0]);
+        }*/
+    }
+
+    destroy() {
+        // Set enabled state to false to kill the service on destroy
+        this.quickSettingsItems.forEach(item => item.destroy());
+        // Destroy the indicator
+        this._indicator.destroy();
+        super.destroy();
+    }
+});
 
 var serviceIndicator = null;
-
+var lockscreenInput = null;
 
 function init() {
     // If installed as a user extension, this will install the Desktop entry,
@@ -421,6 +389,9 @@ function init() {
 function enable() {
     serviceIndicator = new ServiceIndicator();
     Notification.patchGtkNotificationSources();
+
+    lockscreenInput = new Input.LockscreenRemoteAccess();
+    lockscreenInput.patchInhibitor();
 }
 
 
@@ -428,4 +399,9 @@ function disable() {
     serviceIndicator.destroy();
     serviceIndicator = null;
     Notification.unpatchGtkNotificationSources();
+
+    if (lockscreenInput) {
+        lockscreenInput.unpatchInhibitor();
+        lockscreenInput = null;
+    }
 }

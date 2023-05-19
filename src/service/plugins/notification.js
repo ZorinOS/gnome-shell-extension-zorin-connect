@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gio = imports.gi.Gio;
@@ -13,6 +17,7 @@ const NotificationUI = imports.service.ui.notification;
 
 var Metadata = {
     label: _('Notifications'),
+    description: _('Share notifications with the paired device'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.Notification',
     incomingCapabilities: [
         'kdeconnect.notification',
@@ -710,4 +715,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

@@ -1,5 +1,11 @@
 #!/usr/bin/env gjs
 
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+// -*- mode: js; -*-
+
 'use strict';
 
 imports.gi.versions.Gdk = '3.0';
@@ -36,6 +42,7 @@ const Settings = imports.preferences.service;
  */
 const Preferences = GObject.registerClass({
     GTypeName: 'ZorinConnectPreferences',
+    Implements: [Gio.ActionGroup],
 }, class Preferences extends Gtk.Application {
 
     _init() {

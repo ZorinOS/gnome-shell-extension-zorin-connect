@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Utils = imports.fixtures.utils;
@@ -18,6 +22,14 @@ const Packets = {
             currentCharge: 15,
             isCharging: false,
             thresholdEvent: 1,
+        },
+    },
+    customBattery: {
+        type: 'kdeconnect.battery',
+        body: {
+            currentCharge: 80,
+            isCharging: true,
+            thresholdEvent: 0,
         },
     },
     fullBattery: {
@@ -139,6 +151,23 @@ describe('The battery plugin', function () {
         expect(remotePlugin.device.hideNotification).toHaveBeenCalled();
     });
 
+    it('notifies when the battery is at custom level', async function () {
+        remotePlugin.settings.set_boolean('custom-battery-notification', true);
+        localPlugin.device.sendPacket(Packets.customBattery);
+
+        await remotePlugin.awaitPacket('kdeconnect.battery',
+            Packets.customBattery.body);
+        expect(remotePlugin.device.showNotification).toHaveBeenCalled();
+    });
+
+    it('withdraws custom battery notifications', async function () {
+        localPlugin.device.sendPacket(Packets.goodBattery);
+
+        await remotePlugin.awaitPacket('kdeconnect.battery',
+            Packets.goodBattery.body);
+        expect(remotePlugin.device.hideNotification).toHaveBeenCalled();
+    });
+
     it('notifies when the battery is full', async function () {
         remotePlugin.settings.set_boolean('full-battery-notification', true);
         localPlugin.device.sendPacket(Packets.fullBattery,
@@ -157,6 +186,12 @@ describe('The battery plugin', function () {
     });
 
     describe('sends local statistics', function () {
+        it('when enabled', async function () {
+            localPlugin.settings.set_boolean('send-statistics', true);
+
+            await remotePlugin.awaitPacket('kdeconnect.battery');
+        });
+
         it('when they change', async function () {
             localPlugin._upower.update({
                 charging: true,

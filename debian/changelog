@@ -1,3 +1,16 @@
+gnome-shell-extension-zorin-connect (55.1) jammy; urgency=medium
+
+  * Updated .reuse directory
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Fri, 19 May 2023 17:06:52 +0100
+
+gnome-shell-extension-zorin-connect (55) jammy; urgency=medium
+
+  * Rebased on new upstream release version 55 with changes for
+    compatibility with GNOME Shell 43
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Fri, 19 May 2023 16:15:46 +0100
+
 gnome-shell-extension-zorin-connect (53.5) focal; urgency=medium
 
   * Updated Portuguese translation

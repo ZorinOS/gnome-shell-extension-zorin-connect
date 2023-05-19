@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gio = imports.gi.Gio;
@@ -12,6 +16,7 @@ const URI = imports.service.utils.uri;
 
 var Metadata = {
     label: _('SMS'),
+    description: _('Send and read SMS of the paired device and be notified of new SMS'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.SMS',
     incomingCapabilities: [
         'kdeconnect.sms.messages',
@@ -99,13 +104,18 @@ var MessageStatus = {
 
 
 /**
- * SMS Message direction. IN/OUT match the 'type' field from the Android App
+ * SMS Message type, set from the 'type' field in the Android App
  * message packet.
  *
  * See: https://developer.android.com/reference/android/provider/Telephony.TextBasedSmsColumns.html
  *
- * IN: An incoming message
- * OUT: An outgoing message
+ * ALL: all messages
+ * INBOX: Received messages
+ * SENT: Sent messages
+ * DRAFT: Message drafts
+ * OUTBOX: Outgoing messages
+ * FAILED: Failed outgoing messages
+ * QUEUED: Messages queued to send later
  */
 var MessageBox = {
     ALL: 0,
@@ -524,4 +534,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

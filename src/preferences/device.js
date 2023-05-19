@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gio = imports.gi.Gio;
@@ -16,6 +20,9 @@ const DEVICE_SHORTCUTS = {};
 
 for (const name in imports.service.plugins) {
     const module = imports.service.plugins[name];
+
+    if (module.Metadata === undefined)
+        continue;
 
     // Plugins
     DEVICE_PLUGINS.push(name);
@@ -266,6 +273,7 @@ var Panel = GObject.registerClass({
         'battery',
         'battery-device-label', 'battery-device', 'battery-device-list',
         'battery-system-label', 'battery-system', 'battery-system-list',
+        'battery-custom-notification-value',
 
         // RunCommand
         'runcommand', 'runcommand-page',
@@ -434,6 +442,8 @@ var Panel = GObject.registerClass({
         let settings = this.pluginSettings('battery');
         this.actions.add_action(settings.create_action('send-statistics'));
         this.actions.add_action(settings.create_action('low-battery-notification'));
+        this.actions.add_action(settings.create_action('custom-battery-notification'));
+        this.actions.add_action(settings.create_action('custom-battery-notification-value'));
         this.actions.add_action(settings.create_action('full-battery-notification'));
 
         settings = this.pluginSettings('clipboard');
@@ -566,6 +576,9 @@ var Panel = GObject.registerClass({
         try {
             this.battery_device_list.set_header_func(rowSeparators);
             this.battery_system_list.set_header_func(rowSeparators);
+            const settings = this.pluginSettings('battery');
+            const oldLevel = settings.get_uint('custom-battery-notification-value');
+            this.battery_custom_notification_value.set_value(oldLevel);
 
             // If the device can't handle statistics we're done
             if (!this.get_incoming_supported('battery')) {
@@ -609,6 +622,11 @@ var Panel = GObject.registerClass({
             this.battery_system_label.visible = false;
             this.battery_system.visible = false;
         }
+    }
+
+    _setCustomChargeLevel(spin) {
+        const settings = this.pluginSettings('battery');
+        settings.set_uint('custom-battery-notification-value', spin.get_value_as_int());
     }
 
     /**
@@ -1048,6 +1066,7 @@ var Panel = GObject.registerClass({
         const row = new SectionRow({
             height_request: 48,
             title: plugin.Metadata.label,
+            subtitle: plugin.Metadata.description || '',
             visible: this._supportedPlugins.includes(name),
             widget: new Gtk.Switch({
                 active: this._enabledPlugins.includes(name),
@@ -1094,4 +1113,3 @@ var Panel = GObject.registerClass({
         }
     }
 });
-

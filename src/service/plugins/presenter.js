@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const GObject = imports.gi.GObject;
@@ -8,6 +12,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Presentation'),
+    description: _('Use the paired device as a presenter'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.Presenter',
     incomingCapabilities: ['kdeconnect.presenter'],
     outgoingCapabilities: [],
@@ -49,4 +54,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

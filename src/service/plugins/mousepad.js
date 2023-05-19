@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gdk = imports.gi.Gdk;
@@ -10,6 +14,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Mousepad'),
+    description: _('Enables the paired device to act as a remote mouse and keyboard'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.Mousepad',
     incomingCapabilities: [
         'kdeconnect.mousepad.echo',
@@ -23,7 +28,7 @@ var Metadata = {
     ],
     actions: {
         keyboard: {
-            label: _('Keyboard'),
+            label: _('Remote Input'),
             icon_name: 'input-keyboard-symbolic',
 
             parameter_type: null,
@@ -185,13 +190,13 @@ var Plugin = GObject.registerClass({
 
                 // Regular key (printable ASCII or Unicode)
                 if (input.key) {
-                    this._input.pressKey(input.key, modifiers);
+                    this._input.pressKeys(input.key, modifiers);
                     this._sendEcho(input);
 
                 // Special key (eg. non-printable ASCII)
                 } else if (input.specialKey && KeyMap.has(input.specialKey)) {
                     keysym = KeyMap.get(input.specialKey);
-                    this._input.pressKey(keysym, modifiers);
+                    this._input.pressKeys(keysym, modifiers);
                     this._sendEcho(input);
                 }
                 break;
@@ -240,10 +245,10 @@ var Plugin = GObject.registerClass({
 
         if (input.key) {
             this._dialog._isAck = true;
-            this._dialog.text.buffer.text += input.key;
+            this._dialog.entry.buffer.text += input.key;
             this._dialog._isAck = false;
         } else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace) {
-            this._dialog.text.emit('backspace');
+            this._dialog.entry.emit('backspace');
         }
     }
 
@@ -316,4 +321,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

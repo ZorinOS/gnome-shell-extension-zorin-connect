@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gdk = imports.gi.Gdk;
@@ -11,6 +15,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Find My Phone'),
+    description: _('Ring your paired device'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.FindMyPhone',
     incomingCapabilities: ['kdeconnect.findmyphone.request'],
     outgoingCapabilities: ['kdeconnect.findmyphone.request'],
@@ -242,4 +247,3 @@ const Dialog = GObject.registerClass({
         this._plugin = plugin;
     }
 });
-

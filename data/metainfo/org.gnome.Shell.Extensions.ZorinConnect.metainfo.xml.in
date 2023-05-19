@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+
+SPDX-License-Identifier: GPL-2.0-or-later
+-->
+
 <component type="desktop-application">
   <id>org.gnome.Shell.Extensions.ZorinConnect</id>
 
   <name>Zorin Connect</name>
-  <summary>KDE Connect implementation for GNOME</summary>
+  <summary>Connect your mobile device with your Zorin OS computer</summary>
 
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0-or-later</project_license>
@@ -27,7 +34,7 @@
 
   <description>
     <p>
-      Zorin Connect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, macOS and Windows.
+      Zorin Connect enables you to connect your phone or other devices to your system.
     </p>
     <p>
       With Zorin Connect you can securely connect to mobile devices and other desktops to:

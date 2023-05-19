@@ -1,4 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 APP_ID="org.gnome.Shell.Extensions.ZorinConnect"
 #G_TEST_BUILDDIR=${MESON_BUILD_ROOT}/installed-tests

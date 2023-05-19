@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gio = imports.gi.Gio;
@@ -10,6 +14,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('Photo'),
+    description: _('Request the paired device to take a photo and transfer it to this PC'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.Photo',
     incomingCapabilities: [
         'kdeconnect.photo',
@@ -238,4 +243,3 @@ var Plugin = GObject.registerClass({
         });
     }
 });
-

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Tweener = imports.tweener.tweener;
@@ -374,10 +378,13 @@ const Conversation = GObject.registerClass({
             // Get corrected address
             let number = address.toPhoneNumber();
 
+            if (!number)
+                continue;
+
             for (const contactNumber of contact.numbers) {
                 const cnumber = contactNumber.value.toPhoneNumber();
 
-                if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
+                if (cnumber && (number.endsWith(cnumber) || cnumber.endsWith(number))) {
                     number = contactNumber.value;
                     break;
                 }

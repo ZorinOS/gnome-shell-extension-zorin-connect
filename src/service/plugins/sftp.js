@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const Gio = imports.gi.Gio;
@@ -12,6 +16,7 @@ const PluginBase = imports.service.plugin;
 var Metadata = {
     label: _('SFTP'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.SFTP',
+    description: _('Browse the paired device filesystem'),
     incomingCapabilities: ['kdeconnect.sftp'],
     outgoingCapabilities: ['kdeconnect.sftp.request'],
     actions: {
@@ -562,4 +567,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-

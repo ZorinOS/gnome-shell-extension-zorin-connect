@@ -1,3 +1,5 @@
-usr/share
+usr/lib/firewalld
+usr/share/[a-hj-z]*
+usr/share/icons
 debian/zorin-connect /etc/ufw/applications.d/
 debian/zorin-connect.gufw /etc/gufw/app_profiles/

@@ -1,29 +1,27 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const Gtk = imports.gi.Gtk;
+const {Gio, GLib, Adw} = imports.gi;
 
 // Bootstrap
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 const Utils = Extension.imports.shell.utils;
 
-
 function init() {
     Utils.installService();
 }
 
-function buildPrefsWidget() {
-    // Destroy the window once the mainloop starts
-    const widget = new Gtk.Box();
+function fillPreferencesWindow(window) {
+    const widget = new Adw.PreferencesPage();
+    window.add(widget);
 
     GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
-        widget.get_toplevel().destroy();
-        return false;
+        window.close();
     });
 
     Gio.Subprocess.new([`${Extension.path}/zorin-connect-preferences`], 0);
-
-    return widget;
 }
 

@@ -1,0 +1,4 @@
+usr/libexec/*
+# This was shipped by gnome-shell-extension-zorin-connect (<< 50-1~)
+# so add a Breaks if you bring it back in a different package
+usr/share/installed-tests

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+//
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 'use strict';
 
 const GObject = imports.gi.GObject;
@@ -9,6 +13,7 @@ const PluginBase = imports.service.plugin;
 
 var Metadata = {
     label: _('System Volume'),
+    description: _('Enable the paired device to control the system volume'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.SystemVolume',
     incomingCapabilities: ['kdeconnect.systemvolume.request'],
     outgoingCapabilities: ['kdeconnect.systemvolume'],
@@ -197,4 +202,3 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
-
