@@ -200,6 +200,12 @@ msgid ""
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
+"Touchpad.\n"
+"Fare imlecini hareket ettirmek için bu alanı sürükleyin.\n"
+"Fare imlecini sürüklemek için uzun basın.\n"
+"\n"
+"Eşleştirilen cihaza tek tıklama gönderilecek.\n"
+"Sol, orta, sağ tuş, ve kaydıraç."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
@@ -277,7 +283,7 @@ msgstr "Düşük Batarya Bildirimi"
 
 #: data/ui/preferences-device-panel.ui:706
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "Belirlenen Seviyeye Kadar Şarj Bildirimi"
 
 #: data/ui/preferences-device-panel.ui:786
 msgid "Fully Charged Notification"
@@ -545,7 +551,7 @@ msgstr "Görünüm Kipi"
 #: data/ui/preferences-window.ui:829
 msgid "Panel"
 msgstr "Sistem Paneli"
-
+•••••••••••••
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:835
 msgid "User Menu"
@@ -649,7 +655,8 @@ msgid "translator-credits"
 msgstr ""
 "Serdar Sağlam <teknomobil@yandex.com>\n"
 "Orhan Engin Okay <orhanenginokay@hotmail.com>\n"
-"A. Burak Tektaş <abtektas@gmail.com>"
+"A. Burak Tektaş <abtektas@gmail.com>\n"
+"Ozan Aydın <iletisim@ozanaydin.com.tr>"
 
 #: src/preferences/service.js:418
 msgid ""
@@ -791,7 +798,7 @@ msgstr "Bluetooth cihazı %s"
 #: src/service/device.js:214
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "Doğrulama anahtarı: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
@@ -822,7 +829,7 @@ msgstr "Bağlantı noktası zaten kullanılıyor"
 
 #: src/service/plugins/battery.js:17
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Pil bilgilerine erişin"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:257
@@ -840,13 +847,13 @@ msgstr "Şarj Oldu"
 #: src/service/plugins/battery.js:286
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: Pil yeterli şarj seviyesine ulaştı"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:288
 #, javascript-format
 msgid "%d%% Charged"
-msgstr ""
+msgstr "Şarjınız %d%%"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:315
@@ -866,7 +873,7 @@ msgstr "Pano"
 
 #: src/service/plugins/clipboard.js:15
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Pano içeriğini paylaşın"
 
 #: src/service/plugins/clipboard.js:27
 msgid "Clipboard Push"
@@ -878,7 +885,7 @@ msgstr "Panodan Al"
 
 #: src/service/plugins/contacts.js:27
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Eşleştirilen cihazın kişilerine erişin"
 
 #: src/service/plugins/findmyphone.js:17
 msgid "Find My Phone"
@@ -886,7 +893,7 @@ msgstr "Telefonumu Bul"
 
 #: src/service/plugins/findmyphone.js:18
 msgid "Ring your paired device"
-msgstr ""
+msgstr "Eşleştirilmiş cihazınızın zilini çaldırın"
 
 #: src/service/plugins/mousepad.js:16
 msgid "Mousepad"
@@ -906,7 +913,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:20
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "Çift yönlü uzaktan medya oynatma kontrolü"
 
 #: src/service/plugins/mpris.js:320
 msgid "Unknown"
@@ -914,7 +921,7 @@ msgstr "Bilinmeyen"
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "Bildirimleri eşleşen cihazla paylaşın"
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
@@ -934,7 +941,7 @@ msgstr "Bildirimi Etkinleştir"
 
 #: src/service/plugins/photo.js:17
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
+msgstr "Eşleştirilen cihazın fotoğraf çekmesini ve bu bilgisayara aktarmasını isteyin"
 
 #: src/service/plugins/photo.js:224 src/service/plugins/share.js:132
 #: src/service/plugins/share.js:208 src/service/plugins/share.js:319
@@ -950,7 +957,7 @@ msgstr "Gönderilemedi “%s” hedef %s"
 
 #: src/service/plugins/ping.js:16
 msgid "Send and receive pings"
-msgstr ""
+msgstr "Yoklama gönder ve al"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -983,7 +990,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Eşleştirilmiş cihazın dosya sistemine göz atın"
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
@@ -1004,7 +1011,7 @@ msgstr "Paylaş"
 
 #: src/service/plugins/share.js:20
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Dosyaları ve URL'leri cihazlar arasında paylaşın"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:134
@@ -1034,7 +1041,7 @@ msgstr "Alınan “%s” kaynak %s"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr ""
+msgstr "Dosya Konumunu Göster"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
@@ -1086,7 +1093,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:19
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Eşleştirilen cihazın SMS'ini gönderip okuyun ve yeni SMS'lerden haberdar olun"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
@@ -1106,7 +1113,7 @@ msgstr "Sistem Sesi"
 
 #: src/service/plugins/systemvolume.js:16
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Eşleştirilen cihazın sistem sesini kontrol etmeyi aç"
 
 #: src/service/plugins/systemvolume.js:60
 msgid "PulseAudio not found"
