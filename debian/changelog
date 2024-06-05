@@ -1,3 +1,21 @@
+gnome-shell-extension-zorin-connect (55.4) jammy; urgency=medium
+
+  * Add link to Firefox browser extension
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Wed, 05 Jun 2024 23:11:11 +0100
+
+gnome-shell-extension-zorin-connect (55.3) jammy; urgency=medium
+
+  * Removed links to browser add-ons
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Thu, 23 Nov 2023 14:22:05 +0000
+
+gnome-shell-extension-zorin-connect (55.2) jammy; urgency=medium
+
+  * Corrected locale directory path for Nautilus extension
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Fri, 17 Nov 2023 15:42:08 +0000
+
 gnome-shell-extension-zorin-connect (55.1) jammy; urgency=medium
 
   * Updated .reuse directory
