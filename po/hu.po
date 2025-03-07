@@ -1,12 +1,9 @@
-# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
 "Project-Id-Version: zorin-connect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2022-10-27 02:23\n"
+"POT-Creation-Date: 2023-04-29 00:46-0400\n"
+"PO-Revision-Date: 2023-06-29 13:25\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -17,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: zorin-connect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: hu\n"
-"X-Crowdin-File: /[Zorin Connect.gnome-shell-extension-zorin-connect] main/po/org."
-"gnome.Shell.Extensions.Zorin Connect.pot\n"
+"X-Crowdin-File: /[ZorinConnect.gnome-shell-extension-zorin-connect] main/po/org.gnome.Shell.Extensions.ZorinConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -36,19 +32,12 @@ msgid "Zorin Connect Team"
 msgstr "A Zorin Connect csapata"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:39
-msgid ""
-"Zorin Connect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgid "Zorin Connect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "A Zorin Connect egy teljes KDE Connect implementáció, főként a GNOME Shell-hez, Nautilus, Chrome és Firefox integrációval. A KDE Connect csapatának alkalmazásai elérhetőek Linux, BSD, Android, Sailfish, iOS, macOS és Windows rendszereken."
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:42
-msgid ""
-"With Zorin Connect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"A Zorin Connect segítségével biztonságosan csatlakozhat mobileszközökhöz és "
-"másik számítógépekhez a következőkhöz:"
+msgid "With Zorin Connect you can securely connect to mobile devices and other desktops to:"
+msgstr "A Zorin Connect segítségével biztonságosan csatlakozhat mobileszközökhöz és másik számítógépekhez a következőkhöz:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
@@ -86,7 +75,7 @@ msgstr "Előre megadott parancsok végrehajtása"
 msgid "And more…"
 msgstr "És még sok más…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:127
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:130
 msgid "Zorin Connect in GNOME Shell"
 msgstr "Zorin Connect a GNOME Shellben"
 
@@ -192,14 +181,16 @@ msgid "Select or start a conversation"
 msgstr "Indítson, vagy válasszon ki egy beszélgetést"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "Érintőtábla.\n"
+"Az egérkurzor mozgatásához húzza a kurzort ezen a területen.\n"
+"Hosszan megnyomva húzhatja az egérkurzort.\n\n"
+"Egyet kattintva elküldi azt a párosított eszközre.\n"
+"Bal, középső, jobb gombés, és görgetés."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
@@ -474,9 +465,7 @@ msgstr "Kiválasztás"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"A megszakításhoz nyomjon Esc gombot, vagy Backspace-t a gyorsbillentyű "
-"visszaállításához."
+msgstr "A megszakításhoz nyomjon Esc gombot, vagy Backspace-t a gyorsbillentyű visszaállításához."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -515,12 +504,12 @@ msgid "Searching for devices…"
 msgstr "Eszközök keresése…"
 
 #: data/ui/preferences-window.ui:353
-msgid "Behavior When Locked"
-msgstr ""
+msgid "Extension Settings"
+msgstr "Bővítmény beállításai"
 
 #: data/ui/preferences-window.ui:378
-msgid "Keep Alive"
-msgstr ""
+msgid "Zorin Connect remains active when GNOME Shell is locked"
+msgstr "A Zorin Connect a GNOME Shell zárolt állapotában is aktív marad"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -587,12 +576,8 @@ msgid "Something’s gone wrong"
 msgstr "Valami elromlott"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"Zorin Connect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"A Zorin Connect egy váratlan hibába ütközött. Kérem, jelentse a hibát, és "
-"csatoljon minden olyan információt, ami segíthet."
+msgid "Zorin Connect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "A Zorin Connect egy váratlan hibába ütközött. Kérem, jelentse a hibát, és csatoljon minden olyan információt, ami segíthet."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -605,14 +590,14 @@ msgstr "Küldés mobileszközre"
 
 #: src/extension.js:52
 msgid "Sync between your devices"
-msgstr ""
+msgstr "Szinkronizálás az eszközei között"
 
 #: src/extension.js:161
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "Csatlakoztatva"
-msgstr[1] "Csatlakoztatva"
+msgstr[0] "Egy eszköz csatlakoztatva"
+msgstr[1] "%d eszköz csatlakoztatva"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
@@ -650,12 +635,8 @@ msgid "translator-credits"
 msgstr "Báthory Péter <bathory86p@gmail.com>"
 
 #: src/preferences/service.js:418
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"A hibakeresési üzenetek naplózásra kerülnek. Tegye meg a hiba "
-"reprodukálásához szükséges lépést, majd nézze át a naplót."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "A hibakeresési üzenetek naplózásra kerülnek. Tegye meg a hiba reprodukálásához szükséges lépést, majd nézze át a naplót."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
@@ -789,7 +770,7 @@ msgstr "Bluetooth eszköz itt: %s"
 #: src/service/device.js:214
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "Ellenőrző kulcs: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
@@ -806,8 +787,7 @@ msgid "Accept"
 msgstr "Elfogadás"
 
 #: src/service/manager.js:118
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "A felderítés le lett tiltva a hálózaton lévő eszközök száma miatt."
 
 #: src/service/backends/lan.js:166
@@ -892,13 +872,11 @@ msgstr "Egérpad"
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
-"A párosított eszköz egérként és billentyűzetként való használatának "
-"egedélyezése"
+msgstr "A párosított eszköz egérként és billentyűzetként való használatának egedélyezése"
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
-msgstr ""
+msgstr "Távoli bevitel"
 
 #: src/service/plugins/mpris.js:19
 msgid "MPRIS"
@@ -934,9 +912,7 @@ msgstr "Értesítés aktiválása"
 
 #: src/service/plugins/photo.js:17
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
-"Párosított eszköz megkérése, hogy készítsen fényképet, és vigye át erre a "
-"számítógépre"
+msgstr "Párosított eszköz megkérése, hogy készítsen fényképet, és vigye át erre a számítógépre"
 
 #: src/service/plugins/photo.js:224 src/service/plugins/share.js:132
 #: src/service/plugins/share.js:208 src/service/plugins/share.js:319
@@ -974,12 +950,8 @@ msgid "Run Commands"
 msgstr "Parancsok futtatása"
 
 #: src/service/plugins/runcommand.js:17
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Parancsok futtatása a párosított eszközön, vagy előre megadott parancsok "
-"futtassanak engedélyezése ezen a számítógépen"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Parancsok futtatása a párosított eszközön, vagy előre megadott parancsok futtassanak engedélyezése ezen a számítógépen"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -1014,7 +986,7 @@ msgstr "Fájlok és URL-ek megosztása eszközök között"
 #: src/service/plugins/share.js:134
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr "% számára nem engedélyezett a fájlok feltöltése"
+msgstr "%s zámára nem engedélyezett a fájlok feltöltése"
 
 #: src/service/plugins/share.js:156 src/service/plugins/share.js:289
 msgid "Transferring File"
@@ -1038,7 +1010,7 @@ msgstr "„%s” fogadva innen: %s"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr ""
+msgstr "Fájl helyének megjelenítése"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
@@ -1090,9 +1062,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:19
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"Értesítés új SMS-ekről, és a párosított eszköz SMS-einek olvasása és SMS-ek "
-"küldése"
+msgstr "Értesítés új SMS-ekről, és a párosított eszköz SMS-einek olvasása és SMS-ek küldése"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
@@ -1119,11 +1089,8 @@ msgid "PulseAudio not found"
 msgstr "PulseAudio nem található"
 
 #: src/service/plugins/telephony.js:18
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
-"Értesítés a hívásokról és a rendszerhangerő állítása csörgés/folyamatban "
-"lévő hívások közben"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Értesítés a hívásokról és a rendszerhangerő állítása csörgés/folyamatban lévő hívások közben"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30
@@ -1248,8 +1215,7 @@ msgstr "Válasz"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:35
 msgid "Share links with Zorin Connect, direct to the browser or by SMS."
-msgstr ""
-"Hivatkozások megosztása Zorin Connecttel, közvetlenül a böngészőből vagy SMS-ben."
+msgstr "Hivatkozások megosztása Zorin Connecttel, közvetlenül a böngészőből vagy SMS-ben."
 
 #. TRANSLATORS: WebExtension can't connect to Zorin Connect
 #: webextension/gettext.js:39

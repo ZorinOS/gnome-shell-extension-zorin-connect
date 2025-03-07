@@ -1,12 +1,9 @@
-# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
 "Project-Id-Version: zorin-connect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2022-11-06 13:40\n"
+"POT-Creation-Date: 2023-04-29 00:46-0400\n"
+"PO-Revision-Date: 2023-09-25 07:38\n"
 "Last-Translator: \n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -17,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: zorin-connect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: ca\n"
-"X-Crowdin-File: /[Zorin Connect.gnome-shell-extension-zorin-connect] main/po/org."
-"gnome.Shell.Extensions.Zorin Connect.pot\n"
+"X-Crowdin-File: /[ZorinConnect.gnome-shell-extension-zorin-connect] main/po/org.gnome.Shell.Extensions.ZorinConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -36,19 +32,12 @@ msgid "Zorin Connect Team"
 msgstr "L’equip del Zorin Connect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:39
-msgid ""
-"Zorin Connect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgid "Zorin Connect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "Zorin Connect és una implementació completa de KDE Connect especialment per a GNOME Shell amb integració amb Nautilus, Chrome i Firefox. L'equip de KDE Connect té aplicacions per a Linux, BSD, Android, Sailfish, iOS, macOS i Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:42
-msgid ""
-"With Zorin Connect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Amb el Zorin Connect podeu connectar-vos de forma segura a dispositius mòbils i "
-"altres escriptoris per a:"
+msgid "With Zorin Connect you can securely connect to mobile devices and other desktops to:"
+msgstr "Amb el Zorin Connect podeu connectar-vos de forma segura a dispositius mòbils i altres escriptoris per a:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
@@ -86,9 +75,9 @@ msgstr "Executar ordres predefinides"
 msgid "And more…"
 msgstr "I més…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:127
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:130
 msgid "Zorin Connect in GNOME Shell"
-msgstr ""
+msgstr "Zorin Connect en el GNOME Shell"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:20 data/ui/preferences-window.ui:821
@@ -133,7 +122,7 @@ msgstr "Introduïu un número telefònic o un nom"
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:149
 msgid "Other"
-msgstr ""
+msgstr "Altres"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:292
@@ -167,7 +156,7 @@ msgstr ""
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr ""
+msgstr "Escriu un missatge i apreta Enter per enviar"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:32
 #: src/service/ui/messaging.js:1056
@@ -192,11 +181,9 @@ msgid "Select or start a conversation"
 msgstr "Seleccioneu una conversa o inicieu-ne una de nova"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
@@ -256,7 +243,7 @@ msgstr "Fitxers"
 
 #: data/ui/preferences-device-panel.ui:445
 msgid "Receive Files"
-msgstr ""
+msgstr "Rebre fitxers"
 
 #: data/ui/preferences-device-panel.ui:504
 msgid "Save files to"
@@ -474,9 +461,7 @@ msgstr "Defineix"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Premeu Esc per a cancel·lar o Retrocés per a reinicialitzar la drecera de "
-"teclat."
+msgstr "Premeu Esc per a cancel·lar o Retrocés per a reinicialitzar la drecera de teclat."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -515,12 +500,12 @@ msgid "Searching for devices…"
 msgstr "S’estan cercant dispositius…"
 
 #: data/ui/preferences-window.ui:353
-msgid "Behavior When Locked"
-msgstr ""
+msgid "Extension Settings"
+msgstr "Configuració de l'extensió"
 
 #: data/ui/preferences-window.ui:378
-msgid "Keep Alive"
-msgstr ""
+msgid "Zorin Connect remains active when GNOME Shell is locked"
+msgstr "Zorin Connect es manté actiu quan GNOME Shell està bloquejat"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -580,17 +565,15 @@ msgstr "Llista de dispositius"
 
 #: data/ui/service-error-dialog.ui:39 data/ui/service-error-dialog.ui:47
 msgid "Report"
-msgstr ""
+msgstr "Informar d'un error"
 
 #: data/ui/service-error-dialog.ui:79
 msgid "Something’s gone wrong"
 msgstr "Alguna cosa ha anat malament"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"Zorin Connect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
+msgid "Zorin Connect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "Zorin Connect ha trobat un error inesperat. Si us plau, informa del problema i inclou qualsevol informació que pugui ajudar."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -603,14 +586,14 @@ msgstr "Envia al dispositiu mòbil"
 
 #: src/extension.js:52
 msgid "Sync between your devices"
-msgstr ""
+msgstr "Sincronitza entre els teus dispositius"
 
 #: src/extension.js:161
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "Connectat"
-msgstr[1] "Connectat"
+msgstr[0] "%d connectat"
+msgstr[1] "%d connectats"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
@@ -645,17 +628,12 @@ msgstr "Una implementació completa de KDE Connect per al GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:385
 msgid "translator-credits"
-msgstr ""
-"Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019-2020\n"
+msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2019-2020\n"
 "Marc Riera Irigoyen <marcriera@softcatala.org>, 2019"
 
 #: src/preferences/service.js:418
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"S’estan registrant els missatges de depuració. Efectueu els passos "
-"necessaris per a reproduir un problema i, tot seguit, reviseu el registre."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "S’estan registrant els missatges de depuració. Efectueu els passos necessaris per a reproduir un problema i, tot seguit, reviseu el registre."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
@@ -806,8 +784,7 @@ msgid "Accept"
 msgstr "Accepta-la"
 
 #: src/service/manager.js:118
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
 #: src/service/backends/lan.js:166
@@ -970,9 +947,7 @@ msgid "Run Commands"
 msgstr "Execució d’ordres"
 
 #: src/service/plugins/runcommand.js:17
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:17
@@ -1111,8 +1086,7 @@ msgid "PulseAudio not found"
 msgstr "No s’ha trobat el PulseAudio"
 
 #: src/service/plugins/telephony.js:18
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call
@@ -1238,9 +1212,7 @@ msgstr "Respon"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:35
 msgid "Share links with Zorin Connect, direct to the browser or by SMS."
-msgstr ""
-"Compartiu enllaços amb el Zorin Connect, directament al navegador o mitjançant "
-"SMS."
+msgstr "Compartiu enllaços amb el Zorin Connect, directament al navegador o mitjançant SMS."
 
 #. TRANSLATORS: WebExtension can't connect to Zorin Connect
 #: webextension/gettext.js:39

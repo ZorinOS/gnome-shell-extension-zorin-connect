@@ -1263,6 +1263,9 @@ msgstr "Služba nedostupná"
 msgid "Open in Browser"
 msgstr "Otvoriť v prehliadači"
 
+msgid "Mobile Application"
+msgstr "Mobilná aplikácia"
+
 #~ msgid "Add"
 #~ msgstr "Pridať"
 
@@ -1378,6 +1381,3 @@ msgstr "Otvoriť v prehliadači"
 
 #~ msgid "Select a contact or number"
 #~ msgstr "Vyberte kontakt alebo číslo"
-
-msgid "Mobile Application"
-msgstr "Mobilná aplikácia"

@@ -2,11 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
 
 /**
@@ -49,7 +47,7 @@ const DeviceState = {
 /**
  * A class representing the system battery.
  */
-var Battery = GObject.registerClass({
+const Battery = GObject.registerClass({
     GTypeName: 'ZorinConnectSystemBattery',
     Signals: {
         'changed': {
@@ -103,24 +101,11 @@ var Battery = GObject.registerClass({
                 g_flags: Gio.DBusProxyFlags.DO_NOT_AUTO_START,
             });
 
-            await new Promise((resolve, reject) => {
-                this._proxy.init_async(
-                    GLib.PRIORITY_DEFAULT,
-                    this._cancellable,
-                    (proxy, res) => {
-                        try {
-                            resolve(proxy.init_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
+            await this._proxy.init_async(GLib.PRIORITY_DEFAULT,
+                this._cancellable);
 
             this._propertiesChangedId = this._proxy.connect(
-                'g-properties-changed',
-                this._onPropertiesChanged.bind(this)
-            );
+                'g-properties-changed', this._onPropertiesChanged.bind(this));
 
             this._initProperties(this._proxy);
         } catch (e) {
@@ -226,5 +211,5 @@ var Battery = GObject.registerClass({
 /**
  * The service class for this component
  */
-var Component = Battery;
+export default Battery;
 

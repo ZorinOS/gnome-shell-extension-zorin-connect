@@ -1,6 +1,7 @@
 {
     "env": {
-        "es6": true
+        "es2021": true,
+        "shared-node-browser": true
     },
     "extends": "eslint:recommended",
     "rules": {
@@ -280,12 +281,10 @@
         "_": false,
         "_C": false,
         "_N": false,
-        "ngettext": false,
-
-        "HAVE_WAYLAND": false,
-        "HAVE_REMOTEINPUT": false
+        "ngettext": false
     },
     "parserOptions": {
-        "ecmaVersion": 2017
+        "ecmaVersion": "latest",
+        "sourceType": "module"
     }
 }

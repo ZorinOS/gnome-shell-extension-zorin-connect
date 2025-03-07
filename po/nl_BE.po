@@ -30,7 +30,7 @@ msgstr "Volledige KDE Connect-implementatie voor GNOME"
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:23
 #, fuzzy
 msgid "Zorin Connect Team"
-msgstr "Zorin Connect-team"
+msgstr "Zorin Connect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:39
 msgid ""
@@ -581,7 +581,7 @@ msgstr ""
 #: data/ui/preferences-window.ui:851
 #, fuzzy
 msgid "About Zorin Connect"
-msgstr "Over Zorin Connect"
+msgstr "Zorin Connect"
 
 #: data/ui/service-device-chooser.ui:15
 msgid "Select a Device"
@@ -1294,6 +1294,9 @@ msgstr "Dienst onbeschikbaar"
 msgid "Open in Browser"
 msgstr "Open in browser"
 
+msgid "Mobile Application"
+msgstr "Mobiele applicatie"
+
 #~ msgid "On"
 #~ msgstr "Aan"
 
@@ -1426,6 +1429,3 @@ msgstr "Open in browser"
 
 #~ msgid "Select a contact or number"
 #~ msgstr "Kies een contact of nummer"
-
-msgid "Mobile Application"
-msgstr "Mobiele applicatie"

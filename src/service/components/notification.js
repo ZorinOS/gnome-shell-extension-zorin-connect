@@ -2,14 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GjsPrivate from 'gi://GjsPrivate';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GjsPrivate = imports.gi.GjsPrivate;
-const GObject = imports.gi.GObject;
-
-const DBus = imports.service.utils.dbus;
+import * as DBus from '../utils/dbus.js';
 
 
 const _nodeInfo = Gio.DBusNodeInfo.new_for_xml(`
@@ -111,52 +109,34 @@ const Listener = GObject.registerClass({
         }
     }
 
-    _listNames() {
-        return new Promise((resolve, reject) => {
-            this._session.call(
-                'org.freedesktop.DBus',
-                '/org/freedesktop/DBus',
-                'org.freedesktop.DBus',
-                'ListNames',
-                null,
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                null,
-                (connection, res) => {
-                    try {
-                        res = connection.call_finish(res);
-                        resolve(res.deepUnpack()[0]);
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
+    async _listNames() {
+        const reply = await this._session.call(
+            'org.freedesktop.DBus',
+            '/org/freedesktop/DBus',
+            'org.freedesktop.DBus',
+            'ListNames',
+            null,
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null);
+
+        return reply.deepUnpack()[0];
     }
 
-    _getNameOwner(name) {
-        return new Promise((resolve, reject) => {
-            this._session.call(
-                'org.freedesktop.DBus',
-                '/org/freedesktop/DBus',
-                'org.freedesktop.DBus',
-                'GetNameOwner',
-                new GLib.Variant('(s)', [name]),
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                null,
-                (connection, res) => {
-                    try {
-                        res = connection.call_finish(res);
-                        resolve(res.deepUnpack()[0]);
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
+    async _getNameOwner(name) {
+        const reply = await this._session.call(
+            'org.freedesktop.DBus',
+            '/org/freedesktop/DBus',
+            'org.freedesktop.DBus',
+            'GetNameOwner',
+            new GLib.Variant('(s)', [name]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null);
+
+        return reply.deepUnpack()[0];
     }
 
     /**
@@ -251,14 +231,19 @@ const Listener = GObject.registerClass({
             // libnotify
             } else if (name === 'Notify') {
                 const message = invocation.get_message();
+                const destination = message.get_destination();
 
-                if (this._fdoNameOwner === undefined) {
-                    this._fdoNameOwner = await this._getNameOwner(
-                        'org.freedesktop.Notifications');
+                // Deduplicate notifications; only accept messages
+                // directed to the notification bus, or its owner.
+                if (destination !== 'org.freedesktop.Notifications') {
+                    if (this._fdoNameOwner === undefined) {
+                        this._fdoNameOwner = await this._getNameOwner(
+                            'org.freedesktop.Notifications');
+                    }
+
+                    if (this._fdoNameOwner !== destination)
+                        return;
                 }
-
-                if (this._fdoNameOwner !== message.get_destination())
-                    return;
 
                 // Try to brute-force an application name using DBus
                 if (!this.applications.hasOwnProperty(parameters[0])) {
@@ -279,68 +264,49 @@ const Listener = GObject.registerClass({
      * @return {Promise} A promise for the operation
      */
     _monitorConnection() {
-        return new Promise((resolve, reject) => {
-            // libnotify Interface
-            this._fdoNotifications = new GjsPrivate.DBusImplementation({
-                g_interface_info: FDO_IFACE,
-            });
-            this._fdoMethodCallId = this._fdoNotifications.connect(
-                'handle-method-call',
-                this._onHandleMethodCall.bind(this)
-            );
-            this._fdoNotifications.export(
-                this._monitor,
-                '/org/freedesktop/Notifications'
-            );
-
-            this._fdoNameOwnerChangedId = this._session.signal_subscribe(
-                'org.freedesktop.DBus',
-                'org.freedesktop.DBus',
-                'NameOwnerChanged',
-                '/org/freedesktop/DBus',
-                'org.freedesktop.Notifications',
-                Gio.DBusSignalFlags.MATCH_ARG0_NAMESPACE,
-                this._onFdoNameOwnerChanged.bind(this)
-            );
-
-            // GNotification Interface
-            this._gtkNotifications = new GjsPrivate.DBusImplementation({
-                g_interface_info: GTK_IFACE,
-            });
-            this._gtkMethodCallId = this._gtkNotifications.connect(
-                'handle-method-call',
-                this._onHandleMethodCall.bind(this)
-            );
-            this._gtkNotifications.export(
-                this._monitor,
-                '/org/gtk/Notifications'
-            );
-
-            // Become a monitor for Fdo & Gtk notifications
-            this._monitor.call(
-                'org.freedesktop.DBus',
-                '/org/freedesktop/DBus',
-                'org.freedesktop.DBus.Monitoring',
-                'BecomeMonitor',
-                new GLib.Variant('(asu)', [[FDO_MATCH, GTK_MATCH], 0]),
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                null,
-                (connection, res) => {
-                    try {
-                        resolve(connection.call_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
+        // libnotify Interface
+        this._fdoNotifications = new GjsPrivate.DBusImplementation({
+            g_interface_info: FDO_IFACE,
         });
+        this._fdoMethodCallId = this._fdoNotifications.connect(
+            'handle-method-call', this._onHandleMethodCall.bind(this));
+        this._fdoNotifications.export(this._monitor,
+            '/org/freedesktop/Notifications');
+
+        this._fdoNameOwnerChangedId = this._session.signal_subscribe(
+            'org.freedesktop.DBus',
+            'org.freedesktop.DBus',
+            'NameOwnerChanged',
+            '/org/freedesktop/DBus',
+            'org.freedesktop.Notifications',
+            Gio.DBusSignalFlags.MATCH_ARG0_NAMESPACE,
+            this._onFdoNameOwnerChanged.bind(this)
+        );
+
+        // GNotification Interface
+        this._gtkNotifications = new GjsPrivate.DBusImplementation({
+            g_interface_info: GTK_IFACE,
+        });
+        this._gtkMethodCallId = this._gtkNotifications.connect(
+            'handle-method-call', this._onHandleMethodCall.bind(this));
+        this._gtkNotifications.export(this._monitor, '/org/gtk/Notifications');
+
+        // Become a monitor for Fdo & Gtk notifications
+        return this._monitor.call(
+            'org.freedesktop.DBus',
+            '/org/freedesktop/DBus',
+            'org.freedesktop.DBus.Monitoring',
+            'BecomeMonitor',
+            new GLib.Variant('(asu)', [[FDO_MATCH, GTK_MATCH], 0]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null);
     }
 
     async _init_async() {
         try {
-            this._session = await DBus.getConnection();
+            this._session = Gio.DBus.session;
             this._monitor = await DBus.newConnection();
             await this._monitorConnection();
         } catch (e) {
@@ -440,5 +406,4 @@ const Listener = GObject.registerClass({
 /**
  * The service class for this component
  */
-var Component = Listener;
-
+export default Listener;

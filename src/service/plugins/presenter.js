@@ -2,15 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GObject from 'gi://GObject';
 
-const GObject = imports.gi.GObject;
-
-const Components = imports.service.components;
-const PluginBase = imports.service.plugin;
+import * as Components from '../components/index.js';
+import Plugin from '../plugin.js';
 
 
-var Metadata = {
+export const Metadata = {
     label: _('Presentation'),
     description: _('Use the paired device as a presenter'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.Presenter',
@@ -25,14 +23,17 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/presenter
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/PresenterPlugin/
  */
-var Plugin = GObject.registerClass({
+const PresenterPlugin = GObject.registerClass({
     GTypeName: 'ZorinConnectPresenterPlugin',
-}, class Plugin extends PluginBase.Plugin {
+}, class PresenterPlugin extends Plugin {
 
     _init(device) {
         super._init(device, 'presenter');
 
-        this._input = Components.acquire('input');
+        if (!globalThis.HAVE_GNOME)
+            this._input = Components.acquire('ydotool');
+        else
+            this._input = Components.acquire('input');
     }
 
     handlePacket(packet) {
@@ -48,9 +49,15 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        if (this._input !== undefined)
-            this._input = Components.release('input');
+        if (this._input !== undefined) {
+            if (!globalThis.HAVE_GNOME)
+                this._input = Components.release('ydotool');
+            else
+                this._input = Components.release('input');
+        }
 
         super.destroy();
     }
 });
+
+export default PresenterPlugin;

@@ -2,15 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Clutter from 'gi://Clutter';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import Pango from 'gi://Pango';
+import St from 'gi://St';
 
-const Clutter = imports.gi.Clutter;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const Pango = imports.gi.Pango;
-const St = imports.gi.St;
-
-const Main = imports.ui.main;
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 
 /**
@@ -19,10 +17,10 @@ const Main = imports.ui.main;
  * Adapted from: https://github.com/RaphaelRochet/applications-overview-tooltip
  * See also: https://github.com/GNOME/gtk/blob/master/gtk/gtktooltip.c
  */
-var TOOLTIP_BROWSE_ID = 0;
-var TOOLTIP_BROWSE_MODE = false;
+export let TOOLTIP_BROWSE_ID = 0;
+export let TOOLTIP_BROWSE_MODE = false;
 
-var Tooltip = class Tooltip {
+export default class Tooltip {
 
     constructor(params) {
         Object.assign(this, params);
@@ -172,8 +170,7 @@ var Tooltip = class Tooltip {
                 this._bin.child.add_child(this.label);
             }
 
-            Main.layoutManager.uiGroup.add_child(this._bin);
-            Main.layoutManager.uiGroup.set_child_above_sibling(this._bin, null);
+            Main.layoutManager.addTopChrome(this._bin);
         } else if (this.custom) {
             this._bin.child = this.custom;
         } else {
@@ -236,7 +233,7 @@ var Tooltip = class Tooltip {
                 time: 0.10,
                 transition: Clutter.AnimationMode.EASE_OUT_QUAD,
                 onComplete: () => {
-                    Main.layoutManager.uiGroup.remove_actor(this._bin);
+                    Main.layoutManager.removeChrome(this._bin);
 
                     if (this.custom)
                         this._bin.remove_child(this.custom);
@@ -293,7 +290,7 @@ var Tooltip = class Tooltip {
             this.custom.destroy();
 
         if (this._bin) {
-            Main.layoutManager.uiGroup.remove_actor(this._bin);
+            Main.layoutManager.removeChrome(this._bin);
             this._bin.destroy();
         }
 
@@ -307,5 +304,4 @@ var Tooltip = class Tooltip {
             this._hoverTimeoutId = 0;
         }
     }
-};
-
+}

@@ -2,10 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
 
 const Session = class {
@@ -18,8 +16,19 @@ const Session = class {
 
     async _initAsync() {
         try {
+            const reply = await this._connection.call(
+                'org.freedesktop.login1',
+                '/org/freedesktop/login1',
+                'org.freedesktop.login1.Manager',
+                'ListSessions',
+                null,
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null);
+
+            const sessions = reply.deepUnpack()[0];
             const userName = GLib.get_user_name();
-            const sessions = await this._listSessions();
             let sessionPath = '/org/freedesktop/login1/session/auto';
 
             // eslint-disable-next-line no-unused-vars
@@ -30,7 +39,13 @@ const Session = class {
                 }
             }
 
-            this._session = await this._getSession(sessionPath);
+            this._session = new Gio.DBusProxy({
+                g_connection: this._connection,
+                g_name: 'org.freedesktop.login1',
+                g_object_path: sessionPath,
+                g_interface_name: 'org.freedesktop.login1.Session',
+            });
+            await this._session.init_async(GLib.PRIORITY_DEFAULT, null);
         } catch (e) {
             this._session = null;
             logError(e);
@@ -56,57 +71,6 @@ const Session = class {
         return !(this.idle || this.locked);
     }
 
-    _listSessions() {
-        return new Promise((resolve, reject) => {
-            this._connection.call(
-                'org.freedesktop.login1',
-                '/org/freedesktop/login1',
-                'org.freedesktop.login1.Manager',
-                'ListSessions',
-                null,
-                null,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                null,
-                (connection, res) => {
-                    try {
-                        res = connection.call_finish(res);
-                        resolve(res.deepUnpack()[0]);
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
-    async _getSession(objectPath) {
-        const session = new Gio.DBusProxy({
-            g_connection: this._connection,
-            g_name: 'org.freedesktop.login1',
-            g_object_path: objectPath,
-            g_interface_name: 'org.freedesktop.login1.Session',
-        });
-
-        // Initialize the proxy
-        await new Promise((resolve, reject) => {
-            session.init_async(
-                GLib.PRIORITY_DEFAULT,
-                null,
-                (proxy, res) => {
-                    try {
-                        resolve(proxy.init_finish(res));
-                    } catch (e) {
-                        Gio.DBusError.strip_remote_error(e);
-                        reject(e);
-                    }
-                }
-            );
-        });
-
-        return session;
-    }
-
     destroy() {
         this._session = null;
     }
@@ -116,5 +80,5 @@ const Session = class {
 /**
  * The service class for this component
  */
-var Component = Session;
+export default Session;
 

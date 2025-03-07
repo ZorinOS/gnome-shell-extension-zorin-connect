@@ -2,20 +2,21 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Gdk = imports.gi.Gdk;
-const GLib = imports.gi.GLib;
-const Gtk = imports.gi.Gtk;
-const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
+import Gdk from 'gi://Gdk';
+import GLib from 'gi://GLib';
+import Gtk from 'gi://Gtk';
+import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
 
 
 const DBUS_NAME = 'org.gnome.Shell.Extensions.ZorinConnect.Clipboard';
-const DBUS_PATH = '/org/gnome/Shell/Extensions/ZorinConnect/Clipboard';
+const DBUS_PATH = '/org.gnome.Shell.Extensions.ZorinConnect/Clipboard';
 
 
-var Clipboard = GObject.registerClass({
+/**
+ * The service class for this component
+ */
+const Clipboard = GObject.registerClass({
     GTypeName: 'ZorinConnectClipboard',
     Properties: {
         'text': GObject.ParamSpec.string(
@@ -64,8 +65,11 @@ var Clipboard = GObject.registerClass({
         if (this._clipboard instanceof Gtk.Clipboard)
             this._clipboard.set_text(content, -1);
 
-        if (this._clipboard instanceof Gio.DBusProxy)
-            this._proxySetText(content);
+        if (this._clipboard instanceof Gio.DBusProxy) {
+            this._clipboard.call('SetText', new GLib.Variant('(s)', [content]),
+                Gio.DBusCallFlags.NO_AUTO_START, -1, this._cancellable)
+                .catch(debug);
+        }
     }
 
     async _onNameAppeared(connection, name, name_owner) {
@@ -85,26 +89,26 @@ var Clipboard = GObject.registerClass({
                 g_flags: Gio.DBusProxyFlags.DO_NOT_LOAD_PROPERTIES,
             });
 
-            await new Promise((resolve, reject) => {
-                this._clipboard.init_async(
-                    GLib.PRIORITY_DEFAULT,
-                    this._cancellable,
-                    (proxy, res) => {
-                        try {
-                            resolve(proxy.init_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
+            await this._clipboard.init_async(GLib.PRIORITY_DEFAULT,
+                this._cancellable);
 
-            this._ownerChangeId = this._clipboard.connect(
-                'g-signal',
-                this._onOwnerChange.bind(this)
-            );
+            this._ownerChangeId = this._clipboard.connect('g-signal',
+                this._onOwnerChange.bind(this));
 
             this._onOwnerChange();
+            if (!globalThis.HAVE_GNOME) {
+                // Directly subscrible signal
+                this.signalHandler = Gio.DBus.session.signal_subscribe(
+                    null,
+                    DBUS_NAME,
+                    'OwnerChange',
+                    DBUS_PATH,
+                    null,
+                    Gio.DBusSignalFlags.NONE,
+                    this._onOwnerChange.bind(this)
+                );
+            }
+
         } catch (e) {
             if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED)) {
                 debug(e);
@@ -122,10 +126,8 @@ var Clipboard = GObject.registerClass({
         const display = Gdk.Display.get_default();
         this._clipboard = Gtk.Clipboard.get_default(display);
 
-        this._ownerChangeId = this._clipboard.connect(
-            'owner-change',
-            this._onOwnerChange.bind(this)
-        );
+        this._ownerChangeId = this._clipboard.connect('owner-change',
+            this._onOwnerChange.bind(this));
 
         this._onOwnerChange();
     }
@@ -154,68 +156,10 @@ var Clipboard = GObject.registerClass({
     /*
      * Proxy Clipboard
      */
-    _proxyGetMimetypes() {
-        return new Promise((resolve, reject) => {
-            this._clipboard.call(
-                'GetMimetypes',
-                null,
-                Gio.DBusCallFlags.NO_AUTO_START,
-                -1,
-                this._cancellable,
-                (proxy, res) => {
-                    try {
-                        const reply = proxy.call_finish(res);
-                        resolve(reply.deepUnpack()[0]);
-                    } catch (e) {
-                        Gio.DBusError.strip_remote_error(e);
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
-    _proxyGetText() {
-        return new Promise((resolve, reject) => {
-            this._clipboard.call(
-                'GetText',
-                null,
-                Gio.DBusCallFlags.NO_AUTO_START,
-                -1,
-                this._cancellable,
-                (proxy, res) => {
-                    try {
-                        const reply = proxy.call_finish(res);
-                        resolve(reply.deepUnpack()[0]);
-                    } catch (e) {
-                        Gio.DBusError.strip_remote_error(e);
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
-    _proxySetText(text) {
-        this._clipboard.call(
-            'SetText',
-            new GLib.Variant('(s)', [text]),
-            Gio.DBusCallFlags.NO_AUTO_START,
-            -1,
-            this._cancellable,
-            (proxy, res) => {
-                try {
-                    proxy.call_finish(res);
-                } catch (e) {
-                    Gio.DBusError.strip_remote_error(e);
-                    debug(e);
-                }
-            }
-        );
-    }
-
     async _proxyUpdateText() {
-        const mimetypes = await this._proxyGetMimetypes();
+        let reply = await this._clipboard.call('GetMimetypes', null,
+            Gio.DBusCallFlags.NO_AUTO_START, -1, this._cancellable);
+        const mimetypes = reply.deepUnpack()[0];
 
         // Special case for a cleared clipboard
         if (mimetypes.length === 0)
@@ -225,7 +169,9 @@ var Clipboard = GObject.registerClass({
         if (mimetypes.includes('text/uri-list'))
             return;
 
-        const text = await this._proxyGetText();
+        reply = await this._clipboard.call('GetText', null,
+            Gio.DBusCallFlags.NO_AUTO_START, -1, this._cancellable);
+        const text = reply.deepUnpack()[0];
 
         this._applyUpdate(text);
     }
@@ -233,20 +179,10 @@ var Clipboard = GObject.registerClass({
     /*
      * GtkClipboard
      */
-    _gtkGetMimetypes() {
-        return new Promise((resolve, reject) => {
+    async _gtkUpdateText() {
+        const mimetypes = await new Promise((resolve, reject) => {
             this._clipboard.request_targets((clipboard, atoms) => resolve(atoms));
         });
-    }
-
-    _gtkGetText() {
-        return new Promise((resolve, reject) => {
-            this._clipboard.request_text((clipboard, text) => resolve(text));
-        });
-    }
-
-    async _gtkUpdateText() {
-        const mimetypes = await this._gtkGetMimetypes();
 
         // Special case for a cleared clipboard
         if (mimetypes.length === 0)
@@ -256,7 +192,9 @@ var Clipboard = GObject.registerClass({
         if (mimetypes.includes('text/uri-list'))
             return;
 
-        const text = await this._gtkGetText();
+        const text = await new Promise((resolve, reject) => {
+            this._clipboard.request_text((clipboard, text) => resolve(text));
+        });
 
         this._applyUpdate(text);
     }
@@ -276,12 +214,12 @@ var Clipboard = GObject.registerClass({
             Gio.bus_unwatch_name(this._nameWatcherId);
             this._nameWatcherId = 0;
         }
+
+        if (!globalThis.HAVE_GNOME && this.signalHandler)
+            Gio.DBus.session.signal_unsubscribe(this.signalHandler);
     }
 });
 
+export default Clipboard;
 
-/**
- * The service class for this component
- */
-var Component = Clipboard;
-
+// vim:tabstop=2:shiftwidth=2:expandtab

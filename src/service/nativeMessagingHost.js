@@ -1,19 +1,25 @@
-#!/usr/bin/env gjs
+#!/usr/bin/env -S gjs -m
 
 // SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio?version=2.0';
+import GLib from 'gi://GLib?version=2.0';
+import GObject from 'gi://GObject?version=2.0';
 
-imports.gi.versions.Gio = '2.0';
-imports.gi.versions.GLib = '2.0';
-imports.gi.versions.GObject = '2.0';
+import system from 'system';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const System = imports.system;
+// Retain compatibility with GLib < 2.80, which lacks GioUnix
+let GioUnix;
+try {
+    GioUnix = (await import('gi://GioUnix?version=2.0')).default;
+} catch (e) {
+    GioUnix = {
+        InputStream: Gio.UnixInputStream,
+        OutputStream: Gio.UnixOutputStream,
+    };
+}
 
 
 const NativeMessagingHost = GObject.registerClass({
@@ -44,12 +50,12 @@ const NativeMessagingHost = GObject.registerClass({
 
         // IO Channels
         this._stdin = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({fd: 0}),
+            base_stream: new GioUnix.InputStream({fd: 0}),
             byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN,
         });
 
         this._stdout = new Gio.DataOutputStream({
-            base_stream: new Gio.UnixOutputStream({fd: 1}),
+            base_stream: new GioUnix.OutputStream({fd: 1}),
             byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN,
         });
 
@@ -63,7 +69,7 @@ const NativeMessagingHost = GObject.registerClass({
                 Gio.BusType.SESSION,
                 Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
                 'org.gnome.Shell.Extensions.ZorinConnect',
-                '/org/gnome/Shell/Extensions/ZorinConnect',
+                '/org.gnome.Shell.Extensions.ZorinConnect',
                 null,
                 null
             );
@@ -111,7 +117,7 @@ const NativeMessagingHost = GObject.registerClass({
             // Read the message
             const length = this._stdin.read_int32(null);
             const bytes = this._stdin.read_bytes(length, null).toArray();
-            const message = JSON.parse(imports.byteArray.toString(bytes));
+            const message = JSON.parse(new TextDecoder().decode(bytes));
 
             // A request for a list of devices
             if (message.type === 'devices') {
@@ -215,5 +221,5 @@ const NativeMessagingHost = GObject.registerClass({
 });
 
 // NOTE: must not pass ARGV
-(new NativeMessagingHost()).run([System.programInvocationName]);
+await (new NativeMessagingHost()).runAsync([system.programInvocationName]);
 

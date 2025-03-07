@@ -2,16 +2,53 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import {watchService} from '../wl_clipboard.js';
 
-const ByteArray = imports.byteArray;
-const Gettext = imports.gettext;
+import Gio from 'gi://Gio';
+import GIRepository from 'gi://GIRepository';
+import GLib from 'gi://GLib';
 
-const Gio = imports.gi.Gio;
-const GIRepository = imports.gi.GIRepository;
-const GLib = imports.gi.GLib;
+import Config from '../config.js';
+import setup, {setupGettext} from '../utils/setup.js';
 
-const Config = imports.config;
+
+// Promise Wrappers
+// We don't use top-level await since it returns control flow to importing module, causing bugs
+import('gi://EBook').then(({default: EBook}) => {
+    Gio._promisify(EBook.BookClient, 'connect');
+    Gio._promisify(EBook.BookClient.prototype, 'get_view');
+    Gio._promisify(EBook.BookClient.prototype, 'get_contacts');
+}).catch(console.debug);
+import('gi://EDataServer').then(({default: EDataServer}) => {
+    Gio._promisify(EDataServer.SourceRegistry, 'new');
+}).catch(console.debug);
+
+Gio._promisify(Gio.AsyncInitable.prototype, 'init_async');
+Gio._promisify(Gio.DBusConnection.prototype, 'call');
+Gio._promisify(Gio.DBusProxy.prototype, 'call');
+Gio._promisify(Gio.DataInputStream.prototype, 'read_line_async',
+    'read_line_finish_utf8');
+Gio._promisify(Gio.File.prototype, 'delete_async');
+Gio._promisify(Gio.File.prototype, 'enumerate_children_async');
+Gio._promisify(Gio.File.prototype, 'load_contents_async');
+Gio._promisify(Gio.File.prototype, 'mount_enclosing_volume');
+Gio._promisify(Gio.File.prototype, 'query_info_async');
+Gio._promisify(Gio.File.prototype, 'read_async');
+Gio._promisify(Gio.File.prototype, 'replace_async');
+Gio._promisify(Gio.File.prototype, 'replace_contents_bytes_async',
+    'replace_contents_finish');
+Gio._promisify(Gio.FileEnumerator.prototype, 'next_files_async');
+Gio._promisify(Gio.Mount.prototype, 'unmount_with_operation');
+Gio._promisify(Gio.InputStream.prototype, 'close_async');
+Gio._promisify(Gio.OutputStream.prototype, 'close_async');
+Gio._promisify(Gio.OutputStream.prototype, 'splice_async');
+Gio._promisify(Gio.OutputStream.prototype, 'write_all_async');
+Gio._promisify(Gio.SocketClient.prototype, 'connect_async');
+Gio._promisify(Gio.SocketListener.prototype, 'accept_async');
+Gio._promisify(Gio.Subprocess.prototype, 'communicate_utf8_async');
+Gio._promisify(Gio.Subprocess.prototype, 'wait_check_async');
+Gio._promisify(Gio.TlsConnection.prototype, 'handshake_async');
+Gio._promisify(Gio.DtlsConnection.prototype, 'handshake_async');
 
 
 // User Directories
@@ -19,16 +56,13 @@ Config.CACHEDIR = GLib.build_filenamev([GLib.get_user_cache_dir(), 'zorin-connec
 Config.CONFIGDIR = GLib.build_filenamev([GLib.get_user_config_dir(), 'zorin-connect']);
 Config.RUNTIMEDIR = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'zorin-connect']);
 
+// Bootstrap
+const serviceFolder = GLib.path_get_dirname(GLib.filename_from_uri(import.meta.url)[0]);
+const extensionFolder = GLib.path_get_dirname(serviceFolder);
+setup(extensionFolder);
+setupGettext();
 
-// Ensure config.js is setup properly
-const userDir = GLib.build_filenamev([GLib.get_user_data_dir(), 'gnome-shell']);
-
-if (Config.PACKAGE_DATADIR.startsWith(userDir)) {
-    Config.IS_USER = true;
-
-    Config.GSETTINGS_SCHEMA_DIR = `${Config.PACKAGE_DATADIR}/schemas`;
-    Config.PACKAGE_LOCALEDIR = `${Config.PACKAGE_DATADIR}/locale`;
-
+if (Config.IS_USER) {
     // Infer libdir by assuming gnome-shell shares a common prefix with gjs;
     // assume the parent directory if it's not there
     let libdir = GIRepository.Repository.get_search_path().find(path => {
@@ -46,27 +80,6 @@ if (Config.PACKAGE_DATADIR.startsWith(userDir)) {
 }
 
 
-// Init Gettext
-String.prototype.format = imports.format.format;
-Gettext.bindtextdomain(Config.APP_ID, Config.PACKAGE_LOCALEDIR);
-globalThis._ = GLib.dgettext.bind(null, Config.APP_ID);
-globalThis.ngettext = GLib.dngettext.bind(null, Config.APP_ID);
-
-
-// Init GResources
-Gio.Resource.load(
-    GLib.build_filenamev([Config.PACKAGE_DATADIR, `${Config.APP_ID}.gresource`])
-)._register();
-
-
-// Init GSchema
-Config.GSCHEMA = Gio.SettingsSchemaSource.new_from_directory(
-    Config.GSETTINGS_SCHEMA_DIR,
-    Gio.SettingsSchemaSource.get_default(),
-    false
-);
-
-
 // Load DBus interfaces
 Config.DBUS = (() => {
     const bytes = Gio.resources_lookup_data(
@@ -74,7 +87,7 @@ Config.DBUS = (() => {
         Gio.ResourceLookupFlags.NONE
     );
 
-    const xml = ByteArray.toString(bytes.toArray());
+    const xml = new TextDecoder().decode(bytes.toArray());
     const dbus = Gio.DBusNodeInfo.new_for_xml(xml);
     dbus.nodes.forEach(info => info.cache_build());
 
@@ -87,12 +100,7 @@ for (const path of [Config.CACHEDIR, Config.CONFIGDIR, Config.RUNTIMEDIR])
     GLib.mkdir_with_parents(path, 0o755);
 
 
-/**
- * Check if we're in a Wayland session (mostly for input synthesis)
- * https://wiki.gnome.org/Accessibility/Wayland#Bugs.2FIssues_We_Must_Address
- */
-globalThis.HAVE_REMOTEINPUT = GLib.getenv('GDMSESSION') !== 'ubuntu-wayland';
-globalThis.HAVE_WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
+globalThis.HAVE_GNOME = GLib.getenv('ZORIN_CONNECT_MODE')?.toLowerCase() !== 'cli' && (GLib.getenv('GNOME_SETUP_DISPLAY') !== null || GLib.getenv('XDG_CURRENT_DESKTOP')?.toUpperCase()?.includes('GNOME') || GLib.getenv('XDG_SESSION_DESKTOP')?.toLowerCase() === 'gnome');
 
 
 /**
@@ -130,19 +138,25 @@ const _debugFunc = function (error, prefix = null) {
     });
 };
 
-// Swap the function out for a no-op anonymous function for speed
+globalThis._debugFunc = _debugFunc;
+
 const settings = new Gio.Settings({
     settings_schema: Config.GSCHEMA.lookup(Config.APP_ID, true),
 });
-
-settings.connect('changed::debug', (settings, key) => {
-    globalThis.debug = settings.get_boolean(key) ? _debugFunc : () => {};
-});
-
-if (settings.get_boolean('debug'))
-    globalThis.debug = _debugFunc;
-else
+if (settings.get_boolean('debug')) {
+    globalThis.debug = globalThis._debugFunc;
+} else {
+    // Swap the function out for a no-op anonymous function for speed
     globalThis.debug = () => {};
+}
+
+/**
+ * Start wl_clipboard if not under Gnome
+ */
+if (!globalThis.HAVE_GNOME) {
+    debug('Not running as a Gnome extension');
+    watchService();
+}
 
 
 /**
@@ -375,6 +389,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
 
             return this.__common_name;
         },
+        configurable: true,
         enumerable: true,
     },
 
@@ -398,11 +413,12 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
                     flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
                 });
                 proc.init(null);
-                this.__pubkey_der = proc.communicate(ByteArray.fromString(pubkey), null)[1];
+                this.__pubkey_der = proc.communicate(new TextEncoder().encode(pubkey), null)[1];
             }
 
             return this.__pubkey_der;
         },
+        configurable: true,
         enumerable: false,
     },
 

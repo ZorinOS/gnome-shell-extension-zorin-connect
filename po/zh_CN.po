@@ -1,12 +1,9 @@
-# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
 "Project-Id-Version: zorin-connect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2022-10-27 02:23\n"
+"POT-Creation-Date: 2023-04-29 00:46-0400\n"
+"PO-Revision-Date: 2023-06-10 16:49\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -17,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: zorin-connect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: zh-CN\n"
-"X-Crowdin-File: /[Zorin Connect.gnome-shell-extension-zorin-connect] main/po/org."
-"gnome.Shell.Extensions.Zorin Connect.pot\n"
+"X-Crowdin-File: /[ZorinConnect.gnome-shell-extension-zorin-connect] main/po/org.gnome.Shell.Extensions.ZorinConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -36,16 +32,11 @@ msgid "Zorin Connect Team"
 msgstr "Zorin Connect 团队"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:39
-msgid ""
-"Zorin Connect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgid "Zorin Connect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "Zorin Connect 是 KDE Connect 的完整实现，特别适用于与 Nautilus、Chrome 和 Firefox 集成的 GNOME Shell。 KDE Connect 团队拥有适用于 Linux、BSD、Android、Sailfish、iOS、macOS 和 Windows 的应用程序。"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:42
-msgid ""
-"With Zorin Connect you can securely connect to mobile devices and other desktops "
-"to:"
+msgid "With Zorin Connect you can securely connect to mobile devices and other desktops to:"
 msgstr "您可以使用 Zorin Connect 安全地连接到移动设备和其他桌面，来："
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:46
@@ -84,7 +75,7 @@ msgstr "执行预定义的命令"
 msgid "And more…"
 msgstr "以及更多功能。"
 
-#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:127
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:130
 msgid "Zorin Connect in GNOME Shell"
 msgstr "GNOME Shell 中的 Zorin Connect"
 
@@ -190,14 +181,16 @@ msgid "Select or start a conversation"
 msgstr "选择或开始对话"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "触摸板。\n"
+"在此区域上拖动以移动鼠标光标。\n"
+"长按拖动可拖动鼠标光标。\n\n"
+"简单的点击将被发送到配对设备。\n"
+"左、中、右按钮和滚轮滚动。"
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
@@ -511,12 +504,12 @@ msgid "Searching for devices…"
 msgstr "正在搜索设备…"
 
 #: data/ui/preferences-window.ui:353
-msgid "Behavior When Locked"
-msgstr ""
+msgid "Extension Settings"
+msgstr "扩展设置"
 
 #: data/ui/preferences-window.ui:378
-msgid "Keep Alive"
-msgstr ""
+msgid "Zorin Connect remains active when GNOME Shell is locked"
+msgstr "当 GNOME Shell 被锁定时，Zorin Connect 仍然处于活动状态"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -583,12 +576,8 @@ msgid "Something’s gone wrong"
 msgstr "出了一些错误"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"Zorin Connect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"Zorin Connect 遇到了意外的错误，请报告这个错误，并在报告中包含任何您认为可能有用"
-"的信息。"
+msgid "Zorin Connect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "Zorin Connect 遇到了意外的错误，请报告这个错误，并在报告中包含任何您认为可能有用的信息。"
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -601,13 +590,13 @@ msgstr "发送到移动设备"
 
 #: src/extension.js:52
 msgid "Sync between your devices"
-msgstr ""
+msgstr "在您的设备间同步"
 
 #: src/extension.js:161
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "已连接"
+msgstr[0] "%d 连接"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
@@ -645,9 +634,7 @@ msgid "translator-credits"
 msgstr "翻译贡献"
 
 #: src/preferences/service.js:418
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr "正在记录调试日志。请采取任何必要的步骤来重现问题，然后即可查看日志。"
 
 #: src/preferences/service.js:421
@@ -782,7 +769,7 @@ msgstr "位于 %s 的蓝牙设备"
 #: src/service/device.js:214
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "验证密钥： %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
@@ -799,8 +786,7 @@ msgid "Accept"
 msgstr "接受"
 
 #: src/service/manager.js:118
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "由于这个网络上的设备数量过多，发现已被禁用。"
 
 #: src/service/backends/lan.js:166
@@ -857,7 +843,7 @@ msgstr "剪贴板"
 
 #: src/service/plugins/clipboard.js:15
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "共享剪贴板内容"
 
 #: src/service/plugins/clipboard.js:27
 msgid "Clipboard Push"
@@ -889,7 +875,7 @@ msgstr ""
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
-msgstr ""
+msgstr "远程输入"
 
 #: src/service/plugins/mpris.js:19
 msgid "MPRIS"
@@ -941,7 +927,7 @@ msgstr "无法将 “%s” 发送到 %s"
 
 #: src/service/plugins/ping.js:16
 msgid "Send and receive pings"
-msgstr ""
+msgstr "发送和接受 Ping"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -963,9 +949,7 @@ msgid "Run Commands"
 msgstr "运行命令"
 
 #: src/service/plugins/runcommand.js:17
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
 
 #: src/service/plugins/sftp.js:17
@@ -974,7 +958,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "浏览配对设备的文件系统"
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
@@ -995,7 +979,7 @@ msgstr "共享"
 
 #: src/service/plugins/share.js:20
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "在设备间共享文件和 URL"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:134
@@ -1025,7 +1009,7 @@ msgstr "已从 %2$s 接收 “%1$s”"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr ""
+msgstr "显示文件位置"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
@@ -1104,8 +1088,7 @@ msgid "PulseAudio not found"
 msgstr "未找到 PulseAudio"
 
 #: src/service/plugins/telephony.js:18
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
 
 #. TRANSLATORS: Silence the actively ringing call

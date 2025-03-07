@@ -2,19 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import GdkPixbuf from 'gi://GdkPixbuf';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
 
-const GdkPixbuf = imports.gi.GdkPixbuf;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-
-const PluginBase = imports.service.plugin;
-const URI = imports.service.utils.uri;
+import Plugin from '../plugin.js';
+import * as URI from '../utils/uri.js';
 
 
-var Metadata = {
+export const Metadata = {
     label: _('Share'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.Share',
     description: _('Share files and URLs between devices'),
@@ -64,9 +62,9 @@ var Metadata = {
  * TODO: receiving 'text' TODO: Window with textview & 'Copy to Clipboard..
  *       https://github.com/KDE/kdeconnect-kde/commit/28f11bd5c9a717fb9fbb3f02ddd6cea62021d055
  */
-var Plugin = GObject.registerClass({
+const SharePlugin = GObject.registerClass({
     GTypeName: 'ZorinConnectSharePlugin',
-}, class Plugin extends PluginBase.Plugin {
+}, class SharePlugin extends Plugin {
 
     _init(device) {
         super._init(device, 'share');
@@ -197,6 +195,9 @@ var Plugin = GObject.registerClass({
                     },
                 ];
                 iconName = 'document-save-symbolic';
+
+                const gtk_recent_manager = Gtk.RecentManager.get_default();
+                gtk_recent_manager.add_item(file.get_uri());
 
                 if (packet.body.open) {
                     const uri = file.get_uri();
@@ -369,7 +370,7 @@ var Plugin = GObject.registerClass({
 
 
 /** A simple FileChooserDialog for sharing files */
-var FileChooserDialog = GObject.registerClass({
+const FileChooserDialog = GObject.registerClass({
     GTypeName: 'ZorinConnectShareFileChooserDialog',
 }, class FileChooserDialog extends Gtk.FileChooserDialog {
 
@@ -451,10 +452,11 @@ var FileChooserDialog = GObject.registerClass({
     _onUriButtonToggled(button) {
         const header = this.get_header_bar();
 
-        // Show the URL entry
+        // Show and focus the URL entry
         if (button.active) {
             this.extra_widget.sensitive = false;
             header.set_custom_title(this._uriEntry);
+            this._uriEntry.grab_focus();
             this.set_response_sensitive(Gtk.ResponseType.OK, true);
 
         // Hide the URL entry
@@ -490,3 +492,5 @@ var FileChooserDialog = GObject.registerClass({
         this.destroy();
     }
 });
+
+export default SharePlugin;

@@ -1,3 +1,27 @@
+gnome-shell-extension-zorin-connect (58.2) noble; urgency=medium
+
+  * Removed links to browser add-ons
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Fri, 07 Mar 2025 13:06:57 +0000
+
+gnome-shell-extension-zorin-connect (58.1) noble; urgency=medium
+
+  * Add link to Chrome browser extension
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Fri, 07 Mar 2025 12:19:35 +0000
+
+gnome-shell-extension-zorin-connect (58) noble; urgency=medium
+
+  * Rebased on upstream release version 58
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Sun, 23 Feb 2025 20:32:10 +0000
+
+gnome-shell-extension-zorin-connect (55.5) jammy; urgency=medium
+
+  * Added dbus-x11 as a recommended dependency
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Mon, 09 Dec 2024 21:32:45 +0000
+
 gnome-shell-extension-zorin-connect (55.4) jammy; urgency=medium
 
   * Add link to Firefox browser extension

@@ -2,13 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Gdk = imports.gi.Gdk;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
+import Gdk from 'gi://Gdk';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
 
 
 /*
@@ -32,7 +30,7 @@ const _MODIFIERS = [
 /**
  * Response enum for ShortcutChooserDialog
  */
-var ResponseType = {
+export const ResponseType = {
     CANCEL: Gtk.ResponseType.CANCEL,
     SET: Gtk.ResponseType.APPLY,
     UNSET: 2,
@@ -42,9 +40,9 @@ var ResponseType = {
 /**
  * A simplified version of the shortcut editor from GNOME Control Center
  */
-var ShortcutChooserDialog = GObject.registerClass({
+export const ShortcutChooserDialog = GObject.registerClass({
     GTypeName: 'ZorinConnectPreferencesShortcutEditor',
-    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/preferences-shortcut-editor.ui',
+    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/preferences-shortcut-editor.ui',
     Children: [
         'cancel-button', 'set-button',
         'stack', 'summary-label',
@@ -209,7 +207,7 @@ var ShortcutChooserDialog = GObject.registerClass({
  * @param {number} [grabFlags] - Grab Flags
  * @param {boolean} %true if available, %false on error or unavailable
  */
-async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0) {
+export async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0) {
     try {
         let result = false;
 
@@ -276,7 +274,7 @@ async function checkAccelerator(accelerator, modeFlags = 0, grabFlags = 0) {
  * @param {string} accelerator - An accelerator as taken by Gtk.ShortcutLabel
  * @return {string} An accelerator or %null if it should be unset.
  */
-async function getAccelerator(summary, accelerator = null) {
+export async function getAccelerator(summary, accelerator = null) {
     try {
         const dialog = new ShortcutChooserDialog({
             summary: summary,

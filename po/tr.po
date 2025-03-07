@@ -1,12 +1,9 @@
-# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
 "Project-Id-Version: zorin-connect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2022-10-27 02:23\n"
+"POT-Creation-Date: 2023-04-29 00:46-0400\n"
+"PO-Revision-Date: 2023-05-30 16:05\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -17,8 +14,7 @@ msgstr ""
 "X-Crowdin-Project: zorin-connect\n"
 "X-Crowdin-Project-ID: 327933\n"
 "X-Crowdin-Language: tr\n"
-"X-Crowdin-File: /[Zorin Connect.gnome-shell-extension-zorin-connect] main/po/org."
-"gnome.Shell.Extensions.Zorin Connect.pot\n"
+"X-Crowdin-File: /[ZorinConnect.gnome-shell-extension-zorin-connect] main/po/org.gnome.Shell.Extensions.ZorinConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -36,19 +32,12 @@ msgid "Zorin Connect Team"
 msgstr "Zorin Connect Takımı"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:39
-msgid ""
-"Zorin Connect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgid "Zorin Connect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "Zorin Connect, Nautilus, Chrome ve Firefox bütünleşmesi ile özellikle GNOME Kabuğu için eksiksiz bir KDE Connect uygulamasıdır. KDE Connect ekibinin Linux, BSD, Android, Sailfish, iOS, macOS ve Windows için uygulamaları vardır."
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:42
-msgid ""
-"With Zorin Connect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Zorin Connect ile mobil cihazlara ve diğer masaüstlerine bağlanarak şunları "
-"yapabilirsiniz:"
+msgid "With Zorin Connect you can securely connect to mobile devices and other desktops to:"
+msgstr "Zorin Connect ile mobil cihazlara ve diğer masaüstlerine bağlanarak şunları yapabilirsiniz:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
@@ -86,7 +75,7 @@ msgstr "Ön tanımlı komutları yürüt"
 msgid "And more…"
 msgstr "Ve daha fazlası…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:127
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:130
 msgid "Zorin Connect in GNOME Shell"
 msgstr "GNOME Kabuğunda Zorin Connect"
 
@@ -192,14 +181,16 @@ msgid "Select or start a conversation"
 msgstr "Sohbet seç ya da başlat"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "Dokunmatik yüzey.\n"
+"Fare imlecini hareket ettirmek için bu alanda sürükleyin.\n"
+"Fare imlecini bi yerden bi yere sürüklemek için uzun basın.\n\n"
+"Eşleştirilmiş cihaza basit bir tıklama gönderilecektir.\n"
+"Sol, orta, sağ düğme ve imleç kaydırmaları."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
@@ -277,7 +268,7 @@ msgstr "Düşük Batarya Bildirimi"
 
 #: data/ui/preferences-device-panel.ui:706
 msgid "Charged Up to Custom Level Notification"
-msgstr ""
+msgstr "Batarya Özel Seviyeye Ulaştı Bildirimi"
 
 #: data/ui/preferences-device-panel.ui:786
 msgid "Fully Charged Notification"
@@ -474,8 +465,7 @@ msgstr "Ayarla"
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna bas."
+msgstr "Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna bas."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
@@ -514,12 +504,12 @@ msgid "Searching for devices…"
 msgstr "Cihazlar aranıyor…"
 
 #: data/ui/preferences-window.ui:353
-msgid "Behavior When Locked"
-msgstr ""
+msgid "Extension Settings"
+msgstr "Eklenti Ayarları"
 
 #: data/ui/preferences-window.ui:378
-msgid "Keep Alive"
-msgstr ""
+msgid "Zorin Connect remains active when GNOME Shell is locked"
+msgstr "GNOME kabuğu kilitlendiğinde Zorin Connect etkin kalır"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -586,12 +576,8 @@ msgid "Something’s gone wrong"
 msgstr "Bir şeyler ters gitti"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"Zorin Connect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"Zorin Connect beklenmedik bir hatayla karşılaştı. Lütfen sorunu bildirin ve "
-"yardımcı olabilecek tüm bilgileri ekleyin."
+msgid "Zorin Connect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "Zorin Connect beklenmedik bir hatayla karşılaştı. Lütfen sorunu bildirin ve yardımcı olabilecek tüm bilgileri ekleyin."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -604,14 +590,14 @@ msgstr "Mobil Cihaza Gönder"
 
 #: src/extension.js:52
 msgid "Sync between your devices"
-msgstr ""
+msgstr "Cihazlarınız arasında eşitleyin"
 
 #: src/extension.js:161
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "Bağlı"
-msgstr[1] "Bağlı"
+msgstr[0] "%d Bağlı"
+msgstr[1] "%d Bağlı"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
@@ -646,18 +632,13 @@ msgstr "GNOME için eksiksiz bir KDE Connect uygulaması"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:385
 msgid "translator-credits"
-msgstr ""
-"Serdar Sağlam <teknomobil@yandex.com>\n"
+msgstr "Serdar Sağlam <teknomobil@yandex.com>\n"
 "Orhan Engin Okay <orhanenginokay@hotmail.com>\n"
 "A. Burak Tektaş <abtektas@gmail.com>"
 
 #: src/preferences/service.js:418
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"Hata ayıklama mesajları kaydediliyor. Sorunu yeniden oluşturmak için gerekli "
-"adımları izleyin ve günlüğü inceleyin."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Hata ayıklama mesajları kaydediliyor. Sorunu yeniden oluşturmak için gerekli adımları izleyin ve günlüğü inceleyin."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
@@ -791,7 +772,7 @@ msgstr "Bluetooth cihazı %s"
 #: src/service/device.js:214
 #, javascript-format
 msgid "Verification key: %s"
-msgstr ""
+msgstr "Doğrulama anahtarı: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
@@ -808,8 +789,7 @@ msgid "Accept"
 msgstr "Kabul et"
 
 #: src/service/manager.js:118
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Bu ağdaki cihazların sayısı nedeniyle keşif devre dışı bırakıldı."
 
 #: src/service/backends/lan.js:166
@@ -822,7 +802,7 @@ msgstr "Bağlantı noktası zaten kullanılıyor"
 
 #: src/service/plugins/battery.js:17
 msgid "Exchange battery information"
-msgstr ""
+msgstr "Batarya bilgilerine erişin"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:257
@@ -840,13 +820,13 @@ msgstr "Şarj Oldu"
 #: src/service/plugins/battery.js:286
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr ""
+msgstr "%s: Batarya özel şarj seviyesine ulaştı"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:288
 #, javascript-format
 msgid "%d%% Charged"
-msgstr ""
+msgstr "Şarjınız %d%%"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:315
@@ -866,7 +846,7 @@ msgstr "Pano"
 
 #: src/service/plugins/clipboard.js:15
 msgid "Share the clipboard content"
-msgstr ""
+msgstr "Pano içeriğini paylaş"
 
 #: src/service/plugins/clipboard.js:27
 msgid "Clipboard Push"
@@ -878,7 +858,7 @@ msgstr "Panodan Al"
 
 #: src/service/plugins/contacts.js:27
 msgid "Access contacts of the paired device"
-msgstr ""
+msgstr "Eşleştirilen cihazın kişilerine eriş"
 
 #: src/service/plugins/findmyphone.js:17
 msgid "Find My Phone"
@@ -886,7 +866,7 @@ msgstr "Telefonumu Bul"
 
 #: src/service/plugins/findmyphone.js:18
 msgid "Ring your paired device"
-msgstr ""
+msgstr "Eşleştirilmiş cihazınızın zilini çaldırın"
 
 #: src/service/plugins/mousepad.js:16
 msgid "Mousepad"
@@ -894,11 +874,11 @@ msgstr "Fare Desteği"
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr ""
+msgstr "Eşleştirilen cihazın fare ve klavye görevi görmesine izin verin"
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
-msgstr ""
+msgstr "Uzak Girdi"
 
 #: src/service/plugins/mpris.js:19
 msgid "MPRIS"
@@ -906,7 +886,7 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:20
 msgid "Bidirectional remote media playback control"
-msgstr ""
+msgstr "Çift yönlü uzaktan medya oynatma kontrolü"
 
 #: src/service/plugins/mpris.js:320
 msgid "Unknown"
@@ -914,7 +894,7 @@ msgstr "Bilinmeyen"
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
-msgstr ""
+msgstr "Bildirimleri eşleşen cihazla paylaşın"
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
@@ -934,7 +914,7 @@ msgstr "Bildirimi Etkinleştir"
 
 #: src/service/plugins/photo.js:17
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
+msgstr "Eşleştirilen cihazın fotoğraf çekmesini ve bu bilgisayara aktarmasını isteyin"
 
 #: src/service/plugins/photo.js:224 src/service/plugins/share.js:132
 #: src/service/plugins/share.js:208 src/service/plugins/share.js:319
@@ -950,7 +930,7 @@ msgstr "Gönderilemedi “%s” hedef %s"
 
 #: src/service/plugins/ping.js:16
 msgid "Send and receive pings"
-msgstr ""
+msgstr "Yoklama gönder ve al"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -965,17 +945,15 @@ msgstr "Sunum"
 
 #: src/service/plugins/presenter.js:15
 msgid "Use the paired device as a presenter"
-msgstr ""
+msgstr "Eşleştirilen cihazı sunum için kullanma"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run Commands"
 msgstr "Komutları Çalıştır"
 
 #: src/service/plugins/runcommand.js:17
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Eşleştirilmiş cihazınızda komutları çalıştırın veya cihazın bu bilgisayarda önceden tanımlanmış komutları çalıştırmasına izin verin"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -983,7 +961,7 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr ""
+msgstr "Eşleştirilmiş cihazın dosya sistemine göz atın"
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
@@ -1004,7 +982,7 @@ msgstr "Paylaş"
 
 #: src/service/plugins/share.js:20
 msgid "Share files and URLs between devices"
-msgstr ""
+msgstr "Cihazlar arasında dosya ve URL paylaş"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:134
@@ -1034,7 +1012,7 @@ msgstr "Alınan “%s” kaynak %s"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr ""
+msgstr "Dosya Konumunu Göster"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
@@ -1086,7 +1064,7 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:19
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
+msgstr "Eşleştirilmiş cihazdan SMS gönderin ve okuyun ayrıca yeni SMS'lerden haberdar olun"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
@@ -1106,16 +1084,15 @@ msgstr "Sistem Sesi"
 
 #: src/service/plugins/systemvolume.js:16
 msgid "Enable the paired device to control the system volume"
-msgstr ""
+msgstr "Eşleştirilmiş cihazın sistem sesini kontrol etmesini etkinleştirin"
 
 #: src/service/plugins/systemvolume.js:60
 msgid "PulseAudio not found"
 msgstr "PulseAudio bulunamadı"
 
 #: src/service/plugins/telephony.js:18
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr ""
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Aramalar hakkında bildirim alın ve zil sesi/devam eden aramalar sırasında sistem sesini ayarlayın"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30

@@ -2,16 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
-
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
 const SERVICE_NAME = 'org.gnome.Shell.Extensions.ZorinConnect';
-const SERVICE_PATH = '/org/gnome/Shell/Extensions/ZorinConnect';
+const SERVICE_PATH = '/org.gnome.Shell.Extensions.ZorinConnect';
 const DEVICE_NAME = 'org.gnome.Shell.Extensions.ZorinConnect.Device';
-const DEVICE_PATH = '/org/gnome/Shell/Extensions/ZorinConnect/Device';
 
 
 const _PROPERTIES = {
@@ -51,7 +48,7 @@ function _proxyInit(proxy, cancellable = null) {
 /**
  * A simple proxy wrapper for devices exported over DBus.
  */
-var Device = GObject.registerClass({
+export const Device = GObject.registerClass({
     GTypeName: 'ZorinConnectRemoteDevice',
     Implements: [Gio.DBusInterface],
     Properties: {
@@ -222,7 +219,7 @@ var Device = GObject.registerClass({
 /**
  * A simple proxy wrapper for the Zorin Connect service.
  */
-var Service = GObject.registerClass({
+export const Service = GObject.registerClass({
     GTypeName: 'ZorinConnectRemoteService',
     Implements: [Gio.DBusInterface],
     Properties: {
@@ -517,4 +514,3 @@ var Service = GObject.registerClass({
         }
     }
 });
-

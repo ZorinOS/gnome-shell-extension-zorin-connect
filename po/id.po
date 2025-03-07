@@ -1,20 +1,21 @@
-# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
-#
-# SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
-"Project-Id-Version: org.gnome.Shell.Extensions.ZorinConnect\n"
+"Project-Id-Version: zorin-connect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2021-10-04 16:59+0200\n"
-"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
-"Language-Team: Dutch <vistausss@outlook.com>\n"
-"Language: nl_NL\n"
+"POT-Creation-Date: 2023-04-29 00:46-0400\n"
+"PO-Revision-Date: 2023-05-01 15:40\n"
+"Last-Translator: \n"
+"Language-Team: Indonesian\n"
+"Language: id_ID\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: zorin-connect\n"
+"X-Crowdin-Project-ID: 327933\n"
+"X-Crowdin-Language: id\n"
+"X-Crowdin-File: /[ZorinConnect.gnome-shell-extension-zorin-connect] main/po/org.gnome.Shell.Extensions.ZorinConnect.pot\n"
+"X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:12
@@ -24,74 +25,64 @@ msgstr "Zorin Connect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:13
 msgid "KDE Connect implementation for GNOME"
-msgstr "KDE Connect-implementatie voor GNOME"
+msgstr "Implementasi KDE Connect untuk GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:23
 msgid "Zorin Connect Team"
-msgstr "Zorin Connect-team"
+msgstr "Tim Zorin Connect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:39
-#, fuzzy
-msgid ""
-"Zorin Connect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgid "Zorin Connect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
 msgstr ""
-"Zorin Connect is een volledige implementatie van KDE Connect voor GNOME Shell, "
-"met Nautilus-, Chrome- en Firefox-integratie. Het KDE Connect-team biedt "
-"clients aan voor Linux, BSD, Android, Sailfish OS, macOS en Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:42
-msgid ""
-"With Zorin Connect you can securely connect to mobile devices and other desktops "
-"to:"
+msgid "With Zorin Connect you can securely connect to mobile devices and other desktops to:"
 msgstr ""
-"Met Zorin Connect kun je veilig verbinden met mobiele apparaten en computers om:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
-msgstr "Bestanden, links en tekst te delen"
+msgstr "Membagikan berkas, tautan, dan teks"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:47
 msgid "Send and receive messages"
-msgstr "Berichten te versturen en ontvangen"
+msgstr "Mengirim serta menerima pesan"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:48
 msgid "Sync clipboard content"
-msgstr "De klembordinhoud te synchroniseren"
+msgstr "Menyinkronkan isi papan klip"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:49
 msgid "Sync contacts"
-msgstr "Contactpersonen te synchroniseren"
+msgstr "Menyinkronkan kontak"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:50
 msgid "Sync notifications"
-msgstr "Meldingen te synchroniseren"
+msgstr "Menyinkronkan notifikasi"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:51
 msgid "Control media players"
-msgstr "Mediaspelers te bedienen"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:52
 msgid "Control system volume"
-msgstr "Het volumeniveau van het systeem aan te passen"
+msgstr "Mengendalikan volume sistem"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:53
 msgid "Execute predefined commands"
-msgstr "Opgegeven opdrachten uit te voeren"
+msgstr ""
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:54
 msgid "And more…"
-msgstr "En nog veel meer…"
+msgstr "Dan banyak lagi…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:127
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:130
 msgid "Zorin Connect in GNOME Shell"
-msgstr "Zorin Connect in GNOME Shell"
+msgstr "Zorin Connect di GNOME Shell"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:20 data/ui/preferences-window.ui:821
 msgid "Connect to…"
-msgstr "Verbinden met…"
+msgstr "Hubungkan dengan…"
 
 #: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
 #: data/ui/legacy-messaging-dialog.ui:24
@@ -105,194 +96,192 @@ msgstr "Verbinden met…"
 #: src/preferences/service.js:420 src/service/plugins/share.js:163
 #: src/service/plugins/share.js:296 src/service/plugins/share.js:427
 msgid "Cancel"
-msgstr "Annuleren"
+msgstr "Batal"
 
 #: data/ui/connect-dialog.ui:33
 msgid "Connect"
-msgstr "Verbinden"
+msgstr "Hubungkan"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
-msgstr "IP-adres"
+msgstr "Alamat IP"
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
-msgstr "Contactpersonen"
+msgstr ""
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
 msgid "Help"
-msgstr "Hulp"
+msgstr "Bantuan"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
-msgstr "Typ een telefoonnummer of naam"
+msgstr "Ketik nomor telepon atau nama"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:149
 msgid "Other"
-msgstr "Overig"
+msgstr "Lainnya"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:292
 #: src/service/daemon.js:406 src/service/plugins/sms.js:64
 #: webextension/gettext.js:45
 msgid "Send SMS"
-msgstr "SMS versturen"
+msgstr "Kirim SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
 #: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:428
 msgid "Send"
-msgstr "Versturen"
+msgstr "Kirim"
 
 #: data/ui/legacy-messaging-dialog.ui:69 data/ui/messaging-window.ui:263
 #: data/ui/notification-reply-dialog.ui:68
 msgid "Device is disconnected"
-msgstr "Apparaat is niet verbonden"
+msgstr "Perangkat terputus"
 
 #: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:56
 msgid "Send Message"
-msgstr "Bericht versturen"
+msgstr "Kirim Pesan"
 
 #: data/ui/messaging-conversation.ui:92 src/shell/notification.js:73
 msgid "Type a message"
-msgstr "Typ een bericht"
+msgstr "Ketik pesan"
 
 #: data/ui/messaging-conversation.ui:99
 msgid "Message Entry"
-msgstr "Berichtinhoud"
+msgstr ""
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr "Typ een bericht en druk op enter om te versturen"
+msgstr "Ketik pesan dan tekan Enter untuk mengirim"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:32
 #: src/service/ui/messaging.js:1056
 msgid "Messaging"
-msgstr "Berichten"
+msgstr "Perpesanan"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1267
 msgid "New Conversation"
-msgstr "Nieuw gesprek"
+msgstr "Percakapan Baru"
 
 #: data/ui/messaging-window.ui:120
 msgid "No Conversations"
-msgstr "Geen gesprekken"
+msgstr "Tidak Ada Percakapan"
 
 #: data/ui/messaging-window.ui:180
 msgid "No conversation selected"
-msgstr "Geen gesprek gekozen"
+msgstr "Tidak ada percakapan yang dipilih"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr "Kies of begin een gesprek"
+msgstr "Pilih atau mulai sebuah percakapan"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
-msgstr "Opdracht aanpassen"
+msgstr "Sunting Perintah"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
-msgstr "Opslaan"
+msgstr "Simpan"
 
 #: data/ui/preferences-command-editor.ui:61
 msgid "Name"
-msgstr "Naam"
+msgstr "Nama"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
-msgstr "Opdrachtregel"
+msgstr "Baris Perintah"
 
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
 msgid "Choose an executable"
-msgstr "Kies een uitvoerbaar bestand"
+msgstr ""
 
 #: data/ui/preferences-command-editor.ui:164
 msgid "Open"
-msgstr "Openen"
+msgstr "Buka"
 
 #: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:497
 msgid "Desktop"
-msgstr "Computer"
+msgstr "Desktop"
 
 #: data/ui/preferences-device-panel.ui:102
 msgid "Camera"
-msgstr "Camera"
+msgstr "Kamera"
 
 #: data/ui/preferences-device-panel.ui:159
 msgid "Clipboard Sync"
-msgstr "Klembordsynchronisatie"
+msgstr "Sinkronisasi Papan Klip"
 
 #: data/ui/preferences-device-panel.ui:225
 msgid "Media Players"
-msgstr "Mediaspelers"
+msgstr "Pemutar Media"
 
 #: data/ui/preferences-device-panel.ui:282
 msgid "Mouse & Keyboard"
-msgstr "Muis en toetsenbord"
+msgstr "Tetikus & Papan Ketik"
 
 #: data/ui/preferences-device-panel.ui:339
 msgid "Volume Control"
-msgstr "Volumebeheer"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:393 src/service/plugins/sftp.js:383
 msgid "Files"
-msgstr "Bestanden"
+msgstr "Berkas-berkas"
 
 #: data/ui/preferences-device-panel.ui:445
 msgid "Receive Files"
-msgstr "Bestanden ontvangen"
+msgstr "Terima berkas-berkas"
 
 #: data/ui/preferences-device-panel.ui:504
 msgid "Save files to"
-msgstr "Bestanden opslaan in"
+msgstr "Simpan berkas-berkas di"
 
 #: data/ui/preferences-device-panel.ui:565
 #: data/ui/preferences-device-panel.ui:2227
 msgid "Sharing"
-msgstr "Delen"
+msgstr "Berbagi"
 
 #: data/ui/preferences-device-panel.ui:596
 msgid "Device Battery"
-msgstr "Apparaataccu"
+msgstr "Baterai Perangkat"
 
 #: data/ui/preferences-device-panel.ui:647
 msgid "Low Battery Notification"
-msgstr "Melding bij laag accuniveau"
+msgstr "Notifikasi Baterai Lemah"
 
 #: data/ui/preferences-device-panel.ui:706
 msgid "Charged Up to Custom Level Notification"
-msgstr "Melding bij ingesteld accuniveau"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:786
 msgid "Fully Charged Notification"
-msgstr "Melding bij 100% accuniveau"
+msgstr "Notifikasi Baterai Terisi Penuh"
 
 #: data/ui/preferences-device-panel.ui:840
 msgid "System Battery"
-msgstr "Systeemaccu"
+msgstr "Baterai Sistem"
 
 #: data/ui/preferences-device-panel.ui:889
 msgid "Share Statistics"
-msgstr "Statistieken delen"
+msgstr "Bagikan Statistik"
 
 #: data/ui/preferences-device-panel.ui:943
 #: data/ui/preferences-device-panel.ui:2273 src/service/plugins/battery.js:16
 msgid "Battery"
-msgstr "Accu"
+msgstr "Baterai"
 
 #: data/ui/preferences-device-panel.ui:973
 #: data/ui/preferences-device-panel.ui:1058
@@ -300,38 +289,38 @@ msgstr "Accu"
 #: src/service/plugins/runcommand.js:28 src/service/plugins/runcommand.js:36
 #: src/service/plugins/runcommand.js:196
 msgid "Commands"
-msgstr "Opdrachten"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:1032
 msgid "Add Command"
-msgstr "Opdracht toevoegen"
+msgstr "Tambahkan Perintah"
 
 #. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
 #: data/ui/preferences-device-panel.ui:1120
 msgid "Share Notifications"
-msgstr "Meldingen omtrent delen"
+msgstr "Bagikan Notifikasi"
 
 #: data/ui/preferences-device-panel.ui:1180
 msgid "Share When Active"
-msgstr "Delen indien actief"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:1231
 msgid "Applications"
-msgstr "Toepassingen"
+msgstr "Aplikasi-aplikasi"
 
 #: data/ui/preferences-device-panel.ui:1277
 #: data/ui/preferences-device-panel.ui:2365
 #: src/service/plugins/notification.js:19
 msgid "Notifications"
-msgstr "Meldingen"
+msgstr "Notifikasi"
 
 #: data/ui/preferences-device-panel.ui:1335 src/service/plugins/contacts.js:26
 msgid "Contacts"
-msgstr "Contactpersonen"
+msgstr "Kontak"
 
 #: data/ui/preferences-device-panel.ui:1388
 msgid "Incoming Calls"
-msgstr "Inkomende oproepen"
+msgstr "Panggilan Masuk"
 
 #: data/ui/preferences-device-panel.ui:1437
 #: data/ui/preferences-device-panel.ui:1604
@@ -341,121 +330,121 @@ msgstr "Volume"
 #: data/ui/preferences-device-panel.ui:1503
 #: data/ui/preferences-device-panel.ui:1670
 msgid "Pause Media"
-msgstr "Media onderbreken"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:1556
 msgid "Ongoing Calls"
-msgstr "Actieve gesprekken"
+msgstr "Panggilan Aktif"
 
 #: data/ui/preferences-device-panel.ui:1726
 msgid "Mute Microphone"
-msgstr "Microfoon dempen"
+msgstr "Bisukan Mikrofon"
 
 #: data/ui/preferences-device-panel.ui:1780
 #: data/ui/preferences-device-panel.ui:2411 src/service/plugins/telephony.js:17
 msgid "Telephony"
-msgstr "Telefoon"
+msgstr "Telepon"
 
 #: data/ui/preferences-device-panel.ui:1815
 msgid "Action Shortcuts"
-msgstr "Actiesneltoetsen"
+msgstr "Pintasan Tindakan"
 
 #: data/ui/preferences-device-panel.ui:1831
 msgid "Reset All…"
-msgstr "Standaardwaarden…"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:1883
 msgid "Shortcuts"
-msgstr "Sneltoetsen"
+msgstr "Pintasan"
 
 #: data/ui/preferences-device-panel.ui:1914
 msgid "Plugins"
-msgstr "Plug-ins"
+msgstr "Plugin-plugin"
 
 #: data/ui/preferences-device-panel.ui:1961
 msgid "Experimental"
-msgstr "Experimenteel"
+msgstr "Eksperimental"
 
 #: data/ui/preferences-device-panel.ui:2008
 msgid "Device Cache"
-msgstr "Apparaatcache"
+msgstr "Cache Perangkat"
 
 #: data/ui/preferences-device-panel.ui:2026
 msgid "Clear Cache…"
-msgstr "Cache legen…"
+msgstr "Hapus Cache…"
 
 #: data/ui/preferences-device-panel.ui:2065
 msgid "Legacy SMS Support"
-msgstr "Verouderde sms-ondersteuning"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:2122
 msgid "SFTP Automount"
-msgstr "SFTP automatisch aankoppelen"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:2177
 #: data/ui/preferences-device-panel.ui:2503
 msgid "Advanced"
-msgstr "Geavanceerd"
+msgstr "Lanjutan"
 
 #: data/ui/preferences-device-panel.ui:2457
 msgid "Keyboard Shortcuts"
-msgstr "Sneltoetsen"
+msgstr "Pintasan Papan Ketik"
 
 #: data/ui/preferences-device-panel.ui:2521
 msgid "Device Settings"
-msgstr "Apparaatinstellingen"
+msgstr "Pengaturan Perangkat"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2565
 #: data/ui/preferences-device-panel.ui:2657 src/service/daemon.js:385
 msgid "Pair"
-msgstr "Koppelen"
+msgstr "Hubungkan"
 
 #: data/ui/preferences-device-panel.ui:2597
 msgid "Device is unpaired"
-msgstr "Apparaat is niet gekoppeld"
+msgstr "Perangkat tidak terhubung"
 
 #: data/ui/preferences-device-panel.ui:2612
 msgid "You may configure this device before pairing"
-msgstr "Je kunt dit apparaat instellen alvorens het te koppelen"
+msgstr "Anda dapat mengkonfigurasi perangkat ini dulu sebelum menghubungkan"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/ui/preferences-device-panel.ui:2652 src/preferences/device.js:391
 msgid "Encryption Info"
-msgstr "Versleutelingsinformatie"
+msgstr "Informasi Enkripsi"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/ui/preferences-device-panel.ui:2663 src/service/daemon.js:394
 msgid "Unpair"
-msgstr "Ontkoppelen"
+msgstr "Putuskan"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/preferences-device-panel.ui:2675
 msgid "To Device"
-msgstr "Naar apparaat"
+msgstr "Ke Perangkat"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/ui/preferences-device-panel.ui:2681
 msgid "From Device"
-msgstr "Van apparaat"
+msgstr "Dari Perangkat"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/ui/preferences-device-panel.ui:2693
 #: data/ui/preferences-device-panel.ui:2726
 msgid "Nothing"
-msgstr "Niets"
+msgstr "Tidak Ada"
 
 #. TRANSLATORS: Restore the system volume
 #: data/ui/preferences-device-panel.ui:2700
 #: data/ui/preferences-device-panel.ui:2733
 msgid "Restore"
-msgstr "Herstellen"
+msgstr "Pulihkan"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/preferences-device-panel.ui:2707
 #: data/ui/preferences-device-panel.ui:2740
 msgid "Lower"
-msgstr "Verlagen"
+msgstr "Kecilkan"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the actively ringing call
@@ -463,201 +452,190 @@ msgstr "Verlagen"
 #: data/ui/preferences-device-panel.ui:2747
 #: src/service/plugins/telephony.js:199
 msgid "Mute"
-msgstr "Dempen"
+msgstr "Bisukan"
 
 #: data/ui/preferences-shortcut-editor.ui:25
 msgid "Set"
-msgstr "Instellen"
+msgstr ""
 
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
 msgstr ""
-"Druk op Esc om te annuleren of Backspace om de standaard sneltoets te "
-"herstellen."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
-msgstr "Apparaatnaam"
+msgstr "Nama Perangkat"
 
 #: data/ui/preferences-window.ui:61
 msgid "_Rename"
-msgstr "_Naam wijzigen"
+msgstr "Ubah _nama"
 
 #: data/ui/preferences-window.ui:98 data/ui/preferences-window.ui:112
 msgid "Refresh"
-msgstr "Verversen"
+msgstr "Muat ulang"
 
 #: data/ui/preferences-window.ui:139 src/extension.js:116
 msgid "Mobile Settings"
-msgstr "Mobiele instellingen"
+msgstr ""
 
 #: data/ui/preferences-window.ui:166
 msgid "Service Menu"
-msgstr "Dienstmenu"
+msgstr "Menu Layanan"
 
 #: data/ui/preferences-window.ui:189
 msgid "Device Menu"
-msgstr "Apparaatmenu"
+msgstr "Menu Perangkat"
 
 #: data/ui/preferences-window.ui:203 data/ui/preferences-window.ui:218
 msgid "Edit Device Name"
-msgstr "Apparaatnaam wijzigen"
+msgstr "Sunting Nama Perangkat"
 
 #: data/ui/preferences-window.ui:278
 msgid "Devices"
-msgstr "Apparaten"
+msgstr "Perangkat-perangkat"
 
 #: data/ui/preferences-window.ui:328 src/preferences/service.js:659
 msgid "Searching for devices…"
-msgstr "Bezig met zoeken naar apparaten…"
+msgstr "Mencari perangkat…"
 
 #: data/ui/preferences-window.ui:353
-msgid "Behavior When Locked"
+msgid "Extension Settings"
 msgstr ""
 
 #: data/ui/preferences-window.ui:378
-msgid "Keep Alive"
+msgid "Zorin Connect remains active when GNOME Shell is locked"
 msgstr ""
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
-msgstr "Browseradd-ons"
+msgstr ""
 
 #: data/ui/preferences-window.ui:728
 msgid "Enable"
-msgstr "Inschakelen"
+msgstr "Aktifkan"
 
 #: data/ui/preferences-window.ui:760
 msgid "This device is invisible to unpaired devices"
-msgstr "Dit apparaat is onzichtbaar voor niet-gekoppelde apparaten"
+msgstr "Perangkat ini tidak terlihat pada perangkat yang belum dihubungkan"
 
 #: data/ui/preferences-window.ui:772 src/service/manager.js:117
 msgid "Discovery Disabled"
-msgstr "Herkenning uitgeschakeld"
+msgstr ""
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"
-msgstr "Weergavemodus"
+msgstr "Mode Tampilan"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/ui/preferences-window.ui:829
 msgid "Panel"
-msgstr "Paneel"
+msgstr "Panel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:835
 msgid "User Menu"
-msgstr "Gebruikersmenu"
+msgstr ""
 
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:843 src/preferences/service.js:417
 msgid "Generate Support Log"
-msgstr "Ondersteuningslogboek samenstellen"
+msgstr "Hasilkan Log Dukungan"
 
 #: data/ui/preferences-window.ui:851
 msgid "About Zorin Connect"
-msgstr "Over Zorin Connect"
+msgstr "Tentang Zorin Connect"
 
 #: data/ui/service-device-chooser.ui:15
 msgid "Select a Device"
-msgstr "Kies een apparaat"
+msgstr "Pilih Perangkat"
 
 #: data/ui/service-device-chooser.ui:33 data/ui/service-device-chooser.ui:38
 msgid "Select"
-msgstr "Kiezen"
+msgstr "Pilih"
 
 #. TRANSLATORS: No devices are known or available
 #: data/ui/service-device-chooser.ui:101 webextension/gettext.js:41
 msgid "No Device Found"
-msgstr "Geen apparaat gevonden"
+msgstr "Tidak Ada Perangkat Yang Ditemukan"
 
 #: data/ui/service-device-chooser.ui:118
 msgid "Device List"
-msgstr "Apparatenlijst"
+msgstr "Daftar Perangkat"
 
 #: data/ui/service-error-dialog.ui:39 data/ui/service-error-dialog.ui:47
 msgid "Report"
-msgstr "Melden"
+msgstr "Laporkan"
 
 #: data/ui/service-error-dialog.ui:79
 msgid "Something’s gone wrong"
-msgstr "Er is iets misgegaan"
+msgstr "Ada yang salah"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"Zorin Connect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"Er is een onverwachte fout opgetreden. Meld dit probleem aan de ontwikkelaar "
-"en beschrijf wat je deed ten tijde van de fout."
+msgid "Zorin Connect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "Zorin Connect mengalami kesalahan yang tak terduga. Harap laporkan masalahnya dan sertakan informasi yang mungkin membantu."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
-msgstr "Technische gegevens"
+msgstr "Keterangan Teknis"
 
 #. TRANSLATORS: Top-level context menu item for Zorin Connect
 #: nautilus-extension/nautilus-zorin-connect.py:183 webextension/gettext.js:37
 msgid "Send To Mobile Device"
-msgstr "Versturen naar mobiel apparaat"
+msgstr ""
 
 #: src/extension.js:52
 msgid "Sync between your devices"
 msgstr ""
 
 #: src/extension.js:161
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "Verbonden"
-msgstr[1] "Verbonden"
+msgstr[0] "%d terhubung"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
-msgstr "Bewerken"
+msgstr "Sunting"
 
 #: src/preferences/device.js:688 src/preferences/device.js:694
 msgid "Remove"
-msgstr "Verwijderen"
+msgstr "Hapus"
 
 #: src/preferences/device.js:948 src/preferences/device.js:976
 msgid "Disabled"
-msgstr "Uitgeschakeld"
+msgstr "Dinonaktifkan"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
 #: src/preferences/keybindings.js:68
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "Druk op een nieuwe sneltoets voor <b>%s</b>"
+msgstr ""
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
 #: src/preferences/keybindings.js:134
 #, javascript-format
 msgid "%s is already being used"
-msgstr "%s is al in gebruik"
+msgstr "%s sudah digunakan"
 
 #: src/preferences/service.js:376
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr "Een volledige KDE Connect-implementatie voor GNOME"
+msgstr "Implementasi lengkap KDE Connect untuk GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:385
 msgid "translator-credits"
-msgstr "Heimen Stoffels <vistausss@fastmail.com>"
+msgstr "@liimee"
 
 #: src/preferences/service.js:418
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr ""
-"Foutopsporingsberichten worden gelogd. Doe alles wat nodig is om het "
-"probleem aan te tonen en kijk dan het logboek na."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
-msgstr "Logboek nakijken"
+msgstr ""
 
 #: src/preferences/service.js:489
 msgid "Laptop"
@@ -665,7 +643,7 @@ msgstr "Laptop"
 
 #: src/preferences/service.js:491
 msgid "Smartphone"
-msgstr "Smartphone"
+msgstr "Ponsel"
 
 #: src/preferences/service.js:493
 msgid "Tablet"
@@ -673,76 +651,76 @@ msgstr "Tablet"
 
 #: src/preferences/service.js:495
 msgid "Television"
-msgstr "Televisie"
+msgstr "Televisi"
 
 #: src/preferences/service.js:517
 msgid "Unpaired"
-msgstr "Ontkoppeld"
+msgstr "Tidak terhubung"
 
 #: src/preferences/service.js:521
 msgid "Disconnected"
-msgstr "Niet verbonden"
+msgstr "Terputus"
 
 #: src/preferences/service.js:525
 msgid "Connected"
-msgstr "Verbonden"
+msgstr "Terhubung"
 
 #: src/preferences/service.js:661
 msgid "Waiting for service…"
-msgstr "Bezig met wachten op dienst…"
+msgstr "Menunggu layanan…"
 
 #: src/service/daemon.js:193
 msgid "Click for help troubleshooting"
-msgstr "Klik voor probleemoplossing"
+msgstr ""
 
 #: src/service/daemon.js:204
 msgid "Click for more information"
-msgstr "Klik voor meer informatie"
+msgstr "Klik untuk informasi lebih lanjut"
 
 #: src/service/daemon.js:298
 msgid "Dial Number"
-msgstr "Nummer bellen"
+msgstr ""
 
 #: src/service/daemon.js:304 src/service/daemon.js:502
 #: src/service/plugins/share.js:33
 msgid "Share File"
-msgstr "Bestand delen"
+msgstr "Bagikan Berkas"
 
 #: src/service/daemon.js:355
 msgid "List available devices"
-msgstr "Beschikbare apparaten tonen"
+msgstr ""
 
 #: src/service/daemon.js:364
 msgid "List all devices"
-msgstr "Alle apparaten tonen"
+msgstr ""
 
 #: src/service/daemon.js:373
 msgid "Target Device"
-msgstr "Doelapparaat"
+msgstr ""
 
 #: src/service/daemon.js:415
 msgid "Message Body"
-msgstr "Berichtinhoud"
+msgstr "Isi Pesan"
 
 #: src/service/daemon.js:427 src/service/plugins/notification.js:58
 msgid "Send Notification"
-msgstr "Melding versturen"
+msgstr "Kirim Notifikasi"
 
 #: src/service/daemon.js:436
 msgid "Notification App Name"
-msgstr "Appnaam op melding"
+msgstr ""
 
 #: src/service/daemon.js:445
 msgid "Notification Body"
-msgstr "Meldingsinhoud"
+msgstr "Isi Notifikasi"
 
 #: src/service/daemon.js:454
 msgid "Notification Icon"
-msgstr "Meldingspictogram"
+msgstr "Ikon Notifikasi"
 
 #: src/service/daemon.js:463
 msgid "Notification ID"
-msgstr "Meldingsid"
+msgstr "ID Notifikasi"
 
 #: src/service/daemon.js:472 src/service/plugins/photo.js:16
 #: src/service/plugins/photo.js:29
@@ -758,26 +736,26 @@ msgstr "Ping"
 #: src/service/plugins/battery.js:277 src/service/plugins/battery.js:306
 #: src/service/plugins/findmyphone.js:24
 msgid "Ring"
-msgstr "Over laten gaan"
+msgstr "Dering"
 
 #: src/service/daemon.js:511 src/service/plugins/share.js:49
 #: src/service/ui/messaging.js:1250 src/service/ui/messaging.js:1258
 msgid "Share Link"
-msgstr "Link delen"
+msgstr "Bagikan Tautan"
 
 #: src/service/daemon.js:520 src/service/plugins/share.js:41
 msgid "Share Text"
-msgstr "Tekst delen"
+msgstr "Bagikan Teks"
 
 #: src/service/daemon.js:532
 msgid "Show release version"
-msgstr "Uitgaveversie tonen"
+msgstr ""
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:173
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr "Bluetoothapparaat op %s"
+msgstr ""
 
 #. TRANSLATORS: Label for TLS connection verification key
 #.
@@ -785,113 +763,111 @@ msgstr "Bluetoothapparaat op %s"
 #.
 #. Verification key: 0123456789abcdef000000000000000000000000
 #: src/service/device.js:214
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "Verification key: %s"
-msgstr "Meldingen"
+msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr "Koppelverzoek van %s"
+msgstr "Permintaan Dihubungkan dari %s"
 
 #: src/service/device.js:850
 msgid "Reject"
-msgstr "Weigeren"
+msgstr "Tolak"
 
 #: src/service/device.js:855
 msgid "Accept"
-msgstr "Accepteren"
+msgstr "Terima"
 
 #: src/service/manager.js:118
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
-"Herkenning is uitgeschakeld vanwege het aantal apparaten op dit netwerk."
 
 #: src/service/backends/lan.js:166
 msgid "OpenSSL not found"
-msgstr "OpenSSL is niet aangetroffen"
+msgstr "OpenSSL tidak ditemukan"
 
 #: src/service/backends/lan.js:456
 msgid "Port already in use"
-msgstr "Deze poort is al in gebruik"
+msgstr "Port sudah digunakan"
 
 #: src/service/plugins/battery.js:17
 msgid "Exchange battery information"
-msgstr "Accu-informatie uitwisselen"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:257
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: de accu is opgeladen"
+msgstr "%s: Baterai penuh"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
 #: src/service/plugins/battery.js:259 src/shell/device.js:122
 msgid "Fully Charged"
-msgstr "Volledig opgeladen"
+msgstr "Terisi Penuh"
 
 #. TRANSLATORS: eg. Google Pixel: Battery has reached custom charge level
 #: src/service/plugins/battery.js:286
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr "%s: de accu heeft het ingestelde oplaadniveau bereikt"
+msgstr ""
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:288
 #, javascript-format
 msgid "%d%% Charged"
-msgstr "%d%% opgeladen"
+msgstr "%d%% Terisi"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:315
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr "%s: het accuniveau is laag"
+msgstr "%s: Baterai lemah"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:317
 #, javascript-format
 msgid "%d%% remaining"
-msgstr "%d%% resterend"
+msgstr "%d%% tersisa"
 
 #: src/service/plugins/clipboard.js:14
 msgid "Clipboard"
-msgstr "Klembord"
+msgstr "Papan Klip"
 
 #: src/service/plugins/clipboard.js:15
 msgid "Share the clipboard content"
-msgstr "Klembordinhoud delen"
+msgstr "Bagikan isi papan klip"
 
 #: src/service/plugins/clipboard.js:27
 msgid "Clipboard Push"
-msgstr "Klembord versturen"
+msgstr "Dorong Papan Klip"
 
 #: src/service/plugins/clipboard.js:35
 msgid "Clipboard Pull"
-msgstr "Klembord ophalen"
+msgstr "Tarik Papan Klip"
 
 #: src/service/plugins/contacts.js:27
 msgid "Access contacts of the paired device"
-msgstr "Toegang tot contactpersonen van het gekoppelde apparaat"
+msgstr ""
 
 #: src/service/plugins/findmyphone.js:17
 msgid "Find My Phone"
-msgstr "Zoek mijn telefoon"
+msgstr "Temukan Ponselku"
 
 #: src/service/plugins/findmyphone.js:18
 msgid "Ring your paired device"
-msgstr "Gekoppeld apparaat laten rinkelen"
+msgstr ""
 
 #: src/service/plugins/mousepad.js:16
 msgid "Mousepad"
-msgstr "Touchpad"
+msgstr ""
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr "Laat het gekoppelde apparaat fungeren als externe muis en toetsenbord"
+msgstr ""
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
@@ -903,53 +879,51 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:20
 msgid "Bidirectional remote media playback control"
-msgstr "Media twee kanten op bedienen"
+msgstr ""
 
 #: src/service/plugins/mpris.js:320
 msgid "Unknown"
-msgstr "Onbekend"
+msgstr ""
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
-msgstr "Meldingen delen met het gekoppelde apparaat"
+msgstr ""
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
-msgstr "Melding annuleren"
+msgstr ""
 
 #: src/service/plugins/notification.js:42
 msgid "Close Notification"
-msgstr "Melding sluiten"
+msgstr "Tutup Notifikasi"
 
 #: src/service/plugins/notification.js:50
 msgid "Reply Notification"
-msgstr "Antwoordmelding"
+msgstr "Balas Notifikasi"
 
 #: src/service/plugins/notification.js:66
 msgid "Activate Notification"
-msgstr "Melding inschakelen"
+msgstr ""
 
 #: src/service/plugins/photo.js:17
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr ""
-"Verzoek het gekoppelde apparaat een foto te maken en deze naar de pc te "
-"sturen"
+msgstr "Minta perangkat yang terhubung untuk mengambil foto dan mengirimkannya ke PC ini"
 
 #: src/service/plugins/photo.js:224 src/service/plugins/share.js:132
 #: src/service/plugins/share.js:208 src/service/plugins/share.js:319
 msgid "Transfer Failed"
-msgstr "Overdracht mislukt"
+msgstr ""
 
 #. TRANSLATORS: eg. Failed to send "photo.jpg" to Google Pixel
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/photo.js:226 src/service/plugins/share.js:321
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "Versturen van “%s” naar %s mislukt"
+msgstr "Gagal mengirim “%s” ke %s"
 
 #: src/service/plugins/ping.js:16
 msgid "Send and receive pings"
-msgstr "Pings ontvangen en versturen"
+msgstr "Kirim dan terima ping"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -960,23 +934,19 @@ msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:14
 msgid "Presentation"
-msgstr "Presentatie"
+msgstr "Presentasi"
 
 #: src/service/plugins/presenter.js:15
 msgid "Use the paired device as a presenter"
-msgstr "Gekoppeld apparaat laten fungeren als presentatiescherm"
+msgstr "Gunakan perangkat terhubung sebagai presenter"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run Commands"
-msgstr "Opdrachten uitvoeren"
+msgstr "Jalankan Perintah"
 
 #: src/service/plugins/runcommand.js:17
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
-msgstr ""
-"Voer opdrachten uit op het gekoppelde apparaat of laat het apparaat vooraf "
-"ingestelde opdrachten uitvoeren op deze pc"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Jalankan perintah pada perangkat terhubung Anda atau biarkan perangkat tersebut menjalankan perintah yang sudah ditentukan di PC ini"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -984,54 +954,54 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr "Bladeren door het bestandssysteem van het gekoppelde apparaat"
+msgstr ""
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
-msgstr "Aankoppelen"
+msgstr "Muat"
 
 #: src/service/plugins/sftp.js:32
 msgid "Unmount"
-msgstr "Ontkoppelen"
+msgstr ""
 
 #: src/service/plugins/sftp.js:216
 #, javascript-format
 msgid "%s reported an error"
-msgstr "%s: er is een fout opgetreden"
+msgstr "%s melaporkan sebuah kesalahan"
 
 #: src/service/plugins/share.js:18 src/service/plugins/share.js:25
 msgid "Share"
-msgstr "Delen"
+msgstr "Bagikan"
 
 #: src/service/plugins/share.js:20
 msgid "Share files and URLs between devices"
-msgstr "Bestanden en url's uitwisselen tussen apparaten"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:134
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr "%s mag geen bestanden sturen"
+msgstr "%s tidak diizinkan untuk mengunggah berkas"
 
 #: src/service/plugins/share.js:156 src/service/plugins/share.js:289
 msgid "Transferring File"
-msgstr "Bestandsoverdracht"
+msgstr ""
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:158
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "Bezig met ontvangen van “%s” van %s"
+msgstr "Menerima “%s” dari %s"
 
 #: src/service/plugins/share.js:177 src/service/plugins/share.js:309
 msgid "Transfer Successful"
-msgstr "Overdracht voltooid"
+msgstr ""
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:179
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "“%s” ontvangen van %s"
+msgstr "“%s” dari %s diterima"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
@@ -1039,47 +1009,47 @@ msgstr ""
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
-msgstr "Bestand openen"
+msgstr "Buka Berkas"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:210
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "Ontvangen van “%s” van %s mislukt"
+msgstr "Gagal menerima “%s” dari %s"
 
 #: src/service/plugins/share.js:241
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr "Tekst van %s"
+msgstr "Teks Dibagikan Oleh %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:291
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "Bezig met versturen van “%s” naar %s"
+msgstr "Mengirim “%s” ke %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:311
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "“%s” is verstuurd naar %s"
+msgstr "“%s” dikirim ke %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:379
 #, javascript-format
 msgid "Send files to %s"
-msgstr "Bestanden versturen naar %s"
+msgstr "Kirim berkas-berkas ke %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:383
 msgid "Open when done"
-msgstr "Openen na overdracht"
+msgstr "Buka saat selesai"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:422
 #, javascript-format
 msgid "Send a link to %s"
-msgstr "Link versturen naar %s"
+msgstr "Kirim tautan ke %s"
 
 #: src/service/plugins/sms.js:18
 msgid "SMS"
@@ -1087,44 +1057,40 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:19
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr ""
-"Lees en verstuur sms'jes van het gekoppelde apparaat en ontvang sms-meldingen"
+msgstr "Kirim dan baca SMS di perangkat yang terhubung dan dapatkan notifikasi ketika menerima SMS baru"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
-msgstr "Nieuwe sms (uri)"
+msgstr "SMS Baru (URI)"
 
 #: src/service/plugins/sms.js:48
 msgid "Reply SMS"
-msgstr "SMS beantwoorden"
+msgstr "Balas SMS"
 
 #: src/service/plugins/sms.js:72
 msgid "Share SMS"
-msgstr "SMS delen"
+msgstr ""
 
 #: src/service/plugins/systemvolume.js:15
 msgid "System Volume"
-msgstr "Volumeniveau van systeem"
+msgstr "Volume Sistem"
 
 #: src/service/plugins/systemvolume.js:16
 msgid "Enable the paired device to control the system volume"
-msgstr "Laat het gekoppelde apparaat het systeemvolume aanpassen"
+msgstr ""
 
 #: src/service/plugins/systemvolume.js:60
 msgid "PulseAudio not found"
-msgstr "PulseAudio is niet aangetroffen"
+msgstr "PulseAudio tidak ditemukan"
 
 #: src/service/plugins/telephony.js:18
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
-"Ontvang meldingen omtrent oproepen en volume-aanpassingen tijdens rinkelen/"
-"actieve gesprekken"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
-msgstr "Oproep dempen"
+msgstr ""
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -1132,272 +1098,125 @@ msgstr "Oproep dempen"
 #: src/service/plugins/telephony.js:157 src/service/plugins/telephony.js:176
 #: src/service/ui/contacts.js:611 src/service/ui/messaging.js:749
 msgid "Unknown Contact"
-msgstr "Onbekende contactpersoon"
+msgstr ""
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:195
 msgid "Incoming call"
-msgstr "Inkomende oproep"
+msgstr "Panggilan masuk"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:210
 msgid "Ongoing call"
-msgstr "Actief gesprek"
+msgstr "Panggilan aktif"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:134
 msgid "Fax"
-msgstr "Fax"
+msgstr "Faks"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:138
 msgid "Work"
-msgstr "Werk"
+msgstr "Kantor"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:142
 msgid "Mobile"
-msgstr "Mobiel"
+msgstr "Seluler"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:146
 msgid "Home"
-msgstr "Thuis"
+msgstr "Rumah"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
 #: src/service/ui/contacts.js:509 src/service/ui/contacts.js:524
 #, javascript-format
 msgid "Send to %s"
-msgstr "Versturen naar %s"
+msgstr "Kirim ke %s"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:104 src/service/ui/messaging.js:145
 msgid "Just now"
-msgstr "Zojuist"
+msgstr "Baru saja"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:113
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr "Gisteren - %s"
+msgstr "Kemarin • %s"
 
 #: src/service/ui/messaging.js:150
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d minuut"
-msgstr[1] "%d minuten"
+msgstr[0] "%d menit"
 
 #: src/service/ui/messaging.js:400
 msgid "Not available"
-msgstr "Niet beschikbaar"
+msgstr "Tidak tersedia"
 
 #: src/service/ui/messaging.js:757
 msgid "Group Message"
-msgstr "Groepsbericht"
+msgstr ""
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:772
 #, javascript-format
 msgid "You: %s"
-msgstr "Ik: %s"
+msgstr "Anda: %s"
 
 #: src/service/ui/messaging.js:958
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] "En %d andere contactpersoon"
-msgstr[1] "En %d anderen"
+msgstr[0] "Dan %d kontak lain"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
 #: src/service/ui/mousepad.js:117
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr "Het externe toetsenbord op '%s' is inactief"
+msgstr ""
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:127
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (bezig met berekenen…)"
+msgstr "%d%% (Memperkirakan…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:136
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%% (%d:%02d tot volledig opgeladen)"
+msgstr "%d%% (%d:%02d Sampai Penuh)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:144
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d%% (%d:%02d resterend)"
+msgstr "%d%% (%d:%02d Tersisa)"
 
 #: src/shell/notification.js:58
 msgid "Reply"
-msgstr "Beantwoorden"
+msgstr "Balas"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:35
 msgid "Share links with Zorin Connect, direct to the browser or by SMS."
-msgstr "Deel links met Zorin Connect, direct naar de browser of via sms."
+msgstr ""
 
 #. TRANSLATORS: WebExtension can't connect to Zorin Connect
 #: webextension/gettext.js:39
 msgid "Service Unavailable"
-msgstr "Dienst niet beschikbaar"
+msgstr "Layanan Tidak Tersedia"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:43
 msgid "Open in Browser"
-msgstr "Openen in browser"
+msgstr "Buka di Browser"
 
-#~ msgid "On"
-#~ msgstr "Aan"
-
-#~ msgid "Off"
-#~ msgstr "Uit"
-
-#~ msgid "Network Error"
-#~ msgstr "Netwerkfout"
-
-#~ msgid "All files"
-#~ msgstr "Alle bestanden"
-
-#~ msgid "Camera pictures"
-#~ msgstr "Camera-afbeeldingen"
-
-#~ msgid "Add"
-#~ msgstr "Toevoegen"
-
-#~ msgid "Set Shortcut"
-#~ msgstr "Sneltoets instellen"
-
-#~ msgid "Authentication Failure"
-#~ msgstr "Authenticatiefout"
-
-#~ msgid "Keyboard not ready"
-#~ msgstr "Toetsenbord niet gereed"
-
-#~ msgid "%d hour"
-#~ msgid_plural "%d hours"
-#~ msgstr[0] "%d uur"
-#~ msgstr[1] "%d uur"
-
-#~ msgid "Until %s (%s)"
-#~ msgstr "Tot %s (%s)"
-
-#~ msgid "Do Not Disturb"
-#~ msgstr "Niet storen"
-
-#~ msgid "Until you turn off Do Not Disturb"
-#~ msgstr "Totdat je Niet storen uitschakelt"
-
-#~ msgid "Done"
-#~ msgstr "Klaar"
-
-#~ msgid "Bluetooth Device"
-#~ msgstr "Bluetooth-apparaat"
-
-#~ msgid "Command Shortcuts"
-#~ msgstr "Opdracht-sneltoetsen"
-
-#~ msgid "Delete"
-#~ msgstr "Verwijderen"
-
-#~ msgid "Delete this device"
-#~ msgstr "Dit apparaat verwijderen"
-
-#~ msgid "Unpair and remove all settings and files"
-#~ msgstr "Ontkoppelen en alle instellingen en bestanden verwijderen"
-
-#~ msgid "Switch to Bluetooth"
-#~ msgstr "Overschakelen naar Bluetooth"
-
-#~ msgid "Switch to LAN"
-#~ msgstr "Overschakelen naar LAN"
-
-#~ msgid "%s Plugin Failed To Load"
-#~ msgstr "Kan plug-in %s niet laden"
-
-#~ msgid "Reconnect"
-#~ msgstr "Opnieuw verbinden"
-
-#~ msgid "Settings"
-#~ msgstr "Instellingen"
-
-#~ msgid "Additional Software Required"
-#~ msgstr "Extra software vereist"
-
-#~ msgid "Starting Transfer"
-#~ msgstr "Bezig met starten van overdracht"
-
-#~ msgid ""
-#~ "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-#~ msgstr ""
-#~ "Overgedragen bestanden worden geplaatst in de map <a "
-#~ "href=\"%s\">Downloads</a>."
-
-#~ msgid "About"
-#~ msgstr "Over"
-
-#~ msgid "KDE Connect"
-#~ msgstr "KDE Connect"
-
-#~ msgid "Debugger"
-#~ msgstr "Foutopsporing"
-
-#~ msgid "Appearance"
-#~ msgstr "Uiterlijk"
-
-#~ msgid "Discoverable"
-#~ msgstr "Zichtbaar"
-
-#~ msgid "Restart Service"
-#~ msgstr "Dienst herstarten"
-
-#~ msgid "Remote Filesystems"
-#~ msgstr "Externe bestandssystemen"
-
-#~ msgid "Sound Effects"
-#~ msgstr "Geluidseffecten"
-
-#~ msgid "Extended Keyboard Support"
-#~ msgstr "Uitgebreide toetsenbordondersteuning"
-
-#~ msgid "Desktop Contacts"
-#~ msgstr "Bureaubladcontactpersonen"
-
-#~ msgid "Additional Features"
-#~ msgstr "Extra functies"
-
-#~ msgid "Click to open preferences"
-#~ msgstr "Klik om voorkeuren te openen"
-
-#~ msgid "Wayland Not Supported"
-#~ msgstr "Geen Wayland-ondersteuning"
-
-#~ msgid "Remote input not supported on Wayland"
-#~ msgstr "Externe invoer wordt niet ondersteund op Wayland"
-
-#~ msgid "Zorin Connect: %s"
-#~ msgstr "Zorin Connect: %s"
-
-#~ msgid "Locate Device"
-#~ msgstr "Apparaat lokaliseren"
-
-#~ msgid "%s asked to locate this device"
-#~ msgstr "%s wil dit apparaat lokaliseren"
-
-#~ msgid "Found"
-#~ msgstr "Gevonden"
-
-#~ msgid "Select a contact or number"
-#~ msgstr "Kies een contactpersoon of telefoonnummer"
-
-msgid "Mobile Application"
-msgstr "Mobiele applicatie"

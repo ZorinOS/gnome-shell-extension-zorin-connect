@@ -2,23 +2,21 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import St from 'gi://St';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const St = imports.gi.St;
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
+import * as Calendar from 'resource:///org/gnome/shell/ui/calendar.js';
+import * as NotificationDaemon from 'resource:///org/gnome/shell/ui/notificationDaemon.js';
 
-const Main = imports.ui.main;
-const MessageTray = imports.ui.messageTray;
-const NotificationDaemon = imports.ui.notificationDaemon;
+import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+import {getIcon} from './utils.js';
 
-const Extension = imports.misc.extensionUtils.getCurrentExtension();
-
-// eslint-disable-next-line no-redeclare
-const _ = Extension._;
 const APP_ID = 'org.gnome.Shell.Extensions.ZorinConnect';
-const APP_PATH = '/org/gnome/Shell/Extensions/ZorinConnect';
+const APP_PATH = '/org.gnome.Shell.Extensions.ZorinConnect';
 
 
 // deviceId Pattern (<device-id>|<remote-id>)
@@ -29,15 +27,28 @@ const REPLY_REGEX = new RegExp(/^([^|]+)\|([\s\S]+)\|([0-9a-f]{8}-[0-9a-f]{4}-[1
 
 
 /**
+ * Extracted from notificationDaemon.js, as it's no longer exported
+ * https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/main/js/ui/notificationDaemon.js#L556
+ * @returns {{ 'desktop-startup-id': string }} Object with ID containing current time
+ */
+function getPlatformData() {
+    const startupId = GLib.Variant.new('s', `_TIME${global.get_current_time()}`);
+    return {'desktop-startup-id': startupId};
+}
+
+// This is no longer directly exported, so we do this instead for now
+const GtkNotificationDaemon = Main.notificationDaemon._gtkNotificationDaemon.constructor;
+
+
+/**
  * A slightly modified Notification Banner with an entry field
  */
 const NotificationBanner = GObject.registerClass({
     GTypeName: 'ZorinConnectNotificationBanner',
-}, class NotificationBanner extends MessageTray.NotificationBanner {
+}, class NotificationBanner extends Calendar.NotificationMessage {
 
-    _init(notification) {
-        super._init(notification);
-
+    constructor(notification) {
+        super(notification);
         if (notification.requestReplyId !== undefined)
             this._addReplyAction();
     }
@@ -45,7 +56,7 @@ const NotificationBanner = GObject.registerClass({
     _addReplyAction() {
         if (!this._buttonBox) {
             this._buttonBox = new St.BoxLayout({
-                style_class: 'notification-actions',
+                style_class: 'notification-buttons-bin',
                 x_expand: true,
             });
             this.setActionArea(this._buttonBox);
@@ -121,7 +132,7 @@ const NotificationBanner = GObject.registerClass({
             true,
             new GLib.Variant('(ssa{ss})', [requestReplyId, text, {}]),
         ]);
-        const platformData = NotificationDaemon.getPlatformData();
+        const platformData = getPlatformData();
 
         Gio.DBus.session.call(
             APP_ID,
@@ -172,7 +183,7 @@ const Source = GObject.registerClass({
             true,
             new GLib.Variant('s', notification.remoteId),
         ]);
-        const platformData = NotificationDaemon.getPlatformData();
+        const platformData = getPlatformData();
 
         Gio.DBus.session.call(
             APP_ID,
@@ -196,13 +207,10 @@ const Source = GObject.registerClass({
     }
 
     /*
-     * Override to control notification spawning
+     * Parse the id to determine if it's a repliable notification, device
+     * notification or a regular local notification
      */
-    addNotification(notificationId, notificationParams, showBanner) {
-        this._notificationPending = true;
-
-        // Parse the id to determine if it's a repliable notification, device
-        // notification or a regular local notification
+    _parseNotificationId(notificationId) {
         let idMatch, deviceId, requestReplyId, remoteId, localId;
 
         if ((idMatch = REPLY_REGEX.exec(notificationId))) {
@@ -216,42 +224,40 @@ const Source = GObject.registerClass({
         } else {
             localId = notificationId;
         }
+        return [idMatch, deviceId, requestReplyId, remoteId, localId];
+    }
 
-        // Fix themed icons
-        if (notificationParams.icon) {
-            let gicon = Gio.Icon.deserialize(notificationParams.icon);
-
-            if (gicon instanceof Gio.ThemedIcon) {
-                gicon = Extension.getIcon(gicon.names[0]);
-                notificationParams.icon = gicon.serialize();
-            }
-        }
-
-        let notification = this._notifications[localId];
+    /*
+     * Add notification to source or update existing notification with extra
+     * Zorin Connect information
+     */
+    _createNotification(notification) {
+        const [idMatch, deviceId, requestReplyId, remoteId, localId] = this._parseNotificationId(notification.id);
+        const cachedNotification = this._notifications[localId];
 
         // Check if this is a repeat
-        if (notification) {
-            notification.requestReplyId = requestReplyId;
+        if (cachedNotification) {
+            cachedNotification.requestReplyId = requestReplyId;
 
-            // Bail early If @notificationParams represents an exact repeat
-            const title = notificationParams.title.unpack();
-            const body = notificationParams.body
-                ? notificationParams.body.unpack()
+            const title = notification.title;
+            const body = notification.body
+                ? notification.body
                 : null;
 
-            if (notification.title === title &&
-                notification.bannerBodyText === body) {
-                this._notificationPending = false;
-                return;
-            }
+            // Bail early If @notification represents an exact repeat
+            if (cachedNotification.title === title &&
+                cachedNotification.body === body)
+                return cachedNotification;
 
-            notification.title = title;
-            notification.bannerBodyText = body;
+            // If the details have changed, flag as an update
+            cachedNotification.title = title;
+            cachedNotification.body = body;
+            cachedNotification.acknowledged = false;
+            return cachedNotification;
+        }
 
         // Device Notification
-        } else if (idMatch) {
-            notification = this._createNotification(notificationParams);
-
+        if (idMatch) {
             notification.deviceId = deviceId;
             notification.remoteId = remoteId;
             notification.requestReplyId = requestReplyId;
@@ -261,41 +267,64 @@ const Source = GObject.registerClass({
                 delete this._notifications[localId];
             });
 
-            this._notifications[localId] = notification;
-
         // Service Notification
         } else {
-            notification = this._createNotification(notificationParams);
             notification.connect('destroy', (notification, reason) => {
                 delete this._notifications[localId];
             });
-            this._notifications[localId] = notification;
         }
 
-        if (showBanner)
-            this.showNotification(notification);
-        else
-            this.pushNotification(notification);
+        this._notifications[localId] = notification;
+        return notification;
+    }
+
+    /*
+     * Override to control notification spawning
+     */
+    addNotification(notification) {
+        this._notificationPending = true;
+
+        // Fix themed icons
+        if (notification.icon) {
+            let gicon = notification.icon;
+
+            if (gicon instanceof Gio.ThemedIcon) {
+                gicon = getIcon(gicon.names[0]);
+                notification.icon = gicon.serialize();
+            }
+        }
+
+        const createdNotification = this._createNotification(notification);
+        this._addNotificationToMessageTray(createdNotification);
 
         this._notificationPending = false;
     }
 
     /*
-     * Override to raise the usual notification limit (3)
+     * Reimplementation of MessageTray.addNotification to raise the usual
+     * notification limit (3)
      */
-    pushNotification(notification) {
+    _addNotificationToMessageTray(notification) {
         if (this.notifications.includes(notification))
             return;
 
-        while (this.notifications.length >= 10)
-            this.notifications.shift().destroy(MessageTray.NotificationDestroyedReason.EXPIRED);
+        while (this.notifications.length >= 10) {
+            const [oldest] = this.notifications;
+            oldest.destroy(MessageTray.NotificationDestroyedReason.EXPIRED);
+        }
 
         notification.connect('destroy', this._onNotificationDestroy.bind(this));
-        notification.connect('notify::acknowledged', this.countUpdated.bind(this));
-        this.notifications.push(notification);
-        this.emit('notification-added', notification);
+        notification.connect('notify::acknowledged', () => {
+            this.countUpdated();
 
-        this.countUpdated();
+            // If acknowledged was set to false try to show the notification again
+            if (!notification.acknowledged)
+                this.emit('notification-request-banner', notification);
+        });
+        this.notifications.push(notification);
+
+        this.emit('notification-added', notification);
+        this.emit('notification-request-banner', notification);
     }
 
     createBanner(notification) {
@@ -308,14 +337,16 @@ const Source = GObject.registerClass({
  * If there is an active GtkNotificationDaemonAppSource for Zorin Connect when the
  * extension is loaded, it has to be patched in place.
  */
-function patchZorinConnectNotificationSource() {
+export function patchZorinConnectNotificationSource() {
     const source = Main.notificationDaemon._gtkNotificationDaemon._sources[APP_ID];
 
     if (source !== undefined) {
         // Patch in the subclassed methods
         source._closeZorinConnectNotification = Source.prototype._closeZorinConnectNotification;
+        source._parseNotificationId = Source.prototype._parseNotificationId;
+        source._createNotification = Source.prototype._createNotification;
         source.addNotification = Source.prototype.addNotification;
-        source.pushNotification = Source.prototype.pushNotification;
+        source._addNotificationToMessageTray = Source.prototype._addNotificationToMessageTray;
         source.createBanner = Source.prototype.createBanner;
 
         // Connect to existing notifications
@@ -334,7 +365,7 @@ function patchZorinConnectNotificationSource() {
  * Wrap GtkNotificationDaemon._ensureAppSource() to patch Zorin Connect's app source
  * https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/notificationDaemon.js#L742-755
  */
-const __ensureAppSource = NotificationDaemon.GtkNotificationDaemon.prototype._ensureAppSource;
+const __ensureAppSource = GtkNotificationDaemon.prototype._ensureAppSource;
 
 // eslint-disable-next-line func-style
 const _ensureAppSource = function (appId) {
@@ -342,8 +373,10 @@ const _ensureAppSource = function (appId) {
 
     if (source._appId === APP_ID) {
         source._closeZorinConnectNotification = Source.prototype._closeZorinConnectNotification;
+        source._parseNotificationId = Source.prototype._parseNotificationId;
+        source._createNotification = Source.prototype._createNotification;
         source.addNotification = Source.prototype.addNotification;
-        source.pushNotification = Source.prototype.pushNotification;
+        source._addNotificationToMessageTray = Source.prototype._addNotificationToMessageTray;
         source.createBanner = Source.prototype.createBanner;
     }
 
@@ -351,13 +384,13 @@ const _ensureAppSource = function (appId) {
 };
 
 
-function patchGtkNotificationDaemon() {
-    NotificationDaemon.GtkNotificationDaemon.prototype._ensureAppSource = _ensureAppSource;
+export function patchGtkNotificationDaemon() {
+    GtkNotificationDaemon.prototype._ensureAppSource = _ensureAppSource;
 }
 
 
-function unpatchGtkNotificationDaemon() {
-    NotificationDaemon.GtkNotificationDaemon.prototype._ensureAppSource = __ensureAppSource;
+export function unpatchGtkNotificationDaemon() {
+    GtkNotificationDaemon.prototype._ensureAppSource = __ensureAppSource;
 }
 
 /**
@@ -366,30 +399,7 @@ function unpatchGtkNotificationDaemon() {
  */
 const _addNotification = NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification;
 
-function patchGtkNotificationSources() {
-    // This should diverge as little as possible from the original
-    // eslint-disable-next-line func-style
-    const addNotification = function (notificationId, notificationParams, showBanner) {
-        this._notificationPending = true;
-
-        if (this._notifications[notificationId])
-            this._notifications[notificationId].destroy(MessageTray.NotificationDestroyedReason.REPLACED);
-
-        const notification = this._createNotification(notificationParams);
-        notification.connect('destroy', (notification, reason) => {
-            this._withdrawZorinConnectNotification(notification, reason);
-            delete this._notifications[notificationId];
-        });
-        this._notifications[notificationId] = notification;
-
-        if (showBanner)
-            this.showNotification(notification);
-        else
-            this.pushNotification(notification);
-
-        this._notificationPending = false;
-    };
-
+export function patchGtkNotificationSources() {
     // eslint-disable-next-line func-style
     const _withdrawZorinConnectNotification = function (id, notification, reason) {
         if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED)
@@ -408,7 +418,7 @@ function patchGtkNotificationSources() {
             true,
             new GLib.Variant('s', `gtk|${this._appId}|${id}`),
         ]);
-        const platformData = NotificationDaemon.getPlatformData();
+        const platformData = getPlatformData();
 
         Gio.DBus.session.call(
             APP_ID,
@@ -431,12 +441,11 @@ function patchGtkNotificationSources() {
         );
     };
 
-    NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification = addNotification;
     NotificationDaemon.GtkNotificationDaemonAppSource.prototype._withdrawZorinConnectNotification = _withdrawZorinConnectNotification;
 }
 
 
-function unpatchGtkNotificationSources() {
+export function unpatchGtkNotificationSources() {
     NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification = _addNotification;
     delete NotificationDaemon.GtkNotificationDaemonAppSource.prototype._withdrawZorinConnectNotification;
 }

@@ -1,45 +1,27 @@
-#!/usr/bin/env gjs
+#!/usr/bin/env -S gjs -m
 
 // SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gdk from 'gi://Gdk?version=3.0';
+import 'gi://GdkPixbuf?version=2.0';
+import Gio from 'gi://Gio?version=2.0';
+import 'gi://GIRepository?version=2.0';
+import GLib from 'gi://GLib?version=2.0';
+import GObject from 'gi://GObject?version=2.0';
+import Gtk from 'gi://Gtk?version=3.0';
+import 'gi://Pango?version=1.0';
 
-// Allow TLSv1.0 certificates
-// See https://github.com/GSConnect/gnome-shell-extension-gsconnect/issues/930
-imports.gi.GLib.setenv('G_TLS_GNUTLS_PRIORITY', 'NORMAL:%COMPAT:+VERS-TLS1.0', true);
+import system from 'system';
 
-imports.gi.versions.Gdk = '3.0';
-imports.gi.versions.GdkPixbuf = '2.0';
-imports.gi.versions.Gio = '2.0';
-imports.gi.versions.GIRepository = '2.0';
-imports.gi.versions.GLib = '2.0';
-imports.gi.versions.GObject = '2.0';
-imports.gi.versions.Gtk = '3.0';
-imports.gi.versions.Pango = '1.0';
+import './init.js';
 
-const Gdk = imports.gi.Gdk;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
+import Config from '../config.js';
+import Manager from './manager.js';
+import * as ServiceUI from './ui/service.js';
 
-
-// Bootstrap
-function get_datadir() {
-    const m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
-    return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
-}
-
-imports.searchPath.unshift(get_datadir());
-imports.config.PACKAGE_DATADIR = imports.searchPath[0];
-
-
-// Local Imports
-const Config = imports.config;
-const Manager = imports.service.manager;
-const ServiceUI = imports.service.ui.service;
+import('gi://GioUnix?version=2.0').catch(() => {}); // Set version for optional dependency
 
 
 /**
@@ -53,7 +35,7 @@ const Service = GObject.registerClass({
         super._init({
             application_id: 'org.gnome.Shell.Extensions.ZorinConnect',
             flags: Gio.ApplicationFlags.HANDLES_OPEN,
-            resource_base_path: '/org/gnome/Shell/Extensions/ZorinConnect',
+            resource_base_path: '/org.gnome.Shell.Extensions.ZorinConnect',
         });
 
         GLib.set_prgname('zorin-connect');
@@ -266,7 +248,7 @@ const Service = GObject.registerClass({
         if (!super.vfunc_dbus_register(connection, object_path))
             return false;
 
-        this.manager = new Manager.Manager({
+        this.manager = new Manager({
             connection: connection,
             object_path: object_path,
         });
@@ -336,7 +318,7 @@ const Service = GObject.registerClass({
             continue;
 
         // Force a GC to prevent any more calls back into JS, then chain-up
-        imports.system.gc();
+        system.gc();
         super.vfunc_shutdown();
     }
 
@@ -465,15 +447,6 @@ const Service = GObject.registerClass({
         );
 
         this.add_main_option(
-            'photo',
-            0,
-            GLib.OptionFlags.NONE,
-            GLib.OptionArg.NONE,
-            _('Photo'),
-            null
-        );
-
-        this.add_main_option(
             'ping',
             0,
             GLib.OptionFlags.NONE,
@@ -544,7 +517,7 @@ const Service = GObject.registerClass({
 
         Gio.DBus.session.call_sync(
             'org.gnome.Shell.Extensions.ZorinConnect',
-            `/org/gnome/Shell/Extensions/ZorinConnect/Device/${id}`,
+            `/org.gnome.Shell.Extensions.ZorinConnect/Device/${id}`,
             'org.gtk.Actions',
             'Activate',
             GLib.Variant.new('(sava{sv})', [name, parameters, {}]),
@@ -558,7 +531,7 @@ const Service = GObject.registerClass({
     _cliListDevices(full = true) {
         const result = Gio.DBus.session.call_sync(
             'org.gnome.Shell.Extensions.ZorinConnect',
-            '/org/gnome/Shell/Extensions/ZorinConnect',
+            '/org.gnome.Shell.Extensions.ZorinConnect',
             'org.freedesktop.DBus.ObjectManager',
             'GetManagedObjects',
             null,
@@ -640,7 +613,7 @@ const Service = GObject.registerClass({
         const files = options.lookup_value('share-file', null).deepUnpack();
 
         for (let file of files) {
-            file = imports.byteArray.toString(file);
+            file = new TextDecoder().decode(file);
             this._cliAction(device, 'shareFile', GLib.Variant.new('(sb)', [file, false]));
         }
     }
@@ -702,9 +675,6 @@ const Service = GObject.registerClass({
             if (options.contains('notification'))
                 this._cliNotify(id, options);
 
-            if (options.contains('photo'))
-                this._cliAction(id, 'photo');
-
             if (options.contains('ping'))
                 this._cliAction(id, 'ping', GLib.Variant.new_string(''));
 
@@ -728,5 +698,5 @@ const Service = GObject.registerClass({
     }
 });
 
-(new Service()).run([imports.system.programInvocationName].concat(ARGV));
+await (new Service()).runAsync([system.programInvocationName].concat(ARGV));
 

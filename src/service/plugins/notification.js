@@ -2,20 +2,18 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-
-const Components = imports.service.components;
-const Config = imports.config;
-const PluginBase = imports.service.plugin;
-const NotificationUI = imports.service.ui.notification;
+import * as Components from '../components/index.js';
+import Config from '../../config.js';
+import Plugin from '../plugin.js';
+import ReplyDialog from '../ui/notification.js';
 
 
-var Metadata = {
+export const Metadata = {
     label: _('Notifications'),
     description: _('Share notifications with the paired device'),
     id: 'org.gnome.Shell.Extensions.ZorinConnect.Plugin.Notification',
@@ -162,9 +160,9 @@ function _removeNotification(id, application = null) {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/notifications
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sendnotifications
  */
-var Plugin = GObject.registerClass({
+const NotificationPlugin = GObject.registerClass({
     GTypeName: 'ZorinConnectNotificationPlugin',
-}, class Plugin extends PluginBase.Plugin {
+}, class NotificationPlugin extends Plugin {
 
     _init(device) {
         super._init(device, 'notification');
@@ -357,32 +355,9 @@ var Plugin = GObject.registerClass({
      * @param {Gio.File} file - A file object for the icon
      */
     async _uploadFileIcon(packet, file) {
-        const read = new Promise((resolve, reject) => {
-            file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
-                try {
-                    resolve(file.read_finish(res));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
-
-        const query = new Promise((resolve, reject) => {
-            file.query_info_async(
-                'standard::size',
-                Gio.FileQueryInfoFlags.NONE,
-                GLib.PRIORITY_DEFAULT,
-                null,
-                (file, res) => {
-                    try {
-                        resolve(file.query_info_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-
+        const read = file.read_async(GLib.PRIORITY_DEFAULT, null);
+        const query = file.query_info_async('standard::size',
+            Gio.FileQueryInfoFlags.NONE, GLib.PRIORITY_DEFAULT, null);
         const [stream, info] = await Promise.all([read, query]);
 
         this._uploadIconStream(packet, stream, info.get_size());
@@ -665,7 +640,7 @@ var Plugin = GObject.registerClass({
 
         // If the message has no content, open a dialog for the user to add one
         if (!message) {
-            const dialog = new NotificationUI.ReplyDialog({
+            const dialog = new ReplyDialog({
                 device: this.device,
                 uuid: uuid,
                 notification: notification,
@@ -715,3 +690,5 @@ var Plugin = GObject.registerClass({
         super.destroy();
     }
 });
+
+export default NotificationPlugin;

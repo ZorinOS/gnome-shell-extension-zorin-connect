@@ -2,24 +2,23 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
+import Pango from 'gi://Pango';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-const Pango = imports.gi.Pango;
-
-const Config = imports.config;
-const Keybindings = imports.preferences.keybindings;
+import Config from '../config.js';
+import plugins from '../service/plugins/index.js';
+import * as Keybindings from './keybindings.js';
 
 
 // Build a list of plugins and shortcuts for devices
 const DEVICE_PLUGINS = [];
 const DEVICE_SHORTCUTS = {};
 
-for (const name in imports.service.plugins) {
-    const module = imports.service.plugins[name];
+for (const name in plugins) {
+    const module = plugins[name];
 
     if (module.Metadata === undefined)
         continue;
@@ -41,7 +40,7 @@ for (const name in imports.service.plugins) {
  * @param {Gtk.ListBoxRow} row - The current row
  * @param {Gtk.ListBoxRow} before - The previous row
  */
-function rowSeparators(row, before) {
+export function rowSeparators(row, before) {
     const header = row.get_header();
 
     if (before === null) {
@@ -63,7 +62,7 @@ function rowSeparators(row, before) {
  * @param {Gtk.ListBoxRow} row2 - The second row
  * @return {number} -1, 0 or 1
  */
-function titleSortFunc(row1, row2) {
+export function titleSortFunc(row1, row2) {
     if (!row1.title || !row2.title)
         return 0;
 
@@ -76,7 +75,7 @@ function titleSortFunc(row1, row2) {
  */
 const SectionRow = GObject.registerClass({
     GTypeName: 'ZorinConnectPreferencesSectionRow',
-    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/preferences-section-row.ui',
+    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/preferences-section-row.ui',
     Children: ['icon-image', 'title-label', 'subtitle-label'],
     Properties: {
         'gicon': GObject.ParamSpec.object(
@@ -206,7 +205,7 @@ const SectionRow = GObject.registerClass({
  */
 const CommandEditor = GObject.registerClass({
     GTypeName: 'ZorinConnectPreferencesCommandEditor',
-    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/preferences-command-editor.ui',
+    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/preferences-command-editor.ui',
     Children: [
         'cancel-button', 'save-button',
         'command-entry', 'name-entry', 'command-chooser',
@@ -249,7 +248,7 @@ const CommandEditor = GObject.registerClass({
 /**
  * A widget for configuring a remote device.
  */
-var Panel = GObject.registerClass({
+export const Panel = GObject.registerClass({
     GTypeName: 'ZorinConnectPreferencesDevicePanel',
     Properties: {
         'device': GObject.ParamSpec.object(
@@ -260,7 +259,7 @@ var Panel = GObject.registerClass({
             GObject.Object.$gtype
         ),
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/preferences-device-panel.ui',
+    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/preferences-device-panel.ui',
     Children: [
         'sidebar', 'stack', 'infobar',
 
@@ -424,7 +423,7 @@ var Panel = GObject.registerClass({
             this._pluginSettings = {};
 
         if (!this._pluginSettings.hasOwnProperty(name)) {
-            const meta = imports.service.plugins[name].Metadata;
+            const meta = plugins[name].Metadata;
 
             this._pluginSettings[name] = new Gio.Settings({
                 settings_schema: Config.GSCHEMA.lookup(meta.id, -1),
@@ -462,9 +461,6 @@ var Panel = GObject.registerClass({
         settings = this.pluginSettings('notification');
         this.actions.add_action(settings.create_action('send-notifications'));
         this.actions.add_action(settings.create_action('send-active'));
-
-        settings = this.pluginSettings('photo');
-        this.actions.add_action(settings.create_action('share-camera'));
 
         settings = this.pluginSettings('sftp');
         this.actions.add_action(settings.create_action('automount'));
@@ -1061,7 +1057,7 @@ var Panel = GObject.registerClass({
     }
 
     _addPlugin(name) {
-        const plugin = imports.service.plugins[name];
+        const plugin = plugins[name];
 
         const row = new SectionRow({
             height_request: 48,

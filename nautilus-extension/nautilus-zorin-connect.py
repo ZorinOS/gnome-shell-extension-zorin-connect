@@ -40,18 +40,6 @@ else:
 SERVICE_NAME = "org.gnome.Shell.Extensions.ZorinConnect"
 SERVICE_PATH = "/org/gnome/Shell/Extensions/ZorinConnect"
 
-# Init gettext translations
-LOCALE_DIR = os.path.join(
-    GLib.get_user_data_dir(),
-    "gnome-shell",
-    "extensions",
-    "zorin-connect@zorinos.com",
-    "locale",
-)
-
-if not os.path.exists(LOCALE_DIR):
-    LOCALE_DIR = None
-
 try:
     i18n = gettext.translation('zorin-connect',
                                '/usr/share/locale',
@@ -59,10 +47,10 @@ try:
     _ = i18n.gettext
 
 except (IOError, OSError) as e:
-    print("Zorin Connect: {0}".format(e.strerror))
-    i18n = gettext.translation(
-        SERVICE_NAME, localedir=LOCALE_DIR, fallback=True
-    )
+    print("Zorin Connect: {0}".format(str(e)))
+    i18n = gettext.translation('zorin-connect',
+                               '/usr/share/locale',
+                               fallback=True)
     _ = i18n.gettext
 
 
@@ -179,24 +167,36 @@ class ZorinConnectShareExtension(GObject.Object, FileManager.MenuProvider):
         if not devices:
             return ()
 
-        # Context Menu Item
-        menu = FileManager.MenuItem(
-            name="ZorinConnectShareExtension::Devices",
-            label=_("Send To Mobile Device"),
-        )
+        # If there's exactly 1 device, no submenu
+        if len(devices) == 1:
+            name, action_group = devices[0]
+            menu = FileManager.MenuItem(
+                name="ZorinConnectShareExtension::Device" + name,
+                # TRANSLATORS: Send to <device_name>, for file manager
+                # context menu
+                label=_("Send to %s") % name,
+            )
+            menu.connect("activate", self.send_files, files, action_group)
 
-        # Context Submenu
-        submenu = FileManager.Menu()
-        menu.set_submenu(submenu)
-
-        # Context Submenu Items
-        for name, action_group in devices:
-            item = FileManager.MenuItem(
-                name="ZorinConnectShareExtension::Device" + name, label=name
+        else:
+            # Context Menu Item
+            menu = FileManager.MenuItem(
+                name="ZorinConnectShareExtension::Devices",
+                label=_("Send To Mobile Device"),
             )
 
-            item.connect("activate", self.send_files, files, action_group)
+            # Context Submenu
+            submenu = FileManager.Menu()
+            menu.set_submenu(submenu)
 
-            submenu.append_item(item)
+            # Context Submenu Items
+            for name, action_group in devices:
+                item = FileManager.MenuItem(
+                    name="ZorinConnectShareExtension::Device" + name, label=name
+                )
+
+                item.connect("activate", self.send_files, files, action_group)
+
+                submenu.append_item(item)
 
         return (menu,)

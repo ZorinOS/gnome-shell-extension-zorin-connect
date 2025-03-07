@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
+import plugins from './plugins/index.js';
 
 
 /**
@@ -14,13 +14,16 @@ const GObject = imports.gi.GObject;
  *
  * @return {string} A device type string
  */
-function _getDeviceType() {
+export function _getDeviceType() {
     try {
         let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
 
-        type = Number(imports.byteArray.toString(type));
+        type = Number(new TextDecoder().decode(type));
 
-        if ([8, 9, 10, 14].includes(type))
+        if ([30, 32].includes(type))
+            return 'tablet';
+
+        if ([8, 9, 10, 14, 31].includes(type))
             return 'laptop';
 
         return 'desktop';
@@ -34,7 +37,7 @@ function _getDeviceType() {
  * The packet class is a simple Object-derived class, offering some conveniences
  * for working with KDE Connect packets.
  */
-var Packet = class Packet {
+export class Packet {
 
     constructor(data = null) {
         this.id = 0;
@@ -114,7 +117,7 @@ var Packet = class Packet {
 
         return (Object.keys(this.payloadTransferInfo).length > 0);
     }
-};
+}
 
 
 /**
@@ -122,7 +125,7 @@ var Packet = class Packet {
  * devices. The implementation is responsible for all negotiation of the
  * underlying protocol.
  */
-var Channel = GObject.registerClass({
+export const Channel = GObject.registerClass({
     GTypeName: 'ZorinConnectChannel',
     Properties: {
         'closed': GObject.ParamSpec.boolean(
@@ -218,7 +221,7 @@ var Channel = GObject.registerClass({
      * @param {Gio.Cancellable} [cancellable] - A cancellable
      * @return {Promise<Core.Packet>} The packet
      */
-    readPacket(cancellable = null) {
+    async readPacket(cancellable = null) {
         if (cancellable === null)
             cancellable = this.cancellable;
 
@@ -228,28 +231,17 @@ var Channel = GObject.registerClass({
             });
         }
 
-        return new Promise((resolve, reject) => {
-            this.input_stream.read_line_async(
-                GLib.PRIORITY_DEFAULT,
-                cancellable,
-                (stream, res) => {
-                    try {
-                        const data = stream.read_line_finish_utf8(res)[0];
+        const [data] = await this.input_stream.read_line_async(
+            GLib.PRIORITY_DEFAULT, cancellable);
 
-                        if (data === null) {
-                            throw new Gio.IOErrorEnum({
-                                message: 'End of stream',
-                                code: Gio.IOErrorEnum.CONNECTION_CLOSED,
-                            });
-                        }
+        if (data === null) {
+            throw new Gio.IOErrorEnum({
+                message: 'End of stream',
+                code: Gio.IOErrorEnum.CONNECTION_CLOSED,
+            });
+        }
 
-                        resolve(new Packet(data));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
+        return new Packet(data);
     }
 
     /**
@@ -263,20 +255,8 @@ var Channel = GObject.registerClass({
         if (cancellable === null)
             cancellable = this.cancellable;
 
-        return new Promise((resolve, reject) => {
-            this.output_stream.write_all_async(
-                packet.serialize(),
-                GLib.PRIORITY_DEFAULT,
-                cancellable,
-                (stream, res) => {
-                    try {
-                        resolve(stream.write_all_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
+        return this.output_stream.write_all_async(packet.serialize(),
+            GLib.PRIORITY_DEFAULT, cancellable);
     }
 
     /**
@@ -320,7 +300,7 @@ var Channel = GObject.registerClass({
  * ChannelService implementations provide Channel objects, emitting the
  * ChannelService::channel signal when a new connection has been accepted.
  */
-var ChannelService = GObject.registerClass({
+export const ChannelService = GObject.registerClass({
     GTypeName: 'ZorinConnectChannelService',
     Properties: {
         'active': GObject.ParamSpec.boolean(
@@ -359,6 +339,13 @@ var ChannelService = GObject.registerClass({
             this._active = false;
 
         return this._active;
+    }
+
+    get cancellable() {
+        if (this._cancellable === undefined)
+            this._cancellable = new Gio.Cancellable();
+
+        return this._cancellable;
     }
 
     get name() {
@@ -425,12 +412,8 @@ var ChannelService = GObject.registerClass({
             },
         });
 
-        for (const name in imports.service.plugins) {
-            // Exclude mousepad/presenter capability in unsupported sessions
-            if (!HAVE_REMOTEINPUT && ['mousepad', 'presenter'].includes(name))
-                continue;
-
-            const meta = imports.service.plugins[name].Metadata;
+        for (const name in plugins) {
+            const meta = plugins[name].Metadata;
 
             if (meta === undefined)
                 continue;
@@ -480,7 +463,7 @@ var ChannelService = GObject.registerClass({
 /**
  * A class representing a file transfer.
  */
-var Transfer = GObject.registerClass({
+export const Transfer = GObject.registerClass({
     GTypeName: 'ZorinConnectTransfer',
     Properties: {
         'channel': GObject.ParamSpec.object(
@@ -569,57 +552,26 @@ var Transfer = GObject.registerClass({
                 return;
 
             if (item.file instanceof Gio.File) {
-                item.target = await new Promise((resolve, reject) => {
-                    item.file.replace_async(
-                        null,
-                        false,
-                        Gio.FileCreateFlags.REPLACE_DESTINATION,
-                        GLib.PRIORITY_DEFAULT,
-                        this._cancellable,
-                        (file, res) => {
-                            try {
-                                resolve(file.replace_finish(res));
-                            } catch (e) {
-                                reject(e);
-                            }
-                        }
-                    );
-                });
+                item.target = await item.file.replace_async(
+                    null,
+                    false,
+                    Gio.FileCreateFlags.REPLACE_DESTINATION,
+                    GLib.PRIORITY_DEFAULT,
+                    this._cancellable);
             }
         } else {
             if (item.source instanceof Gio.InputStream)
                 return;
 
             if (item.file instanceof Gio.File) {
-                const read = new Promise((resolve, reject) => {
-                    item.file.read_async(
-                        GLib.PRIORITY_DEFAULT,
-                        cancellable,
-                        (file, res) => {
-                            try {
-                                resolve(file.read_finish(res));
-                            } catch (e) {
-                                reject(e);
-                            }
-                        }
-                    );
-                });
+                const read = item.file.read_async(GLib.PRIORITY_DEFAULT,
+                    cancellable);
 
-                const query = new Promise((resolve, reject) => {
-                    item.file.query_info_async(
-                        Gio.FILE_ATTRIBUTE_STANDARD_SIZE,
-                        Gio.FileQueryInfoFlags.NONE,
-                        GLib.PRIORITY_DEFAULT,
-                        cancellable,
-                        (file, res) => {
-                            try {
-                                resolve(file.query_info_finish(res));
-                            } catch (e) {
-                                reject(e);
-                            }
-                        }
-                    );
-                });
+                const query = item.file.query_info_async(
+                    Gio.FILE_ATTRIBUTE_STANDARD_SIZE,
+                    Gio.FileQueryInfoFlags.NONE,
+                    GLib.PRIORITY_DEFAULT,
+                    cancellable);
 
                 const [stream, info] = await Promise.all([read, query]);
                 item.source = stream;
@@ -742,4 +694,3 @@ var Transfer = GObject.registerClass({
             this._cancellable.cancel();
     }
 });
-

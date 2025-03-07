@@ -2,19 +2,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zorin-connect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-10 23:37+0100\n"
-"PO-Revision-Date: 2023-02-06 19:16\n"
+"POT-Creation-Date: 2023-04-29 00:46-0400\n"
+"PO-Revision-Date: 2023-05-02 19:26\n"
 "Last-Translator: \n"
-"Language-Team: Finnish\n"
-"Language: fi_FI\n"
+"Language-Team: Portuguese\n"
+"Language: pt_PT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: zorin-connect\n"
 "X-Crowdin-Project-ID: 327933\n"
-"X-Crowdin-Language: fi\n"
-"X-Crowdin-File: /[Zorin Connect.gnome-shell-extension-zorin-connect] main/po/org.gnome.Shell.Extensions.ZorinConnect.pot\n"
+"X-Crowdin-Language: pt-PT\n"
+"X-Crowdin-File: /[ZorinConnect.gnome-shell-extension-zorin-connect] main/po/org.gnome.Shell.Extensions.ZorinConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -25,64 +25,64 @@ msgstr "Zorin Connect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:13
 msgid "KDE Connect implementation for GNOME"
-msgstr "KDE Connect -toteutus GNOMElle"
+msgstr "Implementação do KDE Connect para o GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:23
 msgid "Zorin Connect Team"
-msgstr "Zorin Connect-tiimi"
+msgstr "Equipa do Zorin Connect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:39
 msgid "Zorin Connect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr ""
+msgstr "O Zorin Connect é uma implementação completa do KDE Connect especialmente para a GNOME Shell com integração Nautilus, Chrome e Firefox. A equipa do KDE Connect tem aplicações para Linux, BSD, Android, Sailfish, iOS, macOS e Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:42
 msgid "With Zorin Connect you can securely connect to mobile devices and other desktops to:"
-msgstr "Zorin Connectin avulla voit muodostaa turvallisen yhteyden mobiililaitteisiin ja muihin tietokoneisiin:"
+msgstr "Com o Zorin Connect pode ligar-se de forma segura a dispositivos móveis e outros ambientes de trabalho para:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
-msgstr "Jaa tiedostoja, linkkejä ja tekstiä"
+msgstr "Partilhar ficheiros, ligações e texto"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:47
 msgid "Send and receive messages"
-msgstr "Lähetä ja vastaanota viestejä"
+msgstr "Enviar e receber mensagens"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:48
 msgid "Sync clipboard content"
-msgstr "Synkronoi leikepöydän sisältö"
+msgstr "Sinconizar conteúdo da área de transferência"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:49
 msgid "Sync contacts"
-msgstr "Synkronoi yhteystiedot"
+msgstr "Sincronizar contactos"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:50
 msgid "Sync notifications"
-msgstr "Synkronoi ilmoitukset"
+msgstr "Sincronizar notificações"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:51
 msgid "Control media players"
-msgstr "Ohjaa mediasoittimia"
+msgstr "Controlar leitores multimédia"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:52
 msgid "Control system volume"
-msgstr "Ohjaa järjestelmän äänenvoimakkuutta"
+msgstr "Controlar volume do sistema"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:53
 msgid "Execute predefined commands"
-msgstr "Suorita ennaltamäärättyjä komentoja"
+msgstr "Executar comandos predefinidos"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:54
 msgid "And more…"
-msgstr "Ja lisää…"
+msgstr "E mais…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:127
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:130
 msgid "Zorin Connect in GNOME Shell"
-msgstr "Zorin Connect GNOME Shellissä"
+msgstr "Zorin Connect na GNOME Shell"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:20 data/ui/preferences-window.ui:821
 msgid "Connect to…"
-msgstr "Yhdistä kohteeseen…"
+msgstr "Ligar a…"
 
 #: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
 #: data/ui/legacy-messaging-dialog.ui:24
@@ -96,89 +96,89 @@ msgstr "Yhdistä kohteeseen…"
 #: src/preferences/service.js:420 src/service/plugins/share.js:163
 #: src/service/plugins/share.js:296 src/service/plugins/share.js:427
 msgid "Cancel"
-msgstr "Peru"
+msgstr "Cancelar"
 
 #: data/ui/connect-dialog.ui:33
 msgid "Connect"
-msgstr "Yhdistä"
+msgstr "Ligar"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
-msgstr "IP-osoite"
+msgstr "Endereço de IP"
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
-msgstr "Ei yhteystietoja"
+msgstr "Nenhum contacto"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
 msgid "Help"
-msgstr "Apua"
+msgstr "Ajuda"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
-msgstr "Kirjoita puhelinnumero tai nimi"
+msgstr "Introduza um número de telefone ou nome"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:149
 msgid "Other"
-msgstr "Muut"
+msgstr "Outros"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:292
 #: src/service/daemon.js:406 src/service/plugins/sms.js:64
 #: webextension/gettext.js:45
 msgid "Send SMS"
-msgstr "Lähetä tekstiviestillä"
+msgstr "Enviar SMS"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
 #: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:428
 msgid "Send"
-msgstr "Lähetä"
+msgstr "Enviar"
 
 #: data/ui/legacy-messaging-dialog.ui:69 data/ui/messaging-window.ui:263
 #: data/ui/notification-reply-dialog.ui:68
 msgid "Device is disconnected"
-msgstr "Laite on kytketty irti"
+msgstr "O dispositivo está desligado"
 
 #: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:56
 msgid "Send Message"
-msgstr "Lähetä viesti"
+msgstr "Enviar mensagem"
 
 #: data/ui/messaging-conversation.ui:92 src/shell/notification.js:73
 msgid "Type a message"
-msgstr "Kirjoita viesti"
+msgstr "Escreva uma mensagem"
 
 #: data/ui/messaging-conversation.ui:99
 msgid "Message Entry"
-msgstr "Viestin syöttö"
+msgstr "Entrada de mensagens"
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr "Kirjoita viesti ja paina Enter lähettääksesi"
+msgstr "Escreva uma mensagem e prima Enter para enviar"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:32
 #: src/service/ui/messaging.js:1056
 msgid "Messaging"
-msgstr "Viestintä"
+msgstr "Mensagens"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1267
 msgid "New Conversation"
-msgstr "Uusi keskustelu"
+msgstr "Nova conversa"
 
 #: data/ui/messaging-window.ui:120
 msgid "No Conversations"
-msgstr "Ei keskusteluja"
+msgstr "Sem conversas"
 
 #: data/ui/messaging-window.ui:180
 msgid "No conversation selected"
-msgstr "Ei keskusteluja valittuna"
+msgstr "Nenhuma conversa selecionada"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr "Valitse tai aloita keskustelu"
+msgstr "Selecionar ou iniciar uma conversa"
 
 #: data/ui/mousepad-input-dialog.ui:97
 msgid "Touchpad.\n"
@@ -186,540 +186,555 @@ msgid "Touchpad.\n"
 "Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
-msgstr ""
+msgstr "Touchpad.\n"
+"Arraste esta área para mover o cursor do rato.\n"
+"Pressione para arrastar e arrastar o cursor do rato\n\n"
+"Clique simples será enviado para o dispositivo emparelhado.\n"
+"Botão esquerdo, meio, direito e deslocamentos com a roda."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
-msgstr "Muokkaa komentoa"
+msgstr "Editar comando"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
-msgstr "Tallenna"
+msgstr "Guardar"
 
 #: data/ui/preferences-command-editor.ui:61
 msgid "Name"
-msgstr "Nimi"
+msgstr "Nome"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
-msgstr "Komentorivi"
+msgstr "Linha de comandos"
 
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
 msgid "Choose an executable"
-msgstr "Valitse käynnistystiedosto"
+msgstr "Escolha um executável"
 
 #: data/ui/preferences-command-editor.ui:164
 msgid "Open"
-msgstr "Avaa"
+msgstr "Abrir"
 
 #: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:497
 msgid "Desktop"
-msgstr "Työpöytä"
+msgstr "Área de trabalho"
 
 #: data/ui/preferences-device-panel.ui:102
 msgid "Camera"
-msgstr "Kamera"
+msgstr "Câmara"
 
 #: data/ui/preferences-device-panel.ui:159
 msgid "Clipboard Sync"
-msgstr "Leikepydän synkronointi"
+msgstr "Sincronizar a área de transferência"
 
 #: data/ui/preferences-device-panel.ui:225
 msgid "Media Players"
-msgstr "Mediasoittimet"
+msgstr "Leitores multimédia"
 
 #: data/ui/preferences-device-panel.ui:282
 msgid "Mouse & Keyboard"
-msgstr "Hiiri & näppäimistö"
+msgstr "Rato e Teclado"
 
 #: data/ui/preferences-device-panel.ui:339
 msgid "Volume Control"
-msgstr "Äänenvoimakkuuden säätö"
+msgstr "Controlo de volume"
 
 #: data/ui/preferences-device-panel.ui:393 src/service/plugins/sftp.js:383
 msgid "Files"
-msgstr "Tiedostot"
+msgstr "Ficheiros"
 
 #: data/ui/preferences-device-panel.ui:445
 msgid "Receive Files"
-msgstr "Vastaanota tiedostoja"
+msgstr "Receber ficheiros"
 
 #: data/ui/preferences-device-panel.ui:504
 msgid "Save files to"
-msgstr "Tallenna tiedostot nimellä"
+msgstr "Guardar ficheiros para"
 
 #: data/ui/preferences-device-panel.ui:565
-#: data/ui/preferences-device-panel.ui:2226
+#: data/ui/preferences-device-panel.ui:2227
 msgid "Sharing"
-msgstr "Jakaminen"
+msgstr "Partilhar"
 
 #: data/ui/preferences-device-panel.ui:596
 msgid "Device Battery"
-msgstr "Laitteen akku"
+msgstr "Bateria do dispositivo"
 
 #: data/ui/preferences-device-panel.ui:647
 msgid "Low Battery Notification"
-msgstr "Ilmoitus akun alhaisesta varaustasosta"
+msgstr "Notificação de bateria fraca"
 
 #: data/ui/preferences-device-panel.ui:706
 msgid "Charged Up to Custom Level Notification"
-msgstr "Mukautetun varaustason ilmoitus"
+msgstr "Carregado até à notificação de nível personalizada"
 
 #: data/ui/preferences-device-panel.ui:786
 msgid "Fully Charged Notification"
-msgstr "Ilmoitus akun täydestä varaustasosta"
+msgstr "Notificação de carga completa"
 
 #: data/ui/preferences-device-panel.ui:840
 msgid "System Battery"
-msgstr "Järjestelmän akku"
+msgstr "Bateria do sistema"
 
 #: data/ui/preferences-device-panel.ui:889
 msgid "Share Statistics"
-msgstr "Jaa tilastot"
+msgstr "Partilhar estatísticas"
 
 #: data/ui/preferences-device-panel.ui:943
-#: data/ui/preferences-device-panel.ui:2272 src/service/plugins/battery.js:16
+#: data/ui/preferences-device-panel.ui:2273 src/service/plugins/battery.js:16
 msgid "Battery"
-msgstr "Akku"
+msgstr "Bateria"
 
 #: data/ui/preferences-device-panel.ui:973
 #: data/ui/preferences-device-panel.ui:1058
-#: data/ui/preferences-device-panel.ui:2318
+#: data/ui/preferences-device-panel.ui:2319
 #: src/service/plugins/runcommand.js:28 src/service/plugins/runcommand.js:36
 #: src/service/plugins/runcommand.js:196
 msgid "Commands"
-msgstr "Komennot"
+msgstr "Comandos"
 
 #: data/ui/preferences-device-panel.ui:1032
 msgid "Add Command"
-msgstr "Lisää komento"
+msgstr "Adicionar comando"
 
-#: data/ui/preferences-device-panel.ui:1119
+#. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
+#: data/ui/preferences-device-panel.ui:1120
 msgid "Share Notifications"
-msgstr "Jaa ilmoitukset"
+msgstr "Partilhar notificações"
 
-#: data/ui/preferences-device-panel.ui:1179
+#: data/ui/preferences-device-panel.ui:1180
 msgid "Share When Active"
-msgstr "Jaa kun aktiivinen"
+msgstr "Partilhar quando ativo"
 
-#: data/ui/preferences-device-panel.ui:1230
+#: data/ui/preferences-device-panel.ui:1231
 msgid "Applications"
-msgstr "Sovellukset"
+msgstr "Aplicações"
 
-#: data/ui/preferences-device-panel.ui:1276
-#: data/ui/preferences-device-panel.ui:2364
+#: data/ui/preferences-device-panel.ui:1277
+#: data/ui/preferences-device-panel.ui:2365
 #: src/service/plugins/notification.js:19
 msgid "Notifications"
-msgstr "Ilmoitukset"
+msgstr "Notificações"
 
-#: data/ui/preferences-device-panel.ui:1334 src/service/plugins/contacts.js:26
+#: data/ui/preferences-device-panel.ui:1335 src/service/plugins/contacts.js:26
 msgid "Contacts"
-msgstr "Yhteystiedot"
+msgstr "Contactos"
 
-#: data/ui/preferences-device-panel.ui:1387
+#: data/ui/preferences-device-panel.ui:1388
 msgid "Incoming Calls"
-msgstr "Saapuvat puhelut"
+msgstr "Chamadas recebidas"
 
-#: data/ui/preferences-device-panel.ui:1436
-#: data/ui/preferences-device-panel.ui:1603
+#: data/ui/preferences-device-panel.ui:1437
+#: data/ui/preferences-device-panel.ui:1604
 msgid "Volume"
-msgstr "Äänenvoimakkuus"
+msgstr "Volume"
 
-#: data/ui/preferences-device-panel.ui:1502
-#: data/ui/preferences-device-panel.ui:1669
+#: data/ui/preferences-device-panel.ui:1503
+#: data/ui/preferences-device-panel.ui:1670
 msgid "Pause Media"
-msgstr "Keskeytä media"
+msgstr "Colocar em pausa"
 
-#: data/ui/preferences-device-panel.ui:1555
+#: data/ui/preferences-device-panel.ui:1556
 msgid "Ongoing Calls"
-msgstr "Meneillään olevat puhelut"
+msgstr "Chamadas em curso"
 
-#: data/ui/preferences-device-panel.ui:1725
+#: data/ui/preferences-device-panel.ui:1726
 msgid "Mute Microphone"
-msgstr "Mykistä mikrofoni"
+msgstr "Silenciar microfone"
 
-#: data/ui/preferences-device-panel.ui:1779
-#: data/ui/preferences-device-panel.ui:2410 src/service/plugins/telephony.js:17
+#: data/ui/preferences-device-panel.ui:1780
+#: data/ui/preferences-device-panel.ui:2411 src/service/plugins/telephony.js:17
 msgid "Telephony"
-msgstr "Puhelinpalvelut"
+msgstr "Telefonia"
 
-#: data/ui/preferences-device-panel.ui:1814
+#: data/ui/preferences-device-panel.ui:1815
 msgid "Action Shortcuts"
-msgstr "Toimintojen pikanäppäimet"
+msgstr "Atalhos de ação"
 
-#: data/ui/preferences-device-panel.ui:1830
+#: data/ui/preferences-device-panel.ui:1831
 msgid "Reset All…"
-msgstr "Nollaa kaikki…"
+msgstr "Repor tudo…"
 
-#: data/ui/preferences-device-panel.ui:1882
+#: data/ui/preferences-device-panel.ui:1883
 msgid "Shortcuts"
-msgstr "Pikanäppäimet"
+msgstr "Atalhos"
 
-#: data/ui/preferences-device-panel.ui:1913
+#: data/ui/preferences-device-panel.ui:1914
 msgid "Plugins"
-msgstr "Liitännäiset"
+msgstr "Extensões"
 
-#: data/ui/preferences-device-panel.ui:1960
+#: data/ui/preferences-device-panel.ui:1961
 msgid "Experimental"
-msgstr "Kokeelliset"
+msgstr "Experimental"
 
-#: data/ui/preferences-device-panel.ui:2007
+#: data/ui/preferences-device-panel.ui:2008
 msgid "Device Cache"
-msgstr "Laitteen välimuisti"
+msgstr "Cache do dispositivo"
 
-#: data/ui/preferences-device-panel.ui:2025
+#: data/ui/preferences-device-panel.ui:2026
 msgid "Clear Cache…"
-msgstr "Tyhjennä välimuisti…"
+msgstr "Limpar cache…"
 
-#: data/ui/preferences-device-panel.ui:2064
+#: data/ui/preferences-device-panel.ui:2065
 msgid "Legacy SMS Support"
-msgstr "Vanhentunut SMS-tuki"
+msgstr "Suporte por SMS antigo"
 
-#: data/ui/preferences-device-panel.ui:2121
+#: data/ui/preferences-device-panel.ui:2122
 msgid "SFTP Automount"
-msgstr "SFTP:n automaattinen liitäntä"
+msgstr "Montagem automática SFTP"
 
-#: data/ui/preferences-device-panel.ui:2176
-#: data/ui/preferences-device-panel.ui:2502
+#: data/ui/preferences-device-panel.ui:2177
+#: data/ui/preferences-device-panel.ui:2503
 msgid "Advanced"
-msgstr "Lisäominaisuudet"
+msgstr "Avançado"
 
-#: data/ui/preferences-device-panel.ui:2456
+#: data/ui/preferences-device-panel.ui:2457
 msgid "Keyboard Shortcuts"
-msgstr "Pikanäppäimet"
+msgstr "Teclas de atalho"
 
-#: data/ui/preferences-device-panel.ui:2520
+#: data/ui/preferences-device-panel.ui:2521
 msgid "Device Settings"
-msgstr "Laitteen asetukset"
+msgstr "Definições do dispositivo"
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/ui/preferences-device-panel.ui:2564
-#: data/ui/preferences-device-panel.ui:2656 src/service/daemon.js:385
+#: data/ui/preferences-device-panel.ui:2565
+#: data/ui/preferences-device-panel.ui:2657 src/service/daemon.js:385
 msgid "Pair"
-msgstr "Muodosta laitepari"
+msgstr "Emparelhar"
 
-#: data/ui/preferences-device-panel.ui:2596
+#: data/ui/preferences-device-panel.ui:2597
 msgid "Device is unpaired"
-msgstr "Laitteen paritus on poistettu"
+msgstr "O dispositivo não está emparelhado"
 
-#: data/ui/preferences-device-panel.ui:2611
+#: data/ui/preferences-device-panel.ui:2612
 msgid "You may configure this device before pairing"
-msgstr "Voit määrittää tämän laitteen ennen pariliitoksen muodostamista"
+msgstr "Pode configurar este dispositivo antes de emparelhar"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/ui/preferences-device-panel.ui:2651 src/preferences/device.js:391
+#: data/ui/preferences-device-panel.ui:2652 src/preferences/device.js:391
 msgid "Encryption Info"
-msgstr "Salaustiedot"
+msgstr "Informação de encriptação"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2662 src/service/daemon.js:394
+#: data/ui/preferences-device-panel.ui:2663 src/service/daemon.js:394
 msgid "Unpair"
-msgstr "Poista paritus"
+msgstr "Desemparelhar"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/ui/preferences-device-panel.ui:2674
+#: data/ui/preferences-device-panel.ui:2675
 msgid "To Device"
-msgstr "Laitteelle"
+msgstr "Para o dispositivo"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/ui/preferences-device-panel.ui:2680
+#: data/ui/preferences-device-panel.ui:2681
 msgid "From Device"
-msgstr "Laitteesta"
+msgstr "Do dispositivo"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/ui/preferences-device-panel.ui:2692
-#: data/ui/preferences-device-panel.ui:2725
+#: data/ui/preferences-device-panel.ui:2693
+#: data/ui/preferences-device-panel.ui:2726
 msgid "Nothing"
-msgstr "Ei mitään"
+msgstr "Nada"
 
 #. TRANSLATORS: Restore the system volume
-#: data/ui/preferences-device-panel.ui:2699
-#: data/ui/preferences-device-panel.ui:2732
+#: data/ui/preferences-device-panel.ui:2700
+#: data/ui/preferences-device-panel.ui:2733
 msgid "Restore"
-msgstr "Palauta"
+msgstr "Restaurar"
 
 #. TRANSLATORS: Lower the system volume
-#: data/ui/preferences-device-panel.ui:2706
-#: data/ui/preferences-device-panel.ui:2739
+#: data/ui/preferences-device-panel.ui:2707
+#: data/ui/preferences-device-panel.ui:2740
 msgid "Lower"
-msgstr "Madalla"
+msgstr "Baixo"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the actively ringing call
-#: data/ui/preferences-device-panel.ui:2713
-#: data/ui/preferences-device-panel.ui:2746
+#: data/ui/preferences-device-panel.ui:2714
+#: data/ui/preferences-device-panel.ui:2747
 #: src/service/plugins/telephony.js:199
 msgid "Mute"
-msgstr "Mykistä"
+msgstr "Silenciar"
 
 #: data/ui/preferences-shortcut-editor.ui:25
 msgid "Set"
-msgstr "Aseta"
+msgstr "Definir"
 
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Paina Esc peruuttaaksesi tai Backspace nollataksesi pikanäppäimen."
+msgstr "Prima Esc para cancelar ou Backspace para repor a tecla de atalho."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
-msgstr "Laitteen nimi"
+msgstr "Nome do dispositivo"
 
 #: data/ui/preferences-window.ui:61
 msgid "_Rename"
-msgstr "_Nimeä uudelleen"
+msgstr "_Mudar o nome"
 
 #: data/ui/preferences-window.ui:98 data/ui/preferences-window.ui:112
 msgid "Refresh"
-msgstr "Päivitä"
+msgstr "Recarregar"
 
-#: data/ui/preferences-window.ui:139 src/extension.js:114
+#: data/ui/preferences-window.ui:139 src/extension.js:116
 msgid "Mobile Settings"
-msgstr "Mobiiliasetukset"
+msgstr "Definições móveis"
 
 #: data/ui/preferences-window.ui:166
 msgid "Service Menu"
-msgstr "Palveluvalikko"
+msgstr "Menu de serviço"
 
 #: data/ui/preferences-window.ui:189
 msgid "Device Menu"
-msgstr "Laitevalikko"
+msgstr "Menu de dispositivos"
 
 #: data/ui/preferences-window.ui:203 data/ui/preferences-window.ui:218
 msgid "Edit Device Name"
-msgstr "Muokkaa laitteen nimeä"
+msgstr "Editar nome do dispositivo"
 
 #: data/ui/preferences-window.ui:278
 msgid "Devices"
-msgstr "Laitteet"
+msgstr "Dispositivos"
 
 #: data/ui/preferences-window.ui:328 src/preferences/service.js:659
 msgid "Searching for devices…"
-msgstr "Etsitään laitteita…"
+msgstr "A procurar por dispositivos…"
 
 #: data/ui/preferences-window.ui:353
-msgid "Behavior When Locked"
-msgstr "Toiminta kun lukittuna"
+msgid "Extension Settings"
+msgstr "Definições das extensões"
 
 #: data/ui/preferences-window.ui:378
-msgid "Keep Alive"
-msgstr "Pidä päällä"
+msgid "Zorin Connect remains active when GNOME Shell is locked"
+msgstr "O Zorin Connect permanece ativo quando a GNOME Shell está bloqueada"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
-msgstr "Selainten lisäosat"
+msgstr "Add-Ons do navegador"
 
 #: data/ui/preferences-window.ui:728
 msgid "Enable"
-msgstr "Ota käyttöön"
+msgstr "Ativar"
 
 #: data/ui/preferences-window.ui:760
 msgid "This device is invisible to unpaired devices"
-msgstr "Tämä laite on näkymätön laitteille, joiden kanssa ei ole muodostettu laiteparia"
+msgstr "Este dispositivo é invisível a dispositivos não emparelhados"
 
 #: data/ui/preferences-window.ui:772 src/service/manager.js:117
 msgid "Discovery Disabled"
-msgstr "Laitteiden löytö pois käytöstä"
+msgstr "Detecção desativada"
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"
-msgstr "Näyttötila"
+msgstr "Modo de visualização"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/ui/preferences-window.ui:829
 msgid "Panel"
-msgstr "Paneeli"
+msgstr "Painel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:835
 msgid "User Menu"
-msgstr "Käyttäjävalikko"
+msgstr "﻿Menu do utilizador"
 
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:843 src/preferences/service.js:417
 msgid "Generate Support Log"
-msgstr "Luo tukiloki"
+msgstr "Gerar registo de suporte"
 
 #: data/ui/preferences-window.ui:851
 msgid "About Zorin Connect"
-msgstr "Tietoja Zorin Connectista"
+msgstr "Acerca do Zorin Connect"
 
 #: data/ui/service-device-chooser.ui:15
 msgid "Select a Device"
-msgstr "Valitse laite"
+msgstr "Selecione um dispositivo"
 
 #: data/ui/service-device-chooser.ui:33 data/ui/service-device-chooser.ui:38
 msgid "Select"
-msgstr "Valitse"
+msgstr "Selecionar"
 
 #. TRANSLATORS: No devices are known or available
 #: data/ui/service-device-chooser.ui:101 webextension/gettext.js:41
 msgid "No Device Found"
-msgstr "Laitetta ei löytynyt"
+msgstr "Nenhum dispositivo encontrado"
 
 #: data/ui/service-device-chooser.ui:118
 msgid "Device List"
-msgstr "Laiteluettelo"
+msgstr "Lista de dispositivos"
 
 #: data/ui/service-error-dialog.ui:39 data/ui/service-error-dialog.ui:47
 msgid "Report"
-msgstr "Ilmoita"
+msgstr "Reportar"
 
 #: data/ui/service-error-dialog.ui:79
 msgid "Something’s gone wrong"
-msgstr "Jokin meni pieleen"
+msgstr "Alguma coisa correu mal"
 
 #: data/ui/service-error-dialog.ui:91
 msgid "Zorin Connect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr "Zorin Connect havaitsi odottamattoman virheen. Ilmoita ongelmasta ja liitä mukaan kaikki mahdolliset tiedot."
+msgstr "O Zorin Connect encontrou um erro inesperado. Reporte o problema e inclua todas as informações que possam ajudar."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
-msgstr "Tekniset yksityiskohdat"
+msgstr "Informação técnica"
 
 #. TRANSLATORS: Top-level context menu item for Zorin Connect
 #: nautilus-extension/nautilus-zorin-connect.py:183 webextension/gettext.js:37
 msgid "Send To Mobile Device"
-msgstr "Lähetä mobiililaitteeseen"
+msgstr "Enviar para dispositivo móvel"
 
-#: src/extension.js:50
+#: src/extension.js:52
 msgid "Sync between your devices"
-msgstr "Synkronoi laitteidesi välillä"
+msgstr "Sincronize entre os seus dispositivos"
+
+#: src/extension.js:161
+#, javascript-format
+msgid "%d Connected"
+msgid_plural "%d Connected"
+msgstr[0] "%d ligado"
+msgstr[1] "%d ligado"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
-msgstr "Muokkaa"
+msgstr "Editar"
 
 #: src/preferences/device.js:688 src/preferences/device.js:694
 msgid "Remove"
-msgstr "Poista"
+msgstr "Remover"
 
 #: src/preferences/device.js:948 src/preferences/device.js:976
 msgid "Disabled"
-msgstr "Poistettu käytöstä"
+msgstr "Desativado"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
 #: src/preferences/keybindings.js:68
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "Anna uusi pikanäppäin muuttaaksesi <b>%s</b>"
+msgstr "Introduza um novo atalho para alterar <b>%s</b>"
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
 #: src/preferences/keybindings.js:134
 #, javascript-format
 msgid "%s is already being used"
-msgstr "%s on jo käytössä"
+msgstr "O %s já está a ser usado"
 
 #: src/preferences/service.js:376
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr "Täydellinen KDE Connect -toteutus Gnomea varten"
+msgstr "Uma implementação completa do KDE Connect para o GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:385
 msgid "translator-credits"
-msgstr "Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
-"..."
+msgstr "Duarte Loreto <happyguy_pt@hotmail.com>\n"
+"Tiago Santos <tiagofsantos81@sapo.pt>\n"
+"Pedro Albuquerque <palbuquerque73@gmail.com>\n"
+"Juliano de Souza Camargo <julianos@pm.me>\n"
+"Hugo Carvalho <hugokarvalho@hotmail.com>"
 
 #: src/preferences/service.js:418
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr "Vianmääritysviestit kirjataan. Tee kaikki tarvittavat toimenpiteet ongelman toistamiseksi ja tarkista sitten loki."
+msgstr "As mensagens de depuração estão a ser registadas. Tomar todas as medidas necessárias para reproduzir um problema e depois rever o registo."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
-msgstr "Tarkista loki"
+msgstr "Registo de revisão"
 
 #: src/preferences/service.js:489
 msgid "Laptop"
-msgstr "Kannettava"
+msgstr "Portátil"
 
 #: src/preferences/service.js:491
 msgid "Smartphone"
-msgstr "Älypuhelin"
+msgstr "Smartphone"
 
 #: src/preferences/service.js:493
 msgid "Tablet"
-msgstr "Tabletti"
+msgstr "Tablet"
 
 #: src/preferences/service.js:495
 msgid "Television"
-msgstr "Televisio"
+msgstr "Televisão"
 
 #: src/preferences/service.js:517
 msgid "Unpaired"
-msgstr "Laiteparia ei muodostettu"
+msgstr "Desemparelhado"
 
 #: src/preferences/service.js:521
 msgid "Disconnected"
-msgstr "Yhteys katkaistu"
+msgstr "Desligado"
 
 #: src/preferences/service.js:525
 msgid "Connected"
-msgstr "Yhdistetty"
+msgstr "Ligado"
 
 #: src/preferences/service.js:661
 msgid "Waiting for service…"
-msgstr "Odotetaan palvelua…"
+msgstr "À espera de serviço…"
 
 #: src/service/daemon.js:193
 msgid "Click for help troubleshooting"
-msgstr "Napsauta tästä vianmääritykseen"
+msgstr "Clique para ajudar a solucionar problemas"
 
 #: src/service/daemon.js:204
 msgid "Click for more information"
-msgstr "Napsauta saadaksesi lisätietoja"
+msgstr "Clique para mais informação"
 
 #: src/service/daemon.js:298
 msgid "Dial Number"
-msgstr "Näppäile numero"
+msgstr "Marcar número"
 
 #: src/service/daemon.js:304 src/service/daemon.js:502
 #: src/service/plugins/share.js:33
 msgid "Share File"
-msgstr "Jaa tiedosto"
+msgstr "Partilhar ficheiro"
 
 #: src/service/daemon.js:355
 msgid "List available devices"
-msgstr "Listaa saatavilla olevat laitteet"
+msgstr "Listar dispositivos disponíveis"
 
 #: src/service/daemon.js:364
 msgid "List all devices"
-msgstr "Listaa kaikki laitteet"
+msgstr "Listar todos os dispositivos"
 
 #: src/service/daemon.js:373
 msgid "Target Device"
-msgstr "Kohdelaite"
+msgstr "Para o dispositivo"
 
 #: src/service/daemon.js:415
 msgid "Message Body"
-msgstr "Viestin runko"
+msgstr "Corpo da mensagem"
 
 #: src/service/daemon.js:427 src/service/plugins/notification.js:58
 msgid "Send Notification"
-msgstr "Lähetä ilmoitus"
+msgstr "Enviar notificação"
 
 #: src/service/daemon.js:436
 msgid "Notification App Name"
-msgstr "Ilmoitussovelluksen nimi"
+msgstr "Nome da aplicação de notificação"
 
 #: src/service/daemon.js:445
 msgid "Notification Body"
-msgstr "Ilmoituksen runko"
+msgstr "Corpo da notificação"
 
 #: src/service/daemon.js:454
 msgid "Notification Icon"
-msgstr "Ilmoituksen kuvake"
+msgstr "Ícone de notificação"
 
 #: src/service/daemon.js:463
 msgid "Notification ID"
-msgstr "Ilmoituksen tunniste"
+msgstr "ID da notificação"
 
 #: src/service/daemon.js:472 src/service/plugins/photo.js:16
 #: src/service/plugins/photo.js:29
 msgid "Photo"
-msgstr "Kuva"
+msgstr "Foto"
 
 #: src/service/daemon.js:481 src/service/plugins/ping.js:15
 #: src/service/plugins/ping.js:22 src/service/plugins/ping.js:49
@@ -730,26 +745,26 @@ msgstr "Ping"
 #: src/service/plugins/battery.js:277 src/service/plugins/battery.js:306
 #: src/service/plugins/findmyphone.js:24
 msgid "Ring"
-msgstr "Soita ääni"
+msgstr "Toque"
 
 #: src/service/daemon.js:511 src/service/plugins/share.js:49
 #: src/service/ui/messaging.js:1250 src/service/ui/messaging.js:1258
 msgid "Share Link"
-msgstr "Jaa linkki"
+msgstr "Partilhar ligação"
 
 #: src/service/daemon.js:520 src/service/plugins/share.js:41
 msgid "Share Text"
-msgstr "Jaa teksti"
+msgstr "Partilhar texto"
 
 #: src/service/daemon.js:532
 msgid "Show release version"
-msgstr "Näytä julkaisuversio"
+msgstr "Mostrar versão de lançamento"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:173
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr "Bluetooth-laite osoitteessa %s"
+msgstr "Dispositivo Bluetooth em %s"
 
 #. TRANSLATORS: Label for TLS connection verification key
 #.
@@ -759,113 +774,113 @@ msgstr "Bluetooth-laite osoitteessa %s"
 #: src/service/device.js:214
 #, javascript-format
 msgid "Verification key: %s"
-msgstr "Vahvistusavain: %s"
+msgstr "Chave de verificação: %s"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr "Laiteparin muodostuspyyntö laitteelta %s"
+msgstr "Pedido para emparelhar de %s"
 
 #: src/service/device.js:850
 msgid "Reject"
-msgstr "Hylkää"
+msgstr "Rejeitar"
 
 #: src/service/device.js:855
 msgid "Accept"
-msgstr "Hyväksy"
+msgstr "Aceitar"
 
 #: src/service/manager.js:118
 msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "Laitehaku on poistettu käytöstä tässä verkossa olevien laitteiden lukumäärän vuoksi."
+msgstr "A deteção foi desativada devido ao número de dispositivos nesta rede."
 
 #: src/service/backends/lan.js:166
 msgid "OpenSSL not found"
-msgstr "OpenSSL:ää ei löytynyt"
+msgstr "OpenSSL não encontrado"
 
 #: src/service/backends/lan.js:456
 msgid "Port already in use"
-msgstr "Portti on jo käytössä"
+msgstr "Porta já em utilização"
 
 #: src/service/plugins/battery.js:17
 msgid "Exchange battery information"
-msgstr "Vaihda akkutietoa"
+msgstr "Trocar informações de bateria"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:257
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: Akku täynnä"
+msgstr "%s: Bateria está carregada"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
 #: src/service/plugins/battery.js:259 src/shell/device.js:122
 msgid "Fully Charged"
-msgstr "Täysin ladattu"
+msgstr "Totalmente carregado"
 
 #. TRANSLATORS: eg. Google Pixel: Battery has reached custom charge level
 #: src/service/plugins/battery.js:286
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr "%s: Akku on saavuttanut mukautetun varaustason"
+msgstr "%s: Bateria atingiu o nível de carga personalizada"
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:288
 #, javascript-format
 msgid "%d%% Charged"
-msgstr "%d% % ladattu"
+msgstr "%d%% Carregada"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:315
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr "%s: Akku lähes tyhjä"
+msgstr "%s: A bateria está fraca"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:317
 #, javascript-format
 msgid "%d%% remaining"
-msgstr "%d% % jäljellä"
+msgstr "%d%% restante"
 
 #: src/service/plugins/clipboard.js:14
 msgid "Clipboard"
-msgstr "Leikepöytä"
+msgstr "Área de transferência"
 
 #: src/service/plugins/clipboard.js:15
 msgid "Share the clipboard content"
-msgstr "Jaa leikepöydän sisältö"
+msgstr "Partilhar o conteúdo da área de transferência"
 
 #: src/service/plugins/clipboard.js:27
 msgid "Clipboard Push"
-msgstr "Leikepöydän työntö"
+msgstr "Enviar da área de transferência"
 
 #: src/service/plugins/clipboard.js:35
 msgid "Clipboard Pull"
-msgstr "Leikepöydän veto"
+msgstr "Carregar da área de transferência"
 
 #: src/service/plugins/contacts.js:27
 msgid "Access contacts of the paired device"
-msgstr "Käytä parilaitteen yhteystietoja"
+msgstr "Aceder a contactos do dispositivo emparelhado"
 
 #: src/service/plugins/findmyphone.js:17
 msgid "Find My Phone"
-msgstr "Etsi puhelin"
+msgstr "Encontrar o meu telefone"
 
 #: src/service/plugins/findmyphone.js:18
 msgid "Ring your paired device"
-msgstr "Soita ääni laiteparissa"
+msgstr "Tocar no seu dispositivo emparelhado"
 
 #: src/service/plugins/mousepad.js:16
 msgid "Mousepad"
-msgstr "Kosketuslevy"
+msgstr "Tapete de rato"
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
-msgstr "Mahdollistaa parilaitteen toimia etähiirenä ja -näppäimistönä"
+msgstr "Permite que o dispositivo emparelhado funcione como um rato e teclado remotos"
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
-msgstr "Etäsyöte"
+msgstr "Entrada remota"
 
 #: src/service/plugins/mpris.js:19
 msgid "MPRIS"
@@ -873,74 +888,74 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:20
 msgid "Bidirectional remote media playback control"
-msgstr "Kaksisuuntainen etämedian toiston ohjaus"
+msgstr "Controlo remoto bidirecional de reprodução multimédia"
 
 #: src/service/plugins/mpris.js:320
 msgid "Unknown"
-msgstr "Tuntematon"
+msgstr "Desconhecida"
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
-msgstr "Jaa ilmoitukset parilaitteen kanssa"
+msgstr "Partilhar notificações com o dispositivo emparelhado"
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
-msgstr "Peru ilmoitus"
+msgstr "Cancelar notificação"
 
 #: src/service/plugins/notification.js:42
 msgid "Close Notification"
-msgstr "Sulje ilmoitus"
+msgstr "Fechar notificação"
 
 #: src/service/plugins/notification.js:50
 msgid "Reply Notification"
-msgstr "Vastaa ilmoitukseen"
+msgstr "Enviar notificação"
 
 #: src/service/plugins/notification.js:66
 msgid "Activate Notification"
-msgstr "Aktivoi ilmoitus"
+msgstr "Ativar notificações"
 
 #: src/service/plugins/photo.js:17
 msgid "Request the paired device to take a photo and transfer it to this PC"
-msgstr "Pyydä laiteparia ottamaan valokuva ja siirtämään se tälle tietokoneelle"
+msgstr "Solicitar ao dispositivo emparelhado para tirar uma fotografia e transferi-la para este PC"
 
 #: src/service/plugins/photo.js:224 src/service/plugins/share.js:132
 #: src/service/plugins/share.js:208 src/service/plugins/share.js:319
 msgid "Transfer Failed"
-msgstr "Siirto epäonnistui"
+msgstr "Falha ao transferir"
 
 #. TRANSLATORS: eg. Failed to send "photo.jpg" to Google Pixel
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/photo.js:226 src/service/plugins/share.js:321
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "Tiedoston “%s” lähettäminen laitteelle %s epäonnistui"
+msgstr "Falha ao enviar “%s” para %s"
 
 #: src/service/plugins/ping.js:16
 msgid "Send and receive pings"
-msgstr "Lähetä ja vastaanota pingejä"
+msgstr "Envie e receba pings"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:56
 #, javascript-format
 msgid "Ping: %s"
-msgstr "Pingaa: %s"
+msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:14
 msgid "Presentation"
-msgstr "Esitys"
+msgstr "Apresentação"
 
 #: src/service/plugins/presenter.js:15
 msgid "Use the paired device as a presenter"
-msgstr "Käytä laiteparia esityslaitteena"
+msgstr "Usar o dispositivo emparelhado como apresentador"
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run Commands"
-msgstr "Suorita komentoja"
+msgstr "Executar comandos"
 
 #: src/service/plugins/runcommand.js:17
 msgid "Run commands on your paired device or let the device run predefined commands on this PC"
-msgstr "Suorita komennot liitetyllä laitteellasi tai anna laitteen suorittaa etukäteen määriteltyjä komentoja tällä tietokoneella"
+msgstr "Executar comandos no dispositivo emparelhado ou permitir que o dispositivo execute comandos predefinidos neste PC"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -948,143 +963,143 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr "Selaa laiteparin tiedostojärjestelmää"
+msgstr "Navegar pelo sistema de ficheiros do dispositivo emparelhado"
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
-msgstr "Liitä"
+msgstr "Montar"
 
 #: src/service/plugins/sftp.js:32
 msgid "Unmount"
-msgstr "Irrota"
+msgstr "Desmontar"
 
 #: src/service/plugins/sftp.js:216
 #, javascript-format
 msgid "%s reported an error"
-msgstr "%s ilmoitti virheestä"
+msgstr "%s relatou um erro"
 
 #: src/service/plugins/share.js:18 src/service/plugins/share.js:25
 msgid "Share"
-msgstr "Jaa"
+msgstr "Partilha"
 
 #: src/service/plugins/share.js:20
 msgid "Share files and URLs between devices"
-msgstr "Jaa tiedostoja ja URL-osoitteita laitteiden välillä"
+msgstr "Partilhar ficheiros e URLs entre dispositivos"
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:134
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr "Laitteella %s ei ole lupaa lähettää tiedostoja"
+msgstr "%s não tem permissão para carregar ficheiros"
 
 #: src/service/plugins/share.js:156 src/service/plugins/share.js:289
 msgid "Transferring File"
-msgstr "Siirretään tiedostoa"
+msgstr "A transferir ficheiro"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:158
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "Vastaanotetaan “%s” laitteelta %s"
+msgstr "A receber \"%s\" de %s"
 
 #: src/service/plugins/share.js:177 src/service/plugins/share.js:309
 msgid "Transfer Successful"
-msgstr "Siirto valmistui"
+msgstr "Transferência bem sucedida"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:179
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "Vastaanotettiin “%s” laitteelta %s"
+msgstr "Recebeu \"%s\" de %s"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr "Näytä tiedoston sijainti"
+msgstr "Mostrar localização do ficheiro"
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
-msgstr "Avaa tiedosto"
+msgstr "Abrir ficheiro"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:210
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "Tiedoston “%s” vastaanotto laitteelta %s epäonnistui"
+msgstr "Falha ao receber “%s” de %s"
 
 #: src/service/plugins/share.js:241
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr "Laitteen %s jakama teksti"
+msgstr "Texto partilhado por %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:291
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "Lähetetään “%s” laitteelle %s"
+msgstr "A enviar \"%s\" para %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:311
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "Lähetettiiin “%s” laitteelle %s"
+msgstr "Enviou \"%s\" para %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:379
 #, javascript-format
 msgid "Send files to %s"
-msgstr "Lähetä tiedostoja laitteeseen %s"
+msgstr "Enviar ficheiros para %s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:383
 msgid "Open when done"
-msgstr "Avaa kun valmis"
+msgstr "Abrir quando terminar"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:422
 #, javascript-format
 msgid "Send a link to %s"
-msgstr "Lähetä linkki laitteeseen %s"
+msgstr "Enviar um ligação para %s"
 
 #: src/service/plugins/sms.js:18
 msgid "SMS"
-msgstr "Tekstiviesti"
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:19
 msgid "Send and read SMS of the paired device and be notified of new SMS"
-msgstr "Lähetä ja lue laiteparin tekstiviestejä ja vastaanota ilmoitus uusista tekstiviesteistä"
+msgstr "Enviar e ler SMS do dispositivo emparelhado e ser notificado sobre o novo SMS"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
-msgstr "Uusi tekstiviesti (URI)"
+msgstr "Novo SMS (URI)"
 
 #: src/service/plugins/sms.js:48
 msgid "Reply SMS"
-msgstr "Vastaa tekstiviestiin"
+msgstr "Responder SMS"
 
 #: src/service/plugins/sms.js:72
 msgid "Share SMS"
-msgstr "Jaa tekstiviesti"
+msgstr "Partilhar SMS"
 
 #: src/service/plugins/systemvolume.js:15
 msgid "System Volume"
-msgstr "Järjestelmän äänenvoimakkuus"
+msgstr "Volume do sistema"
 
 #: src/service/plugins/systemvolume.js:16
 msgid "Enable the paired device to control the system volume"
-msgstr "Käytä laiteparia järjestelmän äänenvoimakkuuden hallintaan"
+msgstr "Ativar o dispositivo emparelhado para controlar o volume do sistema"
 
 #: src/service/plugins/systemvolume.js:60
 msgid "PulseAudio not found"
-msgstr "PulseAudiota ei löytynyt"
+msgstr "PulseAudio não encontrado"
 
 #: src/service/plugins/telephony.js:18
 msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
-msgstr "Vastaanota ilmoitus puheluista ja säädä järjestelmän äänenvoimakkuutta saapuvien ja käynnissä olevien puhelujen aikana"
+msgstr "Ser notificado sobre as chamadas e ajustar o volume do sistema durante o toque/chamadas em curso"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
-msgstr "Mykistä puhelu"
+msgstr "Silenciar chamada"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -1092,127 +1107,129 @@ msgstr "Mykistä puhelu"
 #: src/service/plugins/telephony.js:157 src/service/plugins/telephony.js:176
 #: src/service/ui/contacts.js:611 src/service/ui/messaging.js:749
 msgid "Unknown Contact"
-msgstr "Tuntematon yhteystieto"
+msgstr "Contacto desconhecido"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:195
 msgid "Incoming call"
-msgstr "Saapuva puhelu"
+msgstr "Chamada recebida"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:210
 msgid "Ongoing call"
-msgstr "Käynnissä oleva puhelu"
+msgstr "Chamada em curso"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:134
 msgid "Fax"
-msgstr "Faksi"
+msgstr "Fax"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:138
 msgid "Work"
-msgstr "Työ"
+msgstr "Trabalho"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:142
 msgid "Mobile"
-msgstr "Mobiili"
+msgstr "Telemóvel"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:146
 msgid "Home"
-msgstr "Koti"
+msgstr "Casa"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
 #: src/service/ui/contacts.js:509 src/service/ui/contacts.js:524
 #, javascript-format
 msgid "Send to %s"
-msgstr "Lähetä numeroon %s"
+msgstr "Enviar para %s"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:104 src/service/ui/messaging.js:145
 msgid "Just now"
-msgstr "Juuri nyt"
+msgstr "Agora mesmo"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:113
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr "Eilen・%s"
+msgstr "Ontem・%s"
 
 #: src/service/ui/messaging.js:150
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d minuutti"
-msgstr[1] "%d minuuttia"
+msgstr[0] "%d minuto"
+msgstr[1] "%d minutos"
 
 #: src/service/ui/messaging.js:400
 msgid "Not available"
-msgstr "Ei saatavilla"
+msgstr "Não disponível"
 
 #: src/service/ui/messaging.js:757
 msgid "Group Message"
-msgstr "Ryhmäviesti"
+msgstr "Mensagem para grupo"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:772
 #, javascript-format
 msgid "You: %s"
-msgstr "Sinä: %s"
+msgstr "Você: %s"
 
 #: src/service/ui/messaging.js:958
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] "Ja %d toinen yhteystieto"
-msgstr[1] "Ja %d muuta"
+msgstr[0] "E %d outro contacto"
+msgstr[1] "E %d outros"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
 #: src/service/ui/mousepad.js:117
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr "Etänäppäimistö laitteella %s ei ole aktiivinen"
+msgstr "Teclado remoto na %s não está ativo"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:127
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d% % (Arvioidaan…)"
+msgstr "%d%% (a estimar…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:136
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d% % (%d∶%02d kunnes täynnä)"
+msgstr "%d%% (%d∶%02d até ficar carregada)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:144
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d% % (%d∶%02d jäljellä)"
+msgstr "%d%% (%d∶%02d restante)"
 
 #: src/shell/notification.js:58
 msgid "Reply"
-msgstr "Vastaa"
+msgstr "Responder"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:35
 msgid "Share links with Zorin Connect, direct to the browser or by SMS."
-msgstr "Jaa linkkejä Zorin Connectin avulla suoraan selaimeen tai tekstiviestillä."
+msgstr "Partilhar ligações com o Zorin Connect, diretamente para o navegador ou por SMS."
 
 #. TRANSLATORS: WebExtension can't connect to Zorin Connect
 #: webextension/gettext.js:39
 msgid "Service Unavailable"
-msgstr "Palvelu ei ole käytettävissä"
+msgstr "Serviço indisponível"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:43
 msgid "Open in Browser"
-msgstr "Avaa selaimessa"
+msgstr "Abrir no navegador"
 
+msgid "Mobile Application"
+msgstr "Aplicação móvel"

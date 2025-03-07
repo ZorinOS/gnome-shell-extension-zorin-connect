@@ -2,19 +2,20 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gdk from 'gi://Gdk';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
+import Pango from 'gi://Pango';
+
+import system from 'system';
+
+import * as Contacts from './contacts.js';
+import * as Sms from '../plugins/sms.js';
+import * as URI from '../utils/uri.js';
+import '../utils/ui.js';
 
 const Tweener = imports.tweener.tweener;
-
-const Gdk = imports.gi.Gdk;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-const Pango = imports.gi.Pango;
-
-const Contacts = imports.service.ui.contacts;
-const Sms = imports.service.plugins.sms;
-const URI = imports.service.utils.uri;
 
 
 /*
@@ -204,7 +205,7 @@ function setAvatarVisible(row, visible) {
  */
 const ConversationMessage = GObject.registerClass({
     GTypeName: 'ZorinConnectMessagingConversationMessage',
-    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/messaging-conversation-message.ui',
+    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/messaging-conversation-message.ui',
     Children: ['grid', 'avatar', 'sender-label', 'message-label'],
 }, class ConversationMessage extends Gtk.ListBoxRow {
     _init(contact, message) {
@@ -302,7 +303,7 @@ const Conversation = GObject.registerClass({
             ''
         ),
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/messaging-conversation.ui',
+    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/messaging-conversation.ui',
     Children: [
         'entry', 'list', 'scrolled',
         'pending', 'pending-box',
@@ -459,7 +460,7 @@ const Conversation = GObject.registerClass({
         conversation.list.foreach(message => {
             // HACK: temporary mitigator for mysterious GtkListBox leak
             message.destroy();
-            imports.system.gc();
+            system.gc();
         });
     }
 
@@ -719,7 +720,7 @@ const Conversation = GObject.registerClass({
  */
 const ConversationSummary = GObject.registerClass({
     GTypeName: 'ZorinConnectMessagingConversationSummary',
-    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/messaging-conversation-summary.ui',
+    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/messaging-conversation-summary.ui',
     Children: ['avatar', 'name-label', 'time-label', 'body-label'],
 }, class ConversationSummary extends Gtk.ListBoxRow {
     _init(contacts, message) {
@@ -799,7 +800,7 @@ const ConversationSummary = GObject.registerClass({
 /**
  * A Gtk.ApplicationWindow for SMS conversations
  */
-var Window = GObject.registerClass({
+export const Window = GObject.registerClass({
     GTypeName: 'ZorinConnectMessagingWindow',
     Properties: {
         'device': GObject.ParamSpec.object(
@@ -824,7 +825,7 @@ var Window = GObject.registerClass({
             ''
         ),
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/messaging-window.ui',
+    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/messaging-window.ui',
     Children: [
         'headerbar', 'infobar',
         'thread-list', 'stack',
@@ -1024,13 +1025,13 @@ var Window = GObject.registerClass({
 
                 if (conversation) {
                     conversation.destroy();
-                    imports.system.gc();
+                    system.gc();
                 }
 
                 // Then the summary widget
                 row.destroy();
                 // HACK: temporary mitigator for mysterious GtkListBox leak
-                imports.system.gc();
+                system.gc();
             }
         }
 
@@ -1218,7 +1219,7 @@ var Window = GObject.registerClass({
 /**
  * A Gtk.ApplicationWindow for selecting from open conversations
  */
-var ConversationChooser = GObject.registerClass({
+export const ConversationChooser = GObject.registerClass({
     GTypeName: 'ZorinConnectConversationChooser',
     Properties: {
         'device': GObject.ParamSpec.object(

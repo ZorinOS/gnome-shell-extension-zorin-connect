@@ -2,18 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
 
-const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-
-const Contacts = imports.service.ui.contacts;
-const Messaging = imports.service.ui.messaging;
-const URI = imports.service.utils.uri;
+import * as Contacts from '../ui/contacts.js';
+import * as Messaging from '../ui/messaging.js';
+import * as URI from '../utils/uri.js';
+import '../utils/ui.js';
 
 
-var Dialog = GObject.registerClass({
+const Dialog = GObject.registerClass({
     GTypeName: 'ZorinConnectLegacyMessagingDialog',
     Properties: {
         'device': GObject.ParamSpec.object(
@@ -31,7 +30,7 @@ var Dialog = GObject.registerClass({
             GObject.Object
         ),
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/legacy-messaging-dialog.ui',
+    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/legacy-messaging-dialog.ui',
     Children: [
         'infobar', 'stack',
         'message-box', 'message-avatar', 'message-label', 'entry',
@@ -225,3 +224,4 @@ var Dialog = GObject.registerClass({
     }
 });
 
+export default Dialog;

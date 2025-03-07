@@ -2,20 +2,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zorin-connect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-22 10:01+0530\n"
-"PO-Revision-Date: 2022-12-11 21:28\n"
+"POT-Creation-Date: 2023-04-29 00:46-0400\n"
+"PO-Revision-Date: 2023-05-01 15:40\n"
 "Last-Translator: \n"
-"Language-Team: Portuguese\n"
-"Language: pt_PT\n"
+"Language-Team: Frisian\n"
+"Language: fy_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: zorin-connect\n"
 "X-Crowdin-Project-ID: 327933\n"
-"X-Crowdin-Language: pt-PT\n"
-"X-Crowdin-File: /[Zorin Connect.gnome-shell-extension-zorin-connect] main/po/org."
-"gnome.Shell.Extensions.Zorin Connect.pot\n"
+"X-Crowdin-Language: fy-NL\n"
+"X-Crowdin-File: /[ZorinConnect.gnome-shell-extension-zorin-connect] main/po/org.gnome.Shell.Extensions.ZorinConnect.pot\n"
 "X-Crowdin-File-ID: 18\n"
 
 #. TRANSLATORS: Extension name
@@ -26,75 +25,64 @@ msgstr "Zorin Connect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:13
 msgid "KDE Connect implementation for GNOME"
-msgstr "Implementação do KDE Connect para o GNOME"
+msgstr "KDE Connect implementaasje foar GNOME"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:23
 msgid "Zorin Connect Team"
-msgstr "Equipa do Zorin Connect"
+msgstr "Zorin Connect Team"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:39
-msgid ""
-"Zorin Connect is a complete implementation of KDE Connect especially for GNOME "
-"Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team "
-"has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgid "Zorin Connect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
 msgstr ""
-"O Zorin Connect é uma implementação completa do KDE Connect especialmente para a "
-"GNOME Shell com integração Nautilus, Chrome e Firefox. A equipa do KDE "
-"Connect tem aplicações para Linux, BSD, Android, Sailfish, iOS, macOS e "
-"Windows."
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:42
-msgid ""
-"With Zorin Connect you can securely connect to mobile devices and other desktops "
-"to:"
-msgstr ""
-"Com o Zorin Connect pode ligar-se de forma segura a dispositivos móveis e outros "
-"ambientes de trabalho para:"
+msgid "With Zorin Connect you can securely connect to mobile devices and other desktops to:"
+msgstr "Mei Zorin Connect kinst feilich ferbine mei mobiele apperaten en oare kompûters om:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:46
 msgid "Share files, links and text"
-msgstr "Partilhar ficheiros, ligações e texto"
+msgstr "Triemen, ferwiizingen en tekst te ferstjoeren"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:47
 msgid "Send and receive messages"
-msgstr "Enviar e receber mensagens"
+msgstr "Berjochten te ferstjoeren en binnen te krijen"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:48
 msgid "Sync clipboard content"
-msgstr "Sinconizar conteúdo da área de transferência"
+msgstr "Klemboerd ynhâld syngronisearje"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:49
 msgid "Sync contacts"
-msgstr "Sincronizar contactos"
+msgstr "Kontakten syngronisearje"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:50
 msgid "Sync notifications"
-msgstr "Sincronizar notificações"
+msgstr "Notifikaasjes te syngronisearjen"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:51
 msgid "Control media players"
-msgstr "Controlar leitores multimédia"
+msgstr "Media spilers te bestjoeren"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:52
 msgid "Control system volume"
-msgstr "Controlar volume do sistema"
+msgstr "Lûdsynstellings fan it systeem te feroarjen"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:53
 msgid "Execute predefined commands"
-msgstr "Executar comandos predefinidos"
+msgstr "Fan te foaren definiearre kommando's ût te fieren"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:54
 msgid "And more…"
-msgstr "E mais…"
+msgstr "En meer…"
 
-#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:127
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:130
 msgid "Zorin Connect in GNOME Shell"
-msgstr "Zorin Connect na GNOME Shell"
+msgstr "Zorin Connect yn GNOME Shell"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/connect-dialog.ui:20 data/ui/preferences-window.ui:821
 msgid "Connect to…"
-msgstr "Ligar a…"
+msgstr "Ferbine mei…"
 
 #: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
 #: data/ui/legacy-messaging-dialog.ui:24
@@ -108,200 +96,192 @@ msgstr "Ligar a…"
 #: src/preferences/service.js:420 src/service/plugins/share.js:163
 #: src/service/plugins/share.js:296 src/service/plugins/share.js:427
 msgid "Cancel"
-msgstr "Cancelar"
+msgstr "Ôfbrekke"
 
 #: data/ui/connect-dialog.ui:33
 msgid "Connect"
-msgstr "Ligar"
+msgstr "Ferbine"
 
 #: data/ui/connect-dialog.ui:80
 msgid "IP Address"
-msgstr "Endereço de IP"
+msgstr "IP Adres"
 
 #: data/ui/contact-chooser.ui:56
 msgid "No contacts"
-msgstr "Nenhum contacto"
+msgstr "Gjin kontakten"
 
 #: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
 #: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:847
 msgid "Help"
-msgstr "Ajuda"
+msgstr "Help"
 
 #: data/ui/contact-chooser.ui:109
 msgid "Type a phone number or name"
-msgstr "Introduza um número de telefone ou nome"
+msgstr "Fier in telefoannûmer of namme yn"
 
 #. TRANSLATORS: All other phone number types
 #: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:149
 msgid "Other"
-msgstr "Outros"
+msgstr "Oars"
 
 #. TRANSLATORS: Share URL by SMS
 #: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:292
 #: src/service/daemon.js:406 src/service/plugins/sms.js:64
 #: webextension/gettext.js:45
 msgid "Send SMS"
-msgstr "Enviar SMS"
+msgstr "SMS Ferstjoere"
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
 #: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:428
 msgid "Send"
-msgstr "Enviar"
+msgstr "Ferstjoere"
 
 #: data/ui/legacy-messaging-dialog.ui:69 data/ui/messaging-window.ui:263
 #: data/ui/notification-reply-dialog.ui:68
 msgid "Device is disconnected"
-msgstr "O dispositivo está desligado"
+msgstr "Ferbining mei apperaat ferbrutsen"
 
 #: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:56
 msgid "Send Message"
-msgstr "Enviar mensagem"
+msgstr "Berjocht Ferstjoere"
 
 #: data/ui/messaging-conversation.ui:92 src/shell/notification.js:73
 msgid "Type a message"
-msgstr "Escreva uma mensagem"
+msgstr "Berjocht ynfiere"
 
 #: data/ui/messaging-conversation.ui:99
 msgid "Message Entry"
-msgstr "Entrada de mensagens"
+msgstr "Berjocht Ynfier"
 
 #: data/ui/messaging-conversation.ui:100
 msgid "Type a message and press Enter to send"
-msgstr "Escreva uma mensagem e prima Enter para enviar"
+msgstr "Fier in berjocht yn en druk op Enter om te ferstjoeren"
 
 #: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:32
 #: src/service/ui/messaging.js:1056
 msgid "Messaging"
-msgstr "Mensagens"
+msgstr "Berjochten"
 
 #: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
 #: src/service/ui/messaging.js:1267
 msgid "New Conversation"
-msgstr "Nova conversa"
+msgstr "Nij Petear"
 
 #: data/ui/messaging-window.ui:120
 msgid "No Conversations"
-msgstr "Sem conversas"
+msgstr "Gjin Petearen"
 
 #: data/ui/messaging-window.ui:180
 msgid "No conversation selected"
-msgstr "Nenhuma conversa selecionada"
+msgstr "Gjin petear selektearre"
 
 #: data/ui/messaging-window.ui:196
 msgid "Select or start a conversation"
-msgstr "Selecionar ou iniciar uma conversa"
+msgstr "Selektear of begjin in petear"
 
 #: data/ui/mousepad-input-dialog.ui:97
-msgid ""
-"Touchpad.\n"
+msgid "Touchpad.\n"
 "Drag on this area to move mouse cursor.\n"
-"Press long to drag to drag mouse cursor.\n"
-"\n"
+"Press long to drag to drag mouse cursor.\n\n"
 "Simple click will be sent to paired device.\n"
 "Left, middle, right button, and wheel scrolls."
 msgstr ""
-"Touchpad.\n"
-"Arraste esta área para mover o cursor do rato.\n"
-"Pressione para arrastar e arrastar o cursor do rato\n"
-"\n"
-"Clique simples será enviado para o dispositivo emparelhado.\n"
-"Botão esquerdo, meio, direito e deslocamentos com a roda."
 
 #: data/ui/preferences-command-editor.ui:14
 msgid "Edit Command"
-msgstr "Editar comando"
+msgstr "Kommando Feroarje"
 
 #: data/ui/preferences-command-editor.ui:28
 msgid "Save"
-msgstr "Guardar"
+msgstr "Bewarje"
 
 #: data/ui/preferences-command-editor.ui:61
 msgid "Name"
-msgstr "Nome"
+msgstr "Namme"
 
 #: data/ui/preferences-command-editor.ui:99
 msgid "Command Line"
-msgstr "Linha de comandos"
+msgstr "Kommandorigel"
 
 #: data/ui/preferences-command-editor.ui:121
 #: data/ui/preferences-command-editor.ui:150
 msgid "Choose an executable"
-msgstr "Escolha um executável"
+msgstr "Útfierbere triem selektearje"
 
 #: data/ui/preferences-command-editor.ui:164
 msgid "Open"
-msgstr "Abrir"
+msgstr "Iepenje"
 
 #: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:497
 msgid "Desktop"
-msgstr "Área de trabalho"
+msgstr "Desktop"
 
 #: data/ui/preferences-device-panel.ui:102
 msgid "Camera"
-msgstr "Câmara"
+msgstr "Kamera"
 
 #: data/ui/preferences-device-panel.ui:159
 msgid "Clipboard Sync"
-msgstr "Sincronizar a área de transferência"
+msgstr "Klemboerd Syngronisaasje"
 
 #: data/ui/preferences-device-panel.ui:225
 msgid "Media Players"
-msgstr "Leitores multimédia"
+msgstr "Mediaspilers"
 
 #: data/ui/preferences-device-panel.ui:282
 msgid "Mouse & Keyboard"
-msgstr "Rato e Teclado"
+msgstr "Mûs & Toetseboerd"
 
 #: data/ui/preferences-device-panel.ui:339
 msgid "Volume Control"
-msgstr "Controlo de volume"
+msgstr "Lûdsynstellings"
 
 #: data/ui/preferences-device-panel.ui:393 src/service/plugins/sftp.js:383
 msgid "Files"
-msgstr "Ficheiros"
+msgstr "Triemen"
 
 #: data/ui/preferences-device-panel.ui:445
 msgid "Receive Files"
-msgstr "Receber ficheiros"
+msgstr "Triemen Ûntfange"
 
 #: data/ui/preferences-device-panel.ui:504
 msgid "Save files to"
-msgstr "Guardar ficheiros para"
+msgstr "Triemen bewarje yn"
 
 #: data/ui/preferences-device-panel.ui:565
 #: data/ui/preferences-device-panel.ui:2227
 msgid "Sharing"
-msgstr "Partilhar"
+msgstr "Diele"
 
 #: data/ui/preferences-device-panel.ui:596
 msgid "Device Battery"
-msgstr "Bateria do dispositivo"
+msgstr "Apperaat batterij"
 
 #: data/ui/preferences-device-panel.ui:647
 msgid "Low Battery Notification"
-msgstr "Notificação de bateria fraca"
+msgstr "Lege Batterij Notifikaasje"
 
 #: data/ui/preferences-device-panel.ui:706
 msgid "Charged Up to Custom Level Notification"
-msgstr "Carregado até à notificação de nível personalizada"
+msgstr ""
 
 #: data/ui/preferences-device-panel.ui:786
 msgid "Fully Charged Notification"
-msgstr "Notificação de carga completa"
+msgstr "Folslein Opladen Notifikaasje"
 
 #: data/ui/preferences-device-panel.ui:840
 msgid "System Battery"
-msgstr "Bateria do sistema"
+msgstr "Systeem Batterij"
 
 #: data/ui/preferences-device-panel.ui:889
 msgid "Share Statistics"
-msgstr "Partilhar estatísticas"
+msgstr "Statistiken Diele"
 
 #: data/ui/preferences-device-panel.ui:943
 #: data/ui/preferences-device-panel.ui:2273 src/service/plugins/battery.js:16
 msgid "Battery"
-msgstr "Bateria"
+msgstr "Baterij"
 
 #: data/ui/preferences-device-panel.ui:973
 #: data/ui/preferences-device-panel.ui:1058
@@ -309,162 +289,162 @@ msgstr "Bateria"
 #: src/service/plugins/runcommand.js:28 src/service/plugins/runcommand.js:36
 #: src/service/plugins/runcommand.js:196
 msgid "Commands"
-msgstr "Comandos"
+msgstr "Kommandos"
 
 #: data/ui/preferences-device-panel.ui:1032
 msgid "Add Command"
-msgstr "Adicionar comando"
+msgstr "Kommando Tafoegje"
 
 #. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
 #: data/ui/preferences-device-panel.ui:1120
 msgid "Share Notifications"
-msgstr "Partilhar notificações"
+msgstr "Notifikaasjes Diele"
 
 #: data/ui/preferences-device-panel.ui:1180
 msgid "Share When Active"
-msgstr "Partilhar quando ativo"
+msgstr "Diele Wannear Aktyf"
 
 #: data/ui/preferences-device-panel.ui:1231
 msgid "Applications"
-msgstr "Aplicações"
+msgstr "Applikaasjes"
 
 #: data/ui/preferences-device-panel.ui:1277
 #: data/ui/preferences-device-panel.ui:2365
 #: src/service/plugins/notification.js:19
 msgid "Notifications"
-msgstr "Notificações"
+msgstr "Notifikaasjes"
 
 #: data/ui/preferences-device-panel.ui:1335 src/service/plugins/contacts.js:26
 msgid "Contacts"
-msgstr "Contactos"
+msgstr "Kontakten"
 
 #: data/ui/preferences-device-panel.ui:1388
 msgid "Incoming Calls"
-msgstr "Chamadas recebidas"
+msgstr "Ynkommende Tillefoantsjes"
 
 #: data/ui/preferences-device-panel.ui:1437
 #: data/ui/preferences-device-panel.ui:1604
 msgid "Volume"
-msgstr "Volume"
+msgstr "Lûdsynstellingen"
 
 #: data/ui/preferences-device-panel.ui:1503
 #: data/ui/preferences-device-panel.ui:1670
 msgid "Pause Media"
-msgstr "Colocar em pausa"
+msgstr "Media Skoftsje"
 
 #: data/ui/preferences-device-panel.ui:1556
 msgid "Ongoing Calls"
-msgstr "Chamadas em curso"
+msgstr "Útgeande Tillefoantsjes"
 
 #: data/ui/preferences-device-panel.ui:1726
 msgid "Mute Microphone"
-msgstr "Silenciar microfone"
+msgstr "Mikrofoan bedimje"
 
 #: data/ui/preferences-device-panel.ui:1780
 #: data/ui/preferences-device-panel.ui:2411 src/service/plugins/telephony.js:17
 msgid "Telephony"
-msgstr "Telefonia"
+msgstr "Telefoan"
 
 #: data/ui/preferences-device-panel.ui:1815
 msgid "Action Shortcuts"
-msgstr "Atalhos de ação"
+msgstr "Aksje Fluchtoetsen"
 
 #: data/ui/preferences-device-panel.ui:1831
 msgid "Reset All…"
-msgstr "Repor tudo…"
+msgstr "Alles Werom Sette…"
 
 #: data/ui/preferences-device-panel.ui:1883
 msgid "Shortcuts"
-msgstr "Atalhos"
+msgstr "Ferkoartingen"
 
 #: data/ui/preferences-device-panel.ui:1914
 msgid "Plugins"
-msgstr "Extensões"
+msgstr "Plugins"
 
 #: data/ui/preferences-device-panel.ui:1961
 msgid "Experimental"
-msgstr "Experimental"
+msgstr "Eksperimenteel"
 
 #: data/ui/preferences-device-panel.ui:2008
 msgid "Device Cache"
-msgstr "Cache do dispositivo"
+msgstr "Apparaat Cache"
 
 #: data/ui/preferences-device-panel.ui:2026
 msgid "Clear Cache…"
-msgstr "Limpar cache…"
+msgstr "Cache leechje…"
 
 #: data/ui/preferences-device-panel.ui:2065
 msgid "Legacy SMS Support"
-msgstr "Suporte por SMS antigo"
+msgstr "Efterhelle SMS ûndersteuning"
 
 #: data/ui/preferences-device-panel.ui:2122
 msgid "SFTP Automount"
-msgstr "Montagem automática SFTP"
+msgstr "SFTP Automatysk ferbine"
 
 #: data/ui/preferences-device-panel.ui:2177
 #: data/ui/preferences-device-panel.ui:2503
 msgid "Advanced"
-msgstr "Avançado"
+msgstr "Avansearre"
 
 #: data/ui/preferences-device-panel.ui:2457
 msgid "Keyboard Shortcuts"
-msgstr "Teclas de atalho"
+msgstr "Toetseboerd Fluchtoetsen"
 
 #: data/ui/preferences-device-panel.ui:2521
 msgid "Device Settings"
-msgstr "Definições do dispositivo"
+msgstr "Apparaat Ynstellingen"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2565
 #: data/ui/preferences-device-panel.ui:2657 src/service/daemon.js:385
 msgid "Pair"
-msgstr "Emparelhar"
+msgstr "Keppelje"
 
 #: data/ui/preferences-device-panel.ui:2597
 msgid "Device is unpaired"
-msgstr "O dispositivo não está emparelhado"
+msgstr "Apparaat is net keppele"
 
 #: data/ui/preferences-device-panel.ui:2612
 msgid "You may configure this device before pairing"
-msgstr "Pode configurar este dispositivo antes de emparelhar"
+msgstr "Do kinst dit apparaat konfigurearje foar it keppeljen"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/ui/preferences-device-panel.ui:2652 src/preferences/device.js:391
 msgid "Encryption Info"
-msgstr "Informação de encriptação"
+msgstr "Fersifering Ynformaasje"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/ui/preferences-device-panel.ui:2663 src/service/daemon.js:394
 msgid "Unpair"
-msgstr "Desemparelhar"
+msgstr "Ûntkeppelje"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/ui/preferences-device-panel.ui:2675
 msgid "To Device"
-msgstr "Para o dispositivo"
+msgstr "Nei Apparaat"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/ui/preferences-device-panel.ui:2681
 msgid "From Device"
-msgstr "Do dispositivo"
+msgstr "Fan Apparaat"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/ui/preferences-device-panel.ui:2693
 #: data/ui/preferences-device-panel.ui:2726
 msgid "Nothing"
-msgstr "Nada"
+msgstr "Neat"
 
 #. TRANSLATORS: Restore the system volume
 #: data/ui/preferences-device-panel.ui:2700
 #: data/ui/preferences-device-panel.ui:2733
 msgid "Restore"
-msgstr "Restaurar"
+msgstr "Werom Sette"
 
 #. TRANSLATORS: Lower the system volume
 #: data/ui/preferences-device-panel.ui:2707
 #: data/ui/preferences-device-panel.ui:2740
 msgid "Lower"
-msgstr "Baixo"
+msgstr "Omleech"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the actively ringing call
@@ -472,207 +452,199 @@ msgstr "Baixo"
 #: data/ui/preferences-device-panel.ui:2747
 #: src/service/plugins/telephony.js:199
 msgid "Mute"
-msgstr "Silenciar"
+msgstr "Bedimje"
 
 #: data/ui/preferences-shortcut-editor.ui:25
 msgid "Set"
-msgstr "Definir"
+msgstr "Sette"
 
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
 #: data/ui/preferences-shortcut-editor.ui:80
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Prima Esc para cancelar ou Backspace para repor a tecla de atalho."
+msgstr "Druk op Esc om ôf te brekken as Backspace om de fluchtoets opnij yn te stellen."
 
 #: data/ui/preferences-window.ui:24
 msgid "Device Name"
-msgstr "Nome do dispositivo"
+msgstr "Apparaat Namme"
 
 #: data/ui/preferences-window.ui:61
 msgid "_Rename"
-msgstr "_Mudar o nome"
+msgstr "He_Rnimme"
 
 #: data/ui/preferences-window.ui:98 data/ui/preferences-window.ui:112
 msgid "Refresh"
-msgstr "Recarregar"
+msgstr "Fernije"
 
 #: data/ui/preferences-window.ui:139 src/extension.js:116
 msgid "Mobile Settings"
-msgstr "Definições móveis"
+msgstr "Mobiele Ynstellingen"
 
 #: data/ui/preferences-window.ui:166
 msgid "Service Menu"
-msgstr "Menu de serviço"
+msgstr "Tsjinst Menu"
 
 #: data/ui/preferences-window.ui:189
 msgid "Device Menu"
-msgstr "Menu de dispositivos"
+msgstr "Apparaat Menu"
 
 #: data/ui/preferences-window.ui:203 data/ui/preferences-window.ui:218
 msgid "Edit Device Name"
-msgstr "Editar nome do dispositivo"
+msgstr "Apparaat Namme Feroarje"
 
 #: data/ui/preferences-window.ui:278
 msgid "Devices"
-msgstr "Dispositivos"
+msgstr "Apparaten"
 
 #: data/ui/preferences-window.ui:328 src/preferences/service.js:659
 msgid "Searching for devices…"
-msgstr "A procurar por dispositivos…"
+msgstr "Om apparaten sykje…"
 
 #: data/ui/preferences-window.ui:353
-msgid "Behavior When Locked"
-msgstr "Comportamento quando bloqueado"
+msgid "Extension Settings"
+msgstr ""
 
 #: data/ui/preferences-window.ui:378
-msgid "Keep Alive"
-msgstr "Manter vivo"
+msgid "Zorin Connect remains active when GNOME Shell is locked"
+msgstr ""
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
-msgstr "Add-Ons do navegador"
+msgstr "Browser Add-Ons"
 
 #: data/ui/preferences-window.ui:728
 msgid "Enable"
-msgstr "Ativar"
+msgstr "Ynskeakelje"
 
 #: data/ui/preferences-window.ui:760
 msgid "This device is invisible to unpaired devices"
-msgstr "Este dispositivo é invisível a dispositivos não emparelhados"
+msgstr "Dit apparaat is net sichtber foar net keppele apparaten"
 
 #: data/ui/preferences-window.ui:772 src/service/manager.js:117
 msgid "Discovery Disabled"
-msgstr "Detecção desativada"
+msgstr "Ûntdekken Útskeakelje"
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"
-msgstr "Modo de visualização"
+msgstr "Werjaan Mode"
 
 #. TRANSLATORS: Show device indicators in the top bar
 #: data/ui/preferences-window.ui:829
 msgid "Panel"
-msgstr "Painel"
+msgstr "Paniel"
 
 #. TRANSLATORS: Show devices in the user menu like Bluetooth
 #: data/ui/preferences-window.ui:835
 msgid "User Menu"
-msgstr "﻿Menu do utilizador"
+msgstr "Brûkers menu"
 
 #. TRANSLATORS: Generate a support log
 #: data/ui/preferences-window.ui:843 src/preferences/service.js:417
 msgid "Generate Support Log"
-msgstr "Gerar registo de suporte"
+msgstr "Stipe logboek generearje"
 
 #: data/ui/preferences-window.ui:851
 msgid "About Zorin Connect"
-msgstr "Acerca do Zorin Connect"
+msgstr "Oer Zorin Connect"
 
 #: data/ui/service-device-chooser.ui:15
 msgid "Select a Device"
-msgstr "Selecione um dispositivo"
+msgstr "Apparaat Selektearje"
 
 #: data/ui/service-device-chooser.ui:33 data/ui/service-device-chooser.ui:38
 msgid "Select"
-msgstr "Selecionar"
+msgstr "Selektearje"
 
 #. TRANSLATORS: No devices are known or available
 #: data/ui/service-device-chooser.ui:101 webextension/gettext.js:41
 msgid "No Device Found"
-msgstr "Nenhum dispositivo encontrado"
+msgstr "Gjin Apparaat Fûn"
 
 #: data/ui/service-device-chooser.ui:118
 msgid "Device List"
-msgstr "Lista de dispositivos"
+msgstr "Apparaat list"
 
 #: data/ui/service-error-dialog.ui:39 data/ui/service-error-dialog.ui:47
 msgid "Report"
-msgstr "Reportar"
+msgstr "Oanjaan"
 
 #: data/ui/service-error-dialog.ui:79
 msgid "Something’s gone wrong"
-msgstr "Alguma coisa correu mal"
+msgstr "Der is wat mislearre"
 
 #: data/ui/service-error-dialog.ui:91
-msgid ""
-"Zorin Connect encountered an unexpected error. Please report the problem and "
-"include any information that may help."
-msgstr ""
-"O Zorin Connect encontrou um erro inesperado. Reporte o problema e inclua todas "
-"as informações que possam ajudar."
+msgid "Zorin Connect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "Zorin Connect is tsjin in probleem oanrûn. Jou dit graach oan mei alle informaasje dy't brûkber wéze kin."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
-msgstr "Informação técnica"
+msgstr "Technyske Details"
 
 #. TRANSLATORS: Top-level context menu item for Zorin Connect
 #: nautilus-extension/nautilus-zorin-connect.py:183 webextension/gettext.js:37
 msgid "Send To Mobile Device"
-msgstr "Enviar para dispositivo móvel"
+msgstr "Nei Mobiel Apparaat ferstjoere"
 
 #: src/extension.js:52
 msgid "Sync between your devices"
-msgstr "Sincronize entre os seus dispositivos"
+msgstr ""
 
 #: src/extension.js:161
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "Ligado"
-msgstr[1] "Ligado"
+msgstr[0] ""
+msgstr[1] "%d Ferbûn"
 
 #: src/preferences/device.js:673 src/preferences/device.js:679
 msgid "Edit"
-msgstr "Editar"
+msgstr "Feroarje"
 
 #: src/preferences/device.js:688 src/preferences/device.js:694
 msgid "Remove"
-msgstr "Remover"
+msgstr "Fuortsmite"
 
 #: src/preferences/device.js:948 src/preferences/device.js:976
 msgid "Disabled"
-msgstr "Desativado"
+msgstr "Útskeakele"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
 #: src/preferences/keybindings.js:68
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "Introduza um novo atalho para alterar <b>%s</b>"
+msgstr "In nije fluchtoets ynfiere om <b>%s</b> te feroarjen"
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
 #: src/preferences/keybindings.js:134
 #, javascript-format
 msgid "%s is already being used"
-msgstr "O %s já está a ser usado"
+msgstr "%s wurd ol brûkt"
 
 #: src/preferences/service.js:376
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr "Uma implementação completa do KDE Connect para o GNOME"
+msgstr "In folsleine KDE Connect implementaasje foar GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/preferences/service.js:385
 msgid "translator-credits"
-msgstr "Hugo Carvalho <hugokarvalho@hotmail.com>"
+msgstr "Tjipke van der Heide <tjipkevdh@gmail.com>"
 
 #: src/preferences/service.js:418
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
-msgstr ""
-"As mensagens de depuração estão a ser registadas. Tomar todas as medidas "
-"necessárias para reproduzir um problema e depois rever o registo."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Debug berjochten wurde bewarre. Nim de nediche stappen om it probleem harrensels foardwaan te litten en besjoch don it loch."
 
 #: src/preferences/service.js:421
 msgid "Review Log"
-msgstr "Registo de revisão"
+msgstr "Loch Besjen"
 
 #: src/preferences/service.js:489
 msgid "Laptop"
-msgstr "Portátil"
+msgstr "Laptop"
 
 #: src/preferences/service.js:491
 msgid "Smartphone"
-msgstr "Smartphone"
+msgstr "Snoadtillefoan"
 
 #: src/preferences/service.js:493
 msgid "Tablet"
@@ -680,81 +652,81 @@ msgstr "Tablet"
 
 #: src/preferences/service.js:495
 msgid "Television"
-msgstr "Televisão"
+msgstr "Telefyzje"
 
 #: src/preferences/service.js:517
 msgid "Unpaired"
-msgstr "Desemparelhado"
+msgstr "Net Keppele"
 
 #: src/preferences/service.js:521
 msgid "Disconnected"
-msgstr "Desligado"
+msgstr "Ferbining ferbrutsen"
 
 #: src/preferences/service.js:525
 msgid "Connected"
-msgstr "Ligado"
+msgstr "Ferbûn"
 
 #: src/preferences/service.js:661
 msgid "Waiting for service…"
-msgstr "À espera de serviço…"
+msgstr "Op in ferbining oan it wachtsjen…"
 
 #: src/service/daemon.js:193
 msgid "Click for help troubleshooting"
-msgstr "Clique para ajudar a solucionar problemas"
+msgstr ""
 
 #: src/service/daemon.js:204
 msgid "Click for more information"
-msgstr "Clique para mais informação"
+msgstr ""
 
 #: src/service/daemon.js:298
 msgid "Dial Number"
-msgstr "Marcar número"
+msgstr "Nûmer Skilje"
 
 #: src/service/daemon.js:304 src/service/daemon.js:502
 #: src/service/plugins/share.js:33
 msgid "Share File"
-msgstr "Partilhar ficheiro"
+msgstr "Triem Ferstjoere"
 
 #: src/service/daemon.js:355
 msgid "List available devices"
-msgstr "Listar dispositivos disponíveis"
+msgstr "Beskikbere apparaten sjen litte"
 
 #: src/service/daemon.js:364
 msgid "List all devices"
-msgstr "Listar todos os dispositivos"
+msgstr "Olle apparaten sjen litte"
 
 #: src/service/daemon.js:373
 msgid "Target Device"
-msgstr "Para o dispositivo"
+msgstr "Doel Apparaat"
 
 #: src/service/daemon.js:415
 msgid "Message Body"
-msgstr "Corpo da mensagem"
+msgstr "Berjocht Ynhâld"
 
 #: src/service/daemon.js:427 src/service/plugins/notification.js:58
 msgid "Send Notification"
-msgstr "Enviar notificação"
+msgstr "Notifikaasje Ferstjoere"
 
 #: src/service/daemon.js:436
 msgid "Notification App Name"
-msgstr "Nome da aplicação de notificação"
+msgstr "Notifikaasje Applikaasje Namme"
 
 #: src/service/daemon.js:445
 msgid "Notification Body"
-msgstr "Corpo da notificação"
+msgstr "Notifikaasje Haadtekst"
 
 #: src/service/daemon.js:454
 msgid "Notification Icon"
-msgstr "Ícone de notificação"
+msgstr "Notifikaasje ôfbylding"
 
 #: src/service/daemon.js:463
 msgid "Notification ID"
-msgstr "ID da notificação"
+msgstr "Notifikaasje ID"
 
 #: src/service/daemon.js:472 src/service/plugins/photo.js:16
 #: src/service/plugins/photo.js:29
 msgid "Photo"
-msgstr "Foto"
+msgstr "Ôfbylding"
 
 #: src/service/daemon.js:481 src/service/plugins/ping.js:15
 #: src/service/plugins/ping.js:22 src/service/plugins/ping.js:49
@@ -765,26 +737,26 @@ msgstr "Ping"
 #: src/service/plugins/battery.js:277 src/service/plugins/battery.js:306
 #: src/service/plugins/findmyphone.js:24
 msgid "Ring"
-msgstr "Toque"
+msgstr "Ôfgean Litte"
 
 #: src/service/daemon.js:511 src/service/plugins/share.js:49
 #: src/service/ui/messaging.js:1250 src/service/ui/messaging.js:1258
 msgid "Share Link"
-msgstr "Partilhar ligação"
+msgstr "Keppeling Diele"
 
 #: src/service/daemon.js:520 src/service/plugins/share.js:41
 msgid "Share Text"
-msgstr "Partilhar texto"
+msgstr "Tekst Diele"
 
 #: src/service/daemon.js:532
 msgid "Show release version"
-msgstr "Mostrar versão de lançamento"
+msgstr "Útjefte Ferzje Sjen Litte"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:173
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr "Dispositivo Bluetooth em %s"
+msgstr ""
 
 #. TRANSLATORS: Label for TLS connection verification key
 #.
@@ -794,115 +766,113 @@ msgstr "Dispositivo Bluetooth em %s"
 #: src/service/device.js:214
 #, javascript-format
 msgid "Verification key: %s"
-msgstr "Chave de verificação: %s"
+msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:843
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr "Pedido para emparelhar de %s"
+msgstr "Keppelingsfersyk fan %s"
 
 #: src/service/device.js:850
 msgid "Reject"
-msgstr "Rejeitar"
+msgstr "Ôfslaan"
 
 #: src/service/device.js:855
 msgid "Accept"
-msgstr "Aceitar"
+msgstr "Tastean"
 
 #: src/service/manager.js:118
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr "A deteção foi desativada devido ao número de dispositivos nesta rede."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Discovery is útskeakele troch it oantal mobiele apparaten op dit netwurk."
 
 #: src/service/backends/lan.js:166
 msgid "OpenSSL not found"
-msgstr "OpenSSL não encontrado"
+msgstr "OpenSSL net fûn"
 
 #: src/service/backends/lan.js:456
 msgid "Port already in use"
-msgstr "Porta já em utilização"
+msgstr "Poarte wurd ol brûkt"
 
 #: src/service/plugins/battery.js:17
 msgid "Exchange battery information"
-msgstr "Trocar informações de bateria"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is full
 #: src/service/plugins/battery.js:257
 #, javascript-format
 msgid "%s: Battery is full"
-msgstr "%s: Bateria está carregada"
+msgstr "%s: Batterij is fol"
 
 #. TRANSLATORS: when the battery is fully charged
 #. TRANSLATORS: When the battery level is 100%
 #: src/service/plugins/battery.js:259 src/shell/device.js:122
 msgid "Fully Charged"
-msgstr "Totalmente carregado"
+msgstr "Foslein Opladen"
 
 #. TRANSLATORS: eg. Google Pixel: Battery has reached custom charge level
 #: src/service/plugins/battery.js:286
 #, javascript-format
 msgid "%s: Battery has reached custom charge level"
-msgstr "%s: Bateria atingiu o nível de carga personalizada"
+msgstr ""
 
 #. TRANSLATORS: when the battery has reached custom charge level
 #: src/service/plugins/battery.js:288
 #, javascript-format
 msgid "%d%% Charged"
-msgstr "%d%% Carregada"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:315
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr "%s: A bateria está fraca"
+msgstr "%s: Batterij is leech"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:317
 #, javascript-format
 msgid "%d%% remaining"
-msgstr "%d%% restante"
+msgstr "%d%% te gean"
 
 #: src/service/plugins/clipboard.js:14
 msgid "Clipboard"
-msgstr "Área de transferência"
+msgstr "Klemboerd"
 
 #: src/service/plugins/clipboard.js:15
 msgid "Share the clipboard content"
-msgstr "Partilhar o conteúdo da área de transferência"
+msgstr ""
 
 #: src/service/plugins/clipboard.js:27
 msgid "Clipboard Push"
-msgstr "Enviar da área de transferência"
+msgstr "Klemboerd Ferstjoere"
 
 #: src/service/plugins/clipboard.js:35
 msgid "Clipboard Pull"
-msgstr "Carregar da área de transferência"
+msgstr "Klemboerd Ophelje"
 
 #: src/service/plugins/contacts.js:27
 msgid "Access contacts of the paired device"
-msgstr "Aceder a contactos do dispositivo emparelhado"
+msgstr ""
 
 #: src/service/plugins/findmyphone.js:17
 msgid "Find My Phone"
-msgstr "Encontrar o meu telefone"
+msgstr "Fyn Myn Tillefoan"
 
 #: src/service/plugins/findmyphone.js:18
 msgid "Ring your paired device"
-msgstr "Tocar no seu dispositivo emparelhado"
+msgstr ""
 
 #: src/service/plugins/mousepad.js:16
 msgid "Mousepad"
-msgstr "Tapete de rato"
+msgstr "Mûsmatte"
 
 #: src/service/plugins/mousepad.js:17
 msgid "Enables the paired device to act as a remote mouse and keyboard"
 msgstr ""
-"Permite que o dispositivo emparelhado funcione como um rato e teclado remotos"
 
 #: src/service/plugins/mousepad.js:31 src/service/ui/mousepad.js:109
 msgid "Remote Input"
-msgstr "Entrada remota"
+msgstr ""
 
 #: src/service/plugins/mpris.js:19
 msgid "MPRIS"
@@ -910,53 +880,51 @@ msgstr "MPRIS"
 
 #: src/service/plugins/mpris.js:20
 msgid "Bidirectional remote media playback control"
-msgstr "Controlo remoto bidirecional de reprodução multimédia"
+msgstr ""
 
 #: src/service/plugins/mpris.js:320
 msgid "Unknown"
-msgstr "Desconhecida"
+msgstr "Ûnbekend"
 
 #: src/service/plugins/notification.js:20
 msgid "Share notifications with the paired device"
-msgstr "Partilhar notificações com o dispositivo emparelhado"
+msgstr ""
 
 #: src/service/plugins/notification.js:34
 msgid "Cancel Notification"
-msgstr "Cancelar notificação"
+msgstr "Notifikaasje Ôfbrekke"
 
 #: src/service/plugins/notification.js:42
 msgid "Close Notification"
-msgstr "Fechar notificação"
+msgstr "Notifikaasje Ôfslûte"
 
 #: src/service/plugins/notification.js:50
 msgid "Reply Notification"
-msgstr "Enviar notificação"
+msgstr "Notifikaasje foar Antwurdzjen"
 
 #: src/service/plugins/notification.js:66
 msgid "Activate Notification"
-msgstr "Ativar notificações"
+msgstr "Notifikaasjes Ynskeakelje"
 
 #: src/service/plugins/photo.js:17
 msgid "Request the paired device to take a photo and transfer it to this PC"
 msgstr ""
-"Solicitar ao dispositivo emparelhado para tirar uma fotografia e transferi-"
-"la para este PC"
 
 #: src/service/plugins/photo.js:224 src/service/plugins/share.js:132
 #: src/service/plugins/share.js:208 src/service/plugins/share.js:319
 msgid "Transfer Failed"
-msgstr "Falha ao transferir"
+msgstr "Oerdracht Mislearre"
 
 #. TRANSLATORS: eg. Failed to send "photo.jpg" to Google Pixel
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/photo.js:226 src/service/plugins/share.js:321
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "Falha ao enviar “%s” para %s"
+msgstr "Ferstjoeren fan \"%s\" nei %s mislearre"
 
 #: src/service/plugins/ping.js:16
 msgid "Send and receive pings"
-msgstr "Envie e receba pings"
+msgstr ""
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -967,23 +935,19 @@ msgstr "Ping: %s"
 
 #: src/service/plugins/presenter.js:14
 msgid "Presentation"
-msgstr "Apresentação"
+msgstr "Presentaasje"
 
 #: src/service/plugins/presenter.js:15
 msgid "Use the paired device as a presenter"
-msgstr "Usar o dispositivo emparelhado como apresentador"
+msgstr ""
 
 #: src/service/plugins/runcommand.js:15
 msgid "Run Commands"
-msgstr "Executar comandos"
+msgstr "Komandos Útfiere"
 
 #: src/service/plugins/runcommand.js:17
-msgid ""
-"Run commands on your paired device or let the device run predefined commands "
-"on this PC"
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
 msgstr ""
-"Executar comandos no dispositivo emparelhado ou permitir que o dispositivo "
-"execute comandos predefinidos neste PC"
 
 #: src/service/plugins/sftp.js:17
 msgid "SFTP"
@@ -991,102 +955,102 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:19
 msgid "Browse the paired device filesystem"
-msgstr "Navegar pelo sistema de ficheiros do dispositivo emparelhado"
+msgstr ""
 
 #: src/service/plugins/sftp.js:24
 msgid "Mount"
-msgstr "Montar"
+msgstr "Oankeppelje"
 
 #: src/service/plugins/sftp.js:32
 msgid "Unmount"
-msgstr "Desmontar"
+msgstr "Loskeppelje"
 
 #: src/service/plugins/sftp.js:216
 #, javascript-format
 msgid "%s reported an error"
-msgstr "%s relatou um erro"
+msgstr ""
 
 #: src/service/plugins/share.js:18 src/service/plugins/share.js:25
 msgid "Share"
-msgstr "Partilha"
+msgstr "Diele"
 
 #: src/service/plugins/share.js:20
 msgid "Share files and URLs between devices"
-msgstr "Partilhar ficheiros e URLs entre dispositivos"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
 #: src/service/plugins/share.js:134
 #, javascript-format
 msgid "%s is not allowed to upload files"
-msgstr "%s não tem permissão para carregar ficheiros"
+msgstr "%s mei gjin triemen uploade"
 
 #: src/service/plugins/share.js:156 src/service/plugins/share.js:289
 msgid "Transferring File"
-msgstr "A transferir ficheiro"
+msgstr "Triemen Oersette"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:158
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "A receber \"%s\" de %s"
+msgstr "\"%s\" fan %s ûntfong"
 
 #: src/service/plugins/share.js:177 src/service/plugins/share.js:309
 msgid "Transfer Successful"
-msgstr "Transferência bem sucedida"
+msgstr "Oerset Slagge"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:179
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "Recebeu \"%s\" de %s"
+msgstr "\"%s\" fan %s ûntfong"
 
 #: src/service/plugins/share.js:189
 msgid "Show File Location"
-msgstr "Mostrar localização do ficheiro"
+msgstr ""
 
 #: src/service/plugins/share.js:194
 msgid "Open File"
-msgstr "Abrir ficheiro"
+msgstr "Triem Iepenje"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:210
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "Falha ao receber “%s” de %s"
+msgstr "Koe \"%s\" net fan %s binnen krije"
 
 #: src/service/plugins/share.js:241
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr "Texto partilhado por %s"
+msgstr "Tekst Dielt Troch %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:291
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "A enviar \"%s\" para %s"
+msgstr "\"%s\" nei %s Oan't Stjoeren"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:311
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "Enviou \"%s\" para %s"
+msgstr "“%s” nei %s ferstjoere"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:379
 #, javascript-format
 msgid "Send files to %s"
-msgstr "Enviar ficheiros para %s"
+msgstr "Triemen nei %s ferstjoere"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:383
 msgid "Open when done"
-msgstr "Abrir quando terminar"
+msgstr "Iepenje wannear klear"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:422
 #, javascript-format
 msgid "Send a link to %s"
-msgstr "Enviar um ligação para %s"
+msgstr "Keppeling nei %s ferstjoere"
 
 #: src/service/plugins/sms.js:18
 msgid "SMS"
@@ -1095,43 +1059,39 @@ msgstr "SMS"
 #: src/service/plugins/sms.js:19
 msgid "Send and read SMS of the paired device and be notified of new SMS"
 msgstr ""
-"Enviar e ler SMS do dispositivo emparelhado e ser notificado sobre o novo SMS"
 
 #: src/service/plugins/sms.js:40
 msgid "New SMS (URI)"
-msgstr "Novo SMS (URI)"
+msgstr "Nije SMS (URI)"
 
 #: src/service/plugins/sms.js:48
 msgid "Reply SMS"
-msgstr "Responder SMS"
+msgstr "Op SMS Reagearje"
 
 #: src/service/plugins/sms.js:72
 msgid "Share SMS"
-msgstr "Partilhar SMS"
+msgstr "SMS Diele"
 
 #: src/service/plugins/systemvolume.js:15
 msgid "System Volume"
-msgstr "Volume do sistema"
+msgstr "Systeem Lûdsynstellings"
 
 #: src/service/plugins/systemvolume.js:16
 msgid "Enable the paired device to control the system volume"
-msgstr "Ativar o dispositivo emparelhado para controlar o volume do sistema"
+msgstr ""
 
 #: src/service/plugins/systemvolume.js:60
 msgid "PulseAudio not found"
-msgstr "PulseAudio não encontrado"
+msgstr "PulseAudio net fûn"
 
 #: src/service/plugins/telephony.js:18
-msgid ""
-"Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
 msgstr ""
-"Ser notificado sobre as chamadas e ajustar o volume do sistema durante o "
-"toque/chamadas em curso"
 
 #. TRANSLATORS: Silence the actively ringing call
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
-msgstr "Silenciar chamada"
+msgstr "Tillefoantsje Bedimje"
 
 #. Ensure we have a sender
 #. TRANSLATORS: No name or phone number
@@ -1139,130 +1099,127 @@ msgstr "Silenciar chamada"
 #: src/service/plugins/telephony.js:157 src/service/plugins/telephony.js:176
 #: src/service/ui/contacts.js:611 src/service/ui/messaging.js:749
 msgid "Unknown Contact"
-msgstr "Contacto desconhecido"
+msgstr "Ûnbekend Kontakt"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:195
 msgid "Incoming call"
-msgstr "Chamada recebida"
+msgstr "Binnenkommende Tillefoantsjes"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:210
 msgid "Ongoing call"
-msgstr "Chamada em curso"
+msgstr "Útgeand Tillefoantsje"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:134
 msgid "Fax"
-msgstr "Fax"
+msgstr "Faks"
 
 #. TRANSLATORS: A work or office phone number
 #: src/service/ui/contacts.js:138
 msgid "Work"
-msgstr "Trabalho"
+msgstr "Wurk"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:142
 msgid "Mobile"
-msgstr "Telemóvel"
+msgstr "Mobyl"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:146
 msgid "Home"
-msgstr "Casa"
+msgstr "Thûs"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
 #: src/service/ui/contacts.js:509 src/service/ui/contacts.js:524
 #, javascript-format
 msgid "Send to %s"
-msgstr "Enviar para %s"
+msgstr "Ferstjoer nei %s"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:104 src/service/ui/messaging.js:145
 msgid "Just now"
-msgstr "Agora mesmo"
+msgstr "No krekt"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:113
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr "Ontem・%s"
+msgstr "Juster・%s"
 
 #: src/service/ui/messaging.js:150
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d minuto"
-msgstr[1] "%d minutos"
+msgstr[0] "%d minút"
+msgstr[1] "%d minuten"
 
 #: src/service/ui/messaging.js:400
 msgid "Not available"
-msgstr "Não disponível"
+msgstr "Net beskikber"
 
 #: src/service/ui/messaging.js:757
 msgid "Group Message"
-msgstr "Mensagem para grupo"
+msgstr "Berjochten Groepearje"
 
 #. TRANSLATORS: An outgoing message body in a conversation summary
 #: src/service/ui/messaging.js:772
 #, javascript-format
 msgid "You: %s"
-msgstr "Você: %s"
+msgstr "Do: %s"
 
 #: src/service/ui/messaging.js:958
 #, javascript-format
 msgid "And %d other contact"
 msgid_plural "And %d others"
-msgstr[0] "E %d outro contacto"
-msgstr[1] "E %d outros"
+msgstr[0] "En %d oar kontakt"
+msgstr[1] "En %d oare kontakten"
 
 #. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
 #: src/service/ui/mousepad.js:117
 #, javascript-format
 msgid "Remote keyboard on %s is not active"
-msgstr "Teclado remoto na %s não está ativo"
+msgstr "Toetseboerd op ôfstân op %s is net aktyf"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:127
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (a estimar…)"
+msgstr "%d%% (Te gean…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:136
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%% (%d∶%02d até ficar carregada)"
+msgstr "%d%% (%d∶%02d Tot Fol)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:144
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d%% (%d∶%02d restante)"
+msgstr "%d%% (%d∶%02d Te Gean)"
 
 #: src/shell/notification.js:58
 msgid "Reply"
-msgstr "Responder"
+msgstr "Reagearje"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:35
 msgid "Share links with Zorin Connect, direct to the browser or by SMS."
-msgstr ""
-"Partilhar ligações com o Zorin Connect, diretamente para o navegador ou por SMS."
+msgstr "Keppelingen mei Zorin Connect ferstjoere, direkt nei de browser of mei SMS."
 
 #. TRANSLATORS: WebExtension can't connect to Zorin Connect
 #: webextension/gettext.js:39
 msgid "Service Unavailable"
-msgstr "Serviço indisponível"
+msgstr "Tsjinst Ûnbeskikber"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:43
 msgid "Open in Browser"
-msgstr "Abrir no navegador"
+msgstr "Yn Browser Iepenje"
 
-msgid "Mobile Application"
-msgstr "Aplicação móvel"

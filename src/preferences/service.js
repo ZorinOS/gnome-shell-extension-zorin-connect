@@ -2,18 +2,18 @@
 //
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-'use strict';
+import Gdk from 'gi://Gdk';
+import GdkPixbuf from 'gi://GdkPixbuf';
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
 
-const Gdk = imports.gi.Gdk;
-const GdkPixbuf = imports.gi.GdkPixbuf;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
+import system from 'system';
 
-const Config = imports.config;
-const Device = imports.preferences.device;
-const Remote = imports.utils.remote;
+import Config from '../config.js';
+import {Panel, rowSeparators} from './device.js';
+import {Service} from '../utils/remote.js';
 
 
 /*
@@ -21,9 +21,9 @@ const Remote = imports.utils.remote;
  */
 const LOG_HEADER = new GLib.Bytes(`
 Zorin Connect: ${Config.PACKAGE_VERSION} (${Config.IS_USER ? 'user' : 'system'})
-GJS:       ${imports.system.version}
-Session:   ${GLib.getenv('XDG_SESSION_TYPE')}
-OS:        ${GLib.get_os_info('PRETTY_NAME')}
+GJS:           ${system.version}
+Session:       ${GLib.getenv('XDG_SESSION_TYPE')}
+OS:            ${GLib.get_os_info('PRETTY_NAME')}
 --------------------------------------------------------------------------------
 `);
 
@@ -91,9 +91,9 @@ async function generateSupportLog(time) {
 /**
  * "Connect to..." Dialog
  */
-var ConnectDialog = GObject.registerClass({
+const ConnectDialog = GObject.registerClass({
     GTypeName: 'ZorinConnectConnectDialog',
-    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/connect-dialog.ui',
+    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/connect-dialog.ui',
     Children: [
         'cancel-button', 'connect-button',
         'lan-grid', 'lan-ip', 'lan-port',
@@ -132,22 +132,7 @@ var ConnectDialog = GObject.registerClass({
 });
 
 
-function rowSeparators(row, before) {
-    const header = row.get_header();
-
-    if (before === null) {
-        if (header !== null)
-            header.destroy();
-
-        return;
-    }
-
-    if (header === null)
-        row.set_header(new Gtk.Separator({visible: true}));
-}
-
-
-var Window = GObject.registerClass({
+export const Window = GObject.registerClass({
     GTypeName: 'ZorinConnectPreferencesWindow',
     Properties: {
         'display-mode': GObject.ParamSpec.string(
@@ -158,7 +143,7 @@ var Window = GObject.registerClass({
             null
         ),
     },
-    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/preferences-window.ui',
+    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/preferences-window.ui',
     Children: [
         // HeaderBar
         'headerbar', 'infobar', 'stack',
@@ -188,7 +173,7 @@ var Window = GObject.registerClass({
         });
 
         // Service Proxy
-        this.service = new Remote.Service();
+        this.service = new Service();
 
         this._deviceAddedId = this.service.connect(
             'device-added',
@@ -375,7 +360,7 @@ var Window = GObject.registerClass({
                 ],
                 comments: _('A complete KDE Connect implementation for GNOME'),
                 logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
-                    '/org/gnome/Shell/Extensions/ZorinConnect/icons/org.gnome.Shell.Extensions.ZorinConnect.svg',
+                    '/org.gnome.Shell.Extensions.ZorinConnect/icons/org.gnome.Shell.Extensions.ZorinConnect.svg',
                     128,
                     128,
                     true
@@ -595,7 +580,7 @@ var Window = GObject.registerClass({
         try {
             if (!this.stack.get_child_by_name(device.id)) {
                 // Add the device preferences
-                const prefs = new Device.Panel(device);
+                const prefs = new Panel(device);
                 this.stack.add_titled(prefs, device.id, device.name);
 
                 // Add a row to the device list
