@@ -1,3 +1,9 @@
+gnome-shell-extension-zorin-connect (62) noble; urgency=medium
+
+  * Rebased on upstream release version 62
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Thu, 17 Apr 2025 00:06:40 +0100
+
 gnome-shell-extension-zorin-connect (58.2) noble; urgency=medium
 
   * Removed links to browser add-ons

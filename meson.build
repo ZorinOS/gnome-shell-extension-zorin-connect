@@ -4,7 +4,7 @@
 
 project('zorin-connect',
   'c',
-  version: '58',
+  version: '62',
   meson_version: '>= 0.59.0',
 )
 
