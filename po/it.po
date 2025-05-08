@@ -525,7 +525,7 @@ msgstr "Ricerca disattiva"
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/ui/preferences-window.ui:821
 msgid "Add device by IP…"
-msgstr ""Aggiungi dispositivo per IP…"
+msgstr "Aggiungi dispositivo per IP…"
 
 #: data/ui/preferences-window.ui:826
 msgid "Display Mode"
