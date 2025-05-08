@@ -1,3 +1,9 @@
+gnome-shell-extension-zorin-connect (62.1) noble; urgency=medium
+
+  * Updated Italian translation
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Thu, 08 May 2025 19:42:15 +0100
+
 gnome-shell-extension-zorin-connect (62) noble; urgency=medium
 
   * Rebased on upstream release version 62
