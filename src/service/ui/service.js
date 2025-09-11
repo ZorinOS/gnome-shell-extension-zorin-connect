@@ -45,7 +45,7 @@ export const DeviceChooser = GObject.registerClass({
             GObject.ParamFlags.READWRITE
         ),
     },
-    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/service-device-chooser.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/service-device-chooser.ui',
     Children: ['device-list', 'cancel-button', 'select-button'],
 }, class DeviceChooser extends Gtk.Dialog {
 
@@ -194,7 +194,7 @@ export const DeviceChooser = GObject.registerClass({
  */
 export const ErrorDialog = GObject.registerClass({
     GTypeName: 'ZorinConnectServiceErrorDialog',
-    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/service-error-dialog.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/service-error-dialog.ui',
     Children: [
         'error-stack',
         'expander-arrow',

@@ -399,6 +399,7 @@ SPDX-License-Identifier: GPL-2.0-or-later
                             <property name="fill">True</property>
                             <property name="position">3</property>
                           </packing>
+
                         </child>
                         <child>
                           <object class="GtkLabel" id="mobile-app-label">

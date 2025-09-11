@@ -14,7 +14,7 @@ import Device from './device.js';
 import * as LanBackend from './backends/lan.js';
 
 const DEVICE_NAME = 'org.gnome.Shell.Extensions.ZorinConnect.Device';
-const DEVICE_PATH = '/org.gnome.Shell.Extensions.ZorinConnect/Device';
+const DEVICE_PATH = '/org/gnome/Shell/Extensions/ZorinConnect/Device';
 const DEVICE_IFACE = Config.DBUS.lookup_interface(DEVICE_NAME);
 
 

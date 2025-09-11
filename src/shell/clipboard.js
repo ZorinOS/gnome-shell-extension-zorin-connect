@@ -14,7 +14,7 @@ import Meta from 'gi://Meta';
  * DBus Interface Info
  */
 const DBUS_NAME = 'org.gnome.Shell.Extensions.ZorinConnect.Clipboard';
-const DBUS_PATH = '/org.gnome.Shell.Extensions.ZorinConnect/Clipboard';
+const DBUS_PATH = '/org/gnome/Shell/Extensions/ZorinConnect/Clipboard';
 const DBUS_NODE = Gio.DBusNodeInfo.new_for_xml(`
 <node>
   <interface name="org.gnome.Shell.Extensions.ZorinConnect.Clipboard">

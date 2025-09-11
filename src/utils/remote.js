@@ -7,7 +7,7 @@ import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 const SERVICE_NAME = 'org.gnome.Shell.Extensions.ZorinConnect';
-const SERVICE_PATH = '/org.gnome.Shell.Extensions.ZorinConnect';
+const SERVICE_PATH = '/org/gnome/Shell/Extensions/ZorinConnect';
 const DEVICE_NAME = 'org.gnome.Shell.Extensions.ZorinConnect.Device';
 
 

@@ -10,7 +10,7 @@ import GObject from 'gi://GObject';
 
 
 const DBUS_NAME = 'org.gnome.Shell.Extensions.ZorinConnect.Clipboard';
-const DBUS_PATH = '/org.gnome.Shell.Extensions.ZorinConnect/Clipboard';
+const DBUS_PATH = '/org/gnome/Shell/Extensions/ZorinConnect/Clipboard';
 
 
 /**

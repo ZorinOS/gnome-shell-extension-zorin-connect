@@ -69,7 +69,7 @@ const NativeMessagingHost = GObject.registerClass({
                 Gio.BusType.SESSION,
                 Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
                 'org.gnome.Shell.Extensions.ZorinConnect',
-                '/org.gnome.Shell.Extensions.ZorinConnect',
+                '/org/gnome/Shell/Extensions/ZorinConnect',
                 null,
                 null
             );

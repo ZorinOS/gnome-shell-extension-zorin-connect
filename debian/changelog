@@ -1,3 +1,15 @@
+gnome-shell-extension-zorin-connect (66.1) noble; urgency=medium
+
+  * Fixed path errors
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Thu, 11 Sep 2025 15:58:53 +0100
+
+gnome-shell-extension-zorin-connect (66) noble; urgency=medium
+
+  * Rebased on upstream release version 66
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Fri, 13 Jun 2025 18:39:33 +0100
+
 gnome-shell-extension-zorin-connect (62.1) noble; urgency=medium
 
   * Updated Italian translation

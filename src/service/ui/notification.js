@@ -38,7 +38,7 @@ const ReplyDialog = GObject.registerClass({
             null
         ),
     },
-    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/notification-reply-dialog.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/notification-reply-dialog.ui',
     Children: ['infobar', 'notification-title', 'notification-body', 'entry'],
 }, class ReplyDialog extends Gtk.Dialog {
 

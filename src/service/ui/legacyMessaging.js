@@ -30,7 +30,7 @@ const Dialog = GObject.registerClass({
             GObject.Object
         ),
     },
-    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/legacy-messaging-dialog.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/legacy-messaging-dialog.ui',
     Children: [
         'infobar', 'stack',
         'message-box', 'message-avatar', 'message-label', 'entry',

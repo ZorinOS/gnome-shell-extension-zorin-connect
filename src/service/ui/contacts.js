@@ -311,7 +311,7 @@ export const Avatar = GObject.registerClass({
  */
 const AddressRow = GObject.registerClass({
     GTypeName: 'ZorinConnectContactsAddressRow',
-    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/contacts-address-row.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/contacts-address-row.ui',
     Children: ['avatar', 'name-label', 'address-label', 'type-label'],
 }, class AddressRow extends Gtk.ListBoxRow {
 
@@ -396,7 +396,7 @@ export const ContactChooser = GObject.registerClass({
             param_types: [GObject.TYPE_STRING],
         },
     },
-    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/contact-chooser.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/contact-chooser.ui',
     Children: ['entry', 'list', 'scrolled'],
 }, class ContactChooser extends Gtk.Grid {
 

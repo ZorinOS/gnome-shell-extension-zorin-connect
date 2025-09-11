@@ -42,7 +42,7 @@ export const ResponseType = {
  */
 export const ShortcutChooserDialog = GObject.registerClass({
     GTypeName: 'ZorinConnectPreferencesShortcutEditor',
-    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/preferences-shortcut-editor.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/preferences-shortcut-editor.ui',
     Children: [
         'cancel-button', 'set-button',
         'stack', 'summary-label',

@@ -75,7 +75,7 @@ export function titleSortFunc(row1, row2) {
  */
 const SectionRow = GObject.registerClass({
     GTypeName: 'ZorinConnectPreferencesSectionRow',
-    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/preferences-section-row.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/preferences-section-row.ui',
     Children: ['icon-image', 'title-label', 'subtitle-label'],
     Properties: {
         'gicon': GObject.ParamSpec.object(
@@ -205,7 +205,7 @@ const SectionRow = GObject.registerClass({
  */
 const CommandEditor = GObject.registerClass({
     GTypeName: 'ZorinConnectPreferencesCommandEditor',
-    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/preferences-command-editor.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/preferences-command-editor.ui',
     Children: [
         'cancel-button', 'save-button',
         'command-entry', 'name-entry', 'command-chooser',
@@ -259,7 +259,7 @@ export const Panel = GObject.registerClass({
             GObject.Object.$gtype
         ),
     },
-    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/preferences-device-panel.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/preferences-device-panel.ui',
     Children: [
         'sidebar', 'stack', 'infobar',
 

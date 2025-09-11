@@ -31,7 +31,7 @@ export function getIcon(name) {
         });
 
         // Preload our fallbacks
-        const iconPath = 'resource://org.gnome.Shell.Extensions.ZorinConnect/icons';
+        const iconPath = 'resource://org/gnome/Shell/Extensions/ZorinConnect/icons';
         const iconNames = [
             'org.gnome.Shell.Extensions.ZorinConnect',
             'org.gnome.Shell.Extensions.ZorinConnect-symbolic',

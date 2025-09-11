@@ -36,7 +36,7 @@ const Service = GObject.registerClass({
         super._init({
             application_id: 'org.gnome.Shell.Extensions.ZorinConnect',
             flags: Gio.ApplicationFlags.HANDLES_OPEN,
-            resource_base_path: '/org.gnome.Shell.Extensions.ZorinConnect',
+            resource_base_path: '/org/gnome/Shell/Extensions/ZorinConnect',
         });
 
         GLib.set_prgname('zorin-connect');
@@ -48,7 +48,7 @@ const Service = GObject.registerClass({
 
     _migrateConfiguration() {
         if (!Device.validateName(this.settings.get_string('name')))
-            this.settings.set('name', GLib.get_host_name().slice(0, 32));
+            this.settings.set_string('name', GLib.get_host_name().slice(0, 32));
 
         const [certPath, keyPath] = [
             GLib.build_filenamev([Config.CONFIGDIR, 'certificate.pem']),
@@ -576,7 +576,7 @@ const Service = GObject.registerClass({
 
         Gio.DBus.session.call_sync(
             'org.gnome.Shell.Extensions.ZorinConnect',
-            `/org.gnome.Shell.Extensions.ZorinConnect/Device/${id}`,
+            `/org/gnome/Shell/Extensions/ZorinConnect/Device/${id}`,
             'org.gtk.Actions',
             'Activate',
             GLib.Variant.new('(sava{sv})', [name, parameters, {}]),
@@ -590,7 +590,7 @@ const Service = GObject.registerClass({
     _cliListDevices(full = true) {
         const result = Gio.DBus.session.call_sync(
             'org.gnome.Shell.Extensions.ZorinConnect',
-            '/org.gnome.Shell.Extensions.ZorinConnect',
+            '/org/gnome/Shell/Extensions/ZorinConnect',
             'org.freedesktop.DBus.ObjectManager',
             'GetManagedObjects',
             null,

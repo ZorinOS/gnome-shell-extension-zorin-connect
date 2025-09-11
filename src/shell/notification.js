@@ -19,7 +19,7 @@ const {NotificationMessage} = HAS_MESSAGELIST_NOTIFICATIONMESSAGE
     : await import('resource:///org/gnome/shell/ui/calendar.js');    // GNOME 46/47
 
 const APP_ID = 'org.gnome.Shell.Extensions.ZorinConnect';
-const APP_PATH = '/org.gnome.Shell.Extensions.ZorinConnect';
+const APP_PATH = '/org/gnome/Shell/Extensions/ZorinConnect';
 
 
 // deviceId Pattern (<device-id>|<remote-id>)

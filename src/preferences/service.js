@@ -93,7 +93,7 @@ async function generateSupportLog(time) {
  */
 const ConnectDialog = GObject.registerClass({
     GTypeName: 'ZorinConnectConnectDialog',
-    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/connect-dialog.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/connect-dialog.ui',
     Children: [
         'cancel-button', 'connect-button',
         'lan-grid', 'lan-ip', 'lan-port',
@@ -143,7 +143,7 @@ export const Window = GObject.registerClass({
             null
         ),
     },
-    Template: 'resource:///org.gnome.Shell.Extensions.ZorinConnect/ui/preferences-window.ui',
+    Template: 'resource:///org/gnome/Shell/Extensions/ZorinConnect/ui/preferences-window.ui',
     Children: [
         // HeaderBar
         'headerbar', 'infobar', 'stack',
@@ -360,7 +360,7 @@ export const Window = GObject.registerClass({
                 ],
                 comments: _('A complete KDE Connect implementation for GNOME'),
                 logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
-                    '/org.gnome.Shell.Extensions.ZorinConnect/icons/org.gnome.Shell.Extensions.ZorinConnect.svg',
+                    '/org/gnome/Shell/Extensions/ZorinConnect/icons/org.gnome.Shell.Extensions.ZorinConnect.svg',
                     128,
                     128,
                     true
