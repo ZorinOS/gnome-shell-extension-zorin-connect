@@ -24,6 +24,7 @@ Depends: ${shlibs:Depends},
          gir1.2-glib-2.0,
          gir1.2-gtk-3.0,
          libglib2.0-bin,
+         zorin-connect
 Recommends: sshfs,
             libfolks-eds26,
             python3-nautilus,

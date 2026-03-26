@@ -1,9 +1,9 @@
-# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/Zorin Connect
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
-"Project-Id-Version: org.gnome.Shell.Extensions.ZorinConnect\n"
+"Project-Id-Version: org.gnome.Shell.Extensions.Zorin Connect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
 "PO-Revision-Date: 2021-10-04 16:59+0200\n"
@@ -1249,9 +1249,6 @@ msgstr "Dienst niet beschikbaar"
 msgid "Open in Browser"
 msgstr "Openen in browser"
 
-msgid "Mobile Application"
-msgstr "Mobiele applicatie"
-
 #~ msgid "Camera"
 #~ msgstr "Camera"
 
@@ -1405,3 +1402,6 @@ msgstr "Mobiele applicatie"
 
 #~ msgid "Select a contact or number"
 #~ msgstr "Kies een contactpersoon of telefoonnummer"
+
+msgid "Mobile Application"
+msgstr "Mobiele applicatie"

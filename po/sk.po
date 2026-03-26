@@ -1,9 +1,9 @@
-# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/Zorin Connect
 #
 # SPDX-License-Identifier: GPL-2.0-or-later
 msgid ""
 msgstr ""
-"Project-Id-Version: org.gnome.Shell.Extensions.ZorinConnect\n"
+"Project-Id-Version: org.gnome.Shell.Extensions.Zorin Connect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-03 13:38-0500\n"
 "PO-Revision-Date: 2022-04-28 22:33+0200\n"
@@ -1256,9 +1256,6 @@ msgstr "Služba nedostupná"
 msgid "Open in Browser"
 msgstr "Otvoriť v prehliadači"
 
-msgid "Mobile Application"
-msgstr "Mobilná aplikácia"
-
 #~ msgid "Camera"
 #~ msgstr "Fotoaparát"
 
@@ -1385,3 +1382,6 @@ msgstr "Mobilná aplikácia"
 
 #~ msgid "Select a contact or number"
 #~ msgstr "Vyberte kontakt alebo číslo"
+
+msgid "Mobile Application"
+msgstr "Mobilná aplikácia"
