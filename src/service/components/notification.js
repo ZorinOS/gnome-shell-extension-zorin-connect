@@ -9,6 +9,12 @@ import GObject from 'gi://GObject';
 
 import * as DBus from '../utils/dbus.js';
 
+// DesktopAppInfo is no longer in Gio in GNOME 49
+let GioUnix;
+GioUnix = import('gi://GioUnix?version=2.0').catch(() => {
+    GioUnix = Gio;
+});
+
 
 const _nodeInfo = Gio.DBusNodeInfo.new_for_xml(`
 <node>
@@ -100,7 +106,7 @@ const Listener = GObject.registerClass({
                 path: `/org/gnome/desktop/notifications/application/${app}/`,
             });
 
-            const appInfo = Gio.DesktopAppInfo.new(
+            const appInfo = GioUnix.DesktopAppInfo.new(
                 appSettings.get_string('application-id')
             );
 
@@ -140,10 +146,10 @@ const Listener = GObject.registerClass({
     }
 
     /**
-     * Try and find a well-known name for @sender on the session bus
+     * Try and find a well-known name for {@link sender} on the session bus
      *
      * @param {string} sender - A DBus unique name (eg. :1.2282)
-     * @param {string} appName - @appName passed to Notify() (Optional)
+     * @param {string} appName - appName passed to Notify() (Optional)
      * @returns {string} A well-known name or %null
      */
     async _getAppId(sender, appName) {
@@ -185,7 +191,7 @@ const Listener = GObject.registerClass({
     }
 
     /**
-     * Try and find the application name for @sender
+     * Try and find the application name for {@link sender}
      *
      * @param {string} sender - A DBus unique name
      * @param {string} [appName] - `appName` supplied by Notify()
@@ -198,7 +204,7 @@ const Listener = GObject.registerClass({
 
         try {
             const appId = await this._getAppId(sender, appName);
-            const appInfo = Gio.DesktopAppInfo.new(`${appId}.desktop`);
+            const appInfo = GioUnix.DesktopAppInfo.new(`${appId}.desktop`);
             this._names[appName] = appInfo.get_name();
             appName = appInfo.get_name();
         } catch {
@@ -213,10 +219,26 @@ const Listener = GObject.registerClass({
      *
      * @param {DBus.Interface} iface - The DBus interface
      * @param {string} name - The DBus method name
-     * @param {GLib.Variant} parameters - The method parameters
-     * @param {Gio.DBusMethodInvocation} invocation - The method invocation info
+     * @param {GLib.Variant|Gio.DBusMethodInvocation} param1 - The method parameters or invocation (GNOME 50+ changed order)
+     * @param {Gio.DBusMethodInvocation|GLib.Variant} param2 - The method invocation or parameters (GNOME 50+ changed order)
      */
-    async _onHandleMethodCall(iface, name, parameters, invocation) {
+    async _onHandleMethodCall(iface, name, param1, param2) {
+        let invocation, parameters;
+
+        // GNOME 50+ changed the callback signature from
+        // (iface, name, parameters, invocation) to
+        // (iface, name, invocation, parameters)
+        // Detect which order is being used
+        if (param1 instanceof GLib.Variant) {
+            // Old order: parameters, invocation
+            parameters = param1;
+            invocation = param2;
+        } else {
+            // New order: invocation, parameters
+            invocation = param1;
+            parameters = param2;
+        }
+
         try {
             // Check if notifications are disabled in desktop settings
             if (!this._settings.get_boolean('show-banners'))
@@ -357,7 +379,7 @@ const Listener = GObject.registerClass({
         if (application === 'org.gnome.Shell.Extensions.ZorinConnect')
             return;
 
-        const appInfo = Gio.DesktopAppInfo.new(`${application}.desktop`);
+        const appInfo = GioUnix.DesktopAppInfo.new(`${application}.desktop`);
 
         // Try to get an icon for the notification
         if (!notification.hasOwnProperty('icon'))

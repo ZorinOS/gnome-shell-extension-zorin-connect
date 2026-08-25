@@ -137,8 +137,23 @@ export const Clipboard = GObject.registerClass({
         }
     }
 
-    async _onHandleMethodCall(iface, name, parameters, invocation) {
+    async _onHandleMethodCall(iface, name, param1, param2) {
         let retval;
+        let invocation, parameters;
+
+        // GNOME 50+ changed the callback signature from
+        // (iface, name, parameters, invocation) to
+        // (iface, name, invocation, parameters)
+        // Detect which order is being used
+        if (param1 instanceof GLib.Variant) {
+            // Old order: parameters, invocation
+            parameters = param1;
+            invocation = param2;
+        } else {
+            // New order: invocation, parameters
+            invocation = param1;
+            parameters = param2;
+        }
 
         try {
             const args = parameters.recursiveUnpack();
@@ -267,7 +282,7 @@ export const Clipboard = GObject.registerClass({
     }
 
     /**
-     * Get the content of the clipboard with the type @mimetype.
+     * Get the content of the clipboard with the type {@link mimetype}.
      *
      * @param {string} mimetype - the mimetype to request
      * @returns {Promise<Uint8Array>} The content of the clipboard
@@ -296,7 +311,8 @@ export const Clipboard = GObject.registerClass({
     }
 
     /**
-     * Set the content of the clipboard to @value with the type @mimetype.
+     * Set the content of the clipboard to {@link value} with the type
+     * {@link mimetype}.
      *
      * @param {Uint8Array} value - the value to set
      * @param {string} mimetype - the mimetype of the value

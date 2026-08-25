@@ -1,0 +1,1275 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: zorin-connect\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-13 14:44-0400\n"
+"PO-Revision-Date: 2025-11-17 16:08\n"
+"Last-Translator: \n"
+"Language-Team: Romanian\n"
+"Language: ro_RO\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
+"X-Crowdin-Project: zorin-connect\n"
+"X-Crowdin-Project-ID: 327933\n"
+"X-Crowdin-Language: ro\n"
+"X-Crowdin-File: /[ZorinConnect.gnome-shell-extension-zorin-connect] main/po/org.gnome.Shell.Extensions.ZorinConnect.pot\n"
+"X-Crowdin-File-ID: 18\n"
+
+#. TRANSLATORS: Extension name
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:12
+#: webextension/gettext.js:29
+msgid "Zorin Connect"
+msgstr "Zorin Connect"
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:13
+msgid "KDE Connect implementation for GNOME"
+msgstr "Implementarea KDE Connect pentru GNOME"
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:24
+msgid "Zorin Connect Team"
+msgstr "Echipa Zorin Connect"
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:41
+msgid "Zorin Connect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
+msgstr "Zorin Connect este o implementare completă a KDE Connect în special pentru GNOME Shell. Se integrează cu Nautilus, Chrome și Firefox. Echipa KDE Connect are aplicații pentru Linux, BSD, Android, Sailfish, iOS, macOS și Windows."
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:44
+msgid "With Zorin Connect you can securely connect to mobile devices and other desktops to:"
+msgstr "Cu Zorin Connect te poți conecta în siguranță la telefoane mobile și calculatoare pentru:"
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:48
+msgid "Share files, links and text"
+msgstr "Trimiterea și primirea de fișiere, adrese de internet și text"
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:49
+msgid "Send and receive messages"
+msgstr "Trimiterea și primirea de mesaje"
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:50
+msgid "Sync clipboard content"
+msgstr "Sincronizarea conținutului copiat"
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:51
+msgid "Sync contacts"
+msgstr "Sincronizarea contactelor"
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:52
+msgid "Sync notifications"
+msgstr "Sincronizarea notificărilor"
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:53
+msgid "Control media players"
+msgstr "Controlul conținutului multimedia"
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:54
+msgid "Control system volume"
+msgstr "Controlul sunetului sistemului"
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:55
+msgid "Execute predefined commands"
+msgstr "Executarea comenzilor predefinite"
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:56
+msgid "And more…"
+msgstr "Și altele…"
+
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:165
+msgid "Zorin Connect in GNOME Shell"
+msgstr "Zorin Connect în interfața GNOME"
+
+#: data/ui/connect-dialog.ui:20
+msgid "Connect to…"
+msgstr "Conectează la…"
+
+#: data/ui/connect-dialog.ui:26 data/ui/legacy-messaging-dialog.ui:20
+#: data/ui/legacy-messaging-dialog.ui:24
+#: data/ui/notification-reply-dialog.ui:19
+#: data/ui/notification-reply-dialog.ui:23
+#: data/ui/preferences-command-editor.ui:21
+#: data/ui/preferences-command-editor.ui:157
+#: data/ui/preferences-shortcut-editor.ui:19
+#: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
+#: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
+#: src/preferences/service.js:417 src/service/plugins/share.js:179
+#: src/service/plugins/share.js:314 src/service/plugins/share.js:445
+msgid "Cancel"
+msgstr "Anulează"
+
+#: data/ui/connect-dialog.ui:33
+msgid "Connect"
+msgstr "Conectează"
+
+#: data/ui/connect-dialog.ui:80
+msgid "IP Address"
+msgstr "Adresa IP"
+
+#: data/ui/contact-chooser.ui:56
+msgid "No contacts"
+msgstr "Niciun contact"
+
+#: data/ui/contact-chooser.ui:68 data/ui/messaging-window.ui:103
+#: data/ui/mousepad-input-dialog.ui:56 data/ui/preferences-window.ui:949
+msgid "Help"
+msgstr "Ajutor"
+
+#: data/ui/contact-chooser.ui:109
+msgid "Type a phone number or name"
+msgstr "Introdu un număr de telefon sau un nume"
+
+#. TRANSLATORS: All other phone number types
+#: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:158
+msgid "Other"
+msgstr "Altul"
+
+#. TRANSLATORS: Share URL by SMS
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:353
+#: src/service/daemon.js:467 src/service/plugins/sms.js:62
+#: webextension/gettext.js:41
+msgid "Send SMS"
+msgstr "Trimite SMS"
+
+#: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
+#: data/ui/notification-reply-dialog.ui:31
+#: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:446
+msgid "Send"
+msgstr "Trimite"
+
+#: data/ui/legacy-messaging-dialog.ui:69 data/ui/messaging-window.ui:263
+#: data/ui/notification-reply-dialog.ui:68
+msgid "Device is disconnected"
+msgstr "Aparatul este deconectat"
+
+#: data/ui/messaging-conversation.ui:91 src/service/plugins/sms.js:54
+msgid "Send Message"
+msgstr "Trimite un mesaj"
+
+#: data/ui/messaging-conversation.ui:92 src/shell/notification.js:88
+msgid "Type a message"
+msgstr "Scrie un mesaj"
+
+#: data/ui/messaging-conversation.ui:99
+msgid "Message Entry"
+msgstr "Conținutul mesajului"
+
+#: data/ui/messaging-conversation.ui:100
+msgid "Type a message and press Enter to send"
+msgstr "Scrie un mesaj și apasă Enter pentru a trimite"
+
+#: data/ui/messaging-window.ui:21 src/service/plugins/sms.js:30
+#: src/service/ui/messaging.js:1063
+msgid "Messaging"
+msgstr "Mesaje"
+
+#: data/ui/messaging-window.ui:30 data/ui/messaging-window.ui:43
+#: src/service/ui/messaging.js:1274
+msgid "New Conversation"
+msgstr "Conversație nouă"
+
+#: data/ui/messaging-window.ui:120
+msgid "No Conversations"
+msgstr "Nicio conversație"
+
+#: data/ui/messaging-window.ui:180
+msgid "No conversation selected"
+msgstr "Nicio conversație aleasă"
+
+#: data/ui/messaging-window.ui:196
+msgid "Select or start a conversation"
+msgstr "Alege sau începe o conversație"
+
+#: data/ui/mousepad-input-dialog.ui:97
+msgid "Touchpad.\n"
+"Drag on this area to move mouse cursor.\n"
+"Press long to drag to drag mouse cursor.\n\n"
+"Simple click will be sent to paired device.\n"
+"Left, middle, right button, and wheel scrolls."
+msgstr "Panoul tactil.\n"
+"Trage în această zonă pentru a muta cursorul mausului.\n"
+"Apasă lung pentru a muta cursorul mausului.\n\n"
+"Un clic simplu va fi trimis la aparatul asociat.\n"
+"Stânga, mijloc, butonul din dreapta și rotița."
+
+#: data/ui/preferences-command-editor.ui:14
+msgid "Edit Command"
+msgstr "Schimbă comanda"
+
+#: data/ui/preferences-command-editor.ui:28
+msgid "Save"
+msgstr "Salvează"
+
+#: data/ui/preferences-command-editor.ui:61
+msgid "Name"
+msgstr "Nume"
+
+#: data/ui/preferences-command-editor.ui:99
+msgid "Command Line"
+msgstr "Terminal"
+
+#: data/ui/preferences-command-editor.ui:121
+#: data/ui/preferences-command-editor.ui:150
+msgid "Choose an executable"
+msgstr "Alege un executabil"
+
+#: data/ui/preferences-command-editor.ui:164
+msgid "Open"
+msgstr "Deschide"
+
+#: data/ui/preferences-device-panel.ui:53 src/preferences/service.js:524
+msgid "Desktop"
+msgstr "Birou"
+
+#: data/ui/preferences-device-panel.ui:102
+msgid "Clipboard Sync"
+msgstr "Sincronizare Copiate"
+
+#: data/ui/preferences-device-panel.ui:168
+msgid "Media Players"
+msgstr "Redare multimedia"
+
+#: data/ui/preferences-device-panel.ui:225
+msgid "Mouse & Keyboard"
+msgstr "Maus și tastatură"
+
+#: data/ui/preferences-device-panel.ui:282
+msgid "Volume Control"
+msgstr "Volumul sunetului"
+
+#: data/ui/preferences-device-panel.ui:337 src/service/plugins/sftp.js:332
+msgid "Files"
+msgstr "Fișiere"
+
+#: data/ui/preferences-device-panel.ui:390
+msgid "Receive Files"
+msgstr "Primește fișiere"
+
+#: data/ui/preferences-device-panel.ui:449
+msgid "Save files to"
+msgstr "Salvează fișierele în"
+
+#: data/ui/preferences-device-panel.ui:510
+msgid "Links"
+msgstr "Adrese internet"
+
+#: data/ui/preferences-device-panel.ui:562
+msgid "Automatically open received URLs"
+msgstr "Deschide automat adresele URL primite"
+
+#: data/ui/preferences-device-panel.ui:623
+#: data/ui/preferences-device-panel.ui:2286
+msgid "Sharing"
+msgstr "Distribuie"
+
+#: data/ui/preferences-device-panel.ui:655
+msgid "Device Battery"
+msgstr "Bateria aparatului"
+
+#: data/ui/preferences-device-panel.ui:706
+msgid "Low Battery Notification"
+msgstr "Notificare Baterie descărcată"
+
+#: data/ui/preferences-device-panel.ui:765
+msgid "Charged Up to Custom Level Notification"
+msgstr "Notificare la atingerea nivelului personalizat de încărcare"
+
+#: data/ui/preferences-device-panel.ui:845
+msgid "Fully Charged Notification"
+msgstr "Notificare la încărcarea completă"
+
+#: data/ui/preferences-device-panel.ui:899
+msgid "System Battery"
+msgstr "Bateria sistemului"
+
+#: data/ui/preferences-device-panel.ui:948
+msgid "Share Statistics"
+msgstr "Distribuie statistici"
+
+#: data/ui/preferences-device-panel.ui:1002
+#: data/ui/preferences-device-panel.ui:2332 src/service/plugins/battery.js:15
+msgid "Battery"
+msgstr "Bateria"
+
+#: data/ui/preferences-device-panel.ui:1032
+#: data/ui/preferences-device-panel.ui:1117
+#: data/ui/preferences-device-panel.ui:2378
+#: src/service/plugins/runcommand.js:26 src/service/plugins/runcommand.js:34
+#: src/service/plugins/runcommand.js:194
+msgid "Commands"
+msgstr "Comenzi"
+
+#: data/ui/preferences-device-panel.ui:1091
+msgid "Add Command"
+msgstr "Adăugă o comandă"
+
+#. TRANSLATORS: 'Share' is a verb here; this refers to the action of sharing
+#: data/ui/preferences-device-panel.ui:1179
+msgid "Share Notifications"
+msgstr "Distribuie notificări"
+
+#: data/ui/preferences-device-panel.ui:1239
+msgid "Share When Active"
+msgstr "Distribuie când este activ"
+
+#: data/ui/preferences-device-panel.ui:1290
+msgid "Applications"
+msgstr "Aplicații"
+
+#: data/ui/preferences-device-panel.ui:1336
+#: data/ui/preferences-device-panel.ui:2424
+#: src/service/plugins/notification.js:18
+msgid "Notifications"
+msgstr "Notificări"
+
+#: data/ui/preferences-device-panel.ui:1394 src/service/plugins/contacts.js:28
+msgid "Contacts"
+msgstr "Contacte"
+
+#: data/ui/preferences-device-panel.ui:1447
+msgid "Incoming Calls"
+msgstr "Apeluri primite"
+
+#: data/ui/preferences-device-panel.ui:1496
+#: data/ui/preferences-device-panel.ui:1663
+msgid "Volume"
+msgstr "Volum"
+
+#: data/ui/preferences-device-panel.ui:1562
+#: data/ui/preferences-device-panel.ui:1729
+msgid "Pause Media"
+msgstr "Multimedia în pauză"
+
+#: data/ui/preferences-device-panel.ui:1615
+msgid "Ongoing Calls"
+msgstr "Apeluri în curs"
+
+#: data/ui/preferences-device-panel.ui:1785
+msgid "Mute Microphone"
+msgstr "Dezactivează microfonul"
+
+#: data/ui/preferences-device-panel.ui:1839
+#: data/ui/preferences-device-panel.ui:2470 src/service/plugins/telephony.js:16
+msgid "Telephony"
+msgstr "Telefonie"
+
+#: data/ui/preferences-device-panel.ui:1874
+msgid "Action Shortcuts"
+msgstr "Acțiunea scurtăturii"
+
+#: data/ui/preferences-device-panel.ui:1890
+msgid "Reset All…"
+msgstr "Ca la început…"
+
+#: data/ui/preferences-device-panel.ui:1942
+msgid "Shortcuts"
+msgstr "Scurtături"
+
+#: data/ui/preferences-device-panel.ui:1973
+msgid "Plugins"
+msgstr "Module"
+
+#: data/ui/preferences-device-panel.ui:2020
+msgid "Experimental"
+msgstr "Experimentale"
+
+#: data/ui/preferences-device-panel.ui:2067
+msgid "Device Cache"
+msgstr "Cache Aparat"
+
+#: data/ui/preferences-device-panel.ui:2085
+msgid "Clear Cache…"
+msgstr "Șterge Cache…"
+
+#: data/ui/preferences-device-panel.ui:2124
+msgid "Legacy SMS Support"
+msgstr "Vechea gestionare pentru SMS"
+
+#: data/ui/preferences-device-panel.ui:2181
+msgid "SFTP Automount"
+msgstr "Montare automată SFTP"
+
+#: data/ui/preferences-device-panel.ui:2236
+#: data/ui/preferences-device-panel.ui:2562
+msgid "Advanced"
+msgstr "Avansate"
+
+#: data/ui/preferences-device-panel.ui:2516
+msgid "Keyboard Shortcuts"
+msgstr "Scurtături"
+
+#: data/ui/preferences-device-panel.ui:2580
+msgid "Device Settings"
+msgstr "Preferințe Aparat"
+
+#. TRANSLATORS: Send a pair request to the device
+#: data/ui/preferences-device-panel.ui:2624
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:446
+msgid "Pair"
+msgstr "Asociază"
+
+#: data/ui/preferences-device-panel.ui:2656
+msgid "Device is unpaired"
+msgstr "Aparat neasociat"
+
+#: data/ui/preferences-device-panel.ui:2671
+msgid "You may configure this device before pairing"
+msgstr "Acest aparat poate fi configurat înainte de asociere"
+
+#. TRANSLATORS: View the TLS Certificate fingerprint
+#: data/ui/preferences-device-panel.ui:2711 src/preferences/device.js:391
+msgid "Encryption Info"
+msgstr "Informații Cifrare"
+
+#. TRANSLATORS: Unpair the device and notify it
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:455
+msgid "Unpair"
+msgstr "Disociază"
+
+#. TRANSLATORS: Send clipboard content to device
+#: data/ui/preferences-device-panel.ui:2734
+msgid "To Device"
+msgstr "La aparat"
+
+#. TRANSLATORS: Receive clipboard content from the device
+#: data/ui/preferences-device-panel.ui:2740
+msgid "From Device"
+msgstr "De la aparat"
+
+#. TRANSLATORS: Don't change the system volume
+#: data/ui/preferences-device-panel.ui:2752
+#: data/ui/preferences-device-panel.ui:2785
+msgid "Nothing"
+msgstr "Sistem"
+
+#. TRANSLATORS: Restore the system volume
+#: data/ui/preferences-device-panel.ui:2759
+#: data/ui/preferences-device-panel.ui:2792
+msgid "Restore"
+msgstr "Sistem"
+
+#. TRANSLATORS: Lower the system volume
+#: data/ui/preferences-device-panel.ui:2766
+#: data/ui/preferences-device-panel.ui:2799
+msgid "Lower"
+msgstr "Mai încet"
+
+#. TRANSLATORS: Mute the system volume
+#. TRANSLATORS: Silence the actively ringing call
+#: data/ui/preferences-device-panel.ui:2773
+#: data/ui/preferences-device-panel.ui:2806
+#: src/service/plugins/telephony.js:198
+msgid "Mute"
+msgstr "Mut"
+
+#: data/ui/preferences-shortcut-editor.ui:25
+msgid "Set"
+msgstr "Stabilește"
+
+#. Keys for cancelling (␛) or resetting (␈) a shortcut
+#: data/ui/preferences-shortcut-editor.ui:80
+msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
+msgstr "Apasă Esc pentru a anula sau Backspace pentru a restabili scurtătura de la început."
+
+#: data/ui/preferences-window.ui:24
+msgid "Device Name"
+msgstr "Numele aparatului"
+
+#: data/ui/preferences-window.ui:61
+msgid "_Rename"
+msgstr "_Redenumește"
+
+#: data/ui/preferences-window.ui:98 data/ui/preferences-window.ui:112
+msgid "Refresh"
+msgstr "Actualizează"
+
+#: data/ui/preferences-window.ui:139 src/extension.js:113
+msgid "Mobile Settings"
+msgstr "Preferințe"
+
+#: data/ui/preferences-window.ui:166
+msgid "Service Menu"
+msgstr "Opțiuni Serviciu"
+
+#: data/ui/preferences-window.ui:189
+msgid "Device Menu"
+msgstr "Opțiuni Aparat"
+
+#: data/ui/preferences-window.ui:203 data/ui/preferences-window.ui:218
+msgid "Edit Device Name"
+msgstr "Schimbă numele aparatului"
+
+#: data/ui/preferences-window.ui:278
+msgid "Devices"
+msgstr "Aparate"
+
+#: data/ui/preferences-window.ui:328 src/preferences/service.js:686
+msgid "Searching for devices…"
+msgstr "Se caută aparate…"
+
+#: data/ui/preferences-window.ui:353
+msgid "Extension Settings"
+msgstr "Opțiuni pentru extensie"
+
+#: data/ui/preferences-window.ui:390
+msgid "Zorin Connect remains active when GNOME Shell is locked"
+msgstr "Zorin Connect rămâne activă când interfața GNOME este blocată"
+
+#: data/ui/preferences-window.ui:410
+msgid "Browser Add-Ons"
+msgstr "Extensii pentru navigator"
+
+#: data/ui/preferences-window.ui:728
+msgid "Enable"
+msgstr "Activează"
+
+#: data/ui/preferences-window.ui:760
+msgid "This device is invisible to unpaired devices"
+msgstr "Acest aparat este invizibil pentru aparatele neasociate"
+
+#: data/ui/preferences-window.ui:772 src/service/manager.js:177
+msgid "Discovery Disabled"
+msgstr "Descoperire dezactivată"
+
+#: data/ui/preferences-window.ui:826
+msgid "Retry"
+msgstr "Încearcă din nou"
+
+#: data/ui/preferences-window.ui:858
+msgid "The <tt>openssl</tt> command-line tool does not appear to be installed.\n"
+"Use your distro's package manager to install it."
+msgstr "Instrumentul de comandă <tt>openssl</tt> nu pare a fi instalat.\n"
+"Poate fi instalat folosind administratorul de pachete."
+
+#: data/ui/preferences-window.ui:874 src/service/init.js:361
+msgid "OpenSSL not found"
+msgstr "OpenSSL nu a fost găsit"
+
+#. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
+#: data/ui/preferences-window.ui:923
+msgid "Add device by IP…"
+msgstr "Adaugă IP-ul aparatului…"
+
+#: data/ui/preferences-window.ui:928
+msgid "Display Mode"
+msgstr "Modul de afișare"
+
+#. TRANSLATORS: Show device indicators in the top bar
+#: data/ui/preferences-window.ui:931
+msgid "Panel"
+msgstr "Panou"
+
+#. TRANSLATORS: Show devices in the user menu like Bluetooth
+#: data/ui/preferences-window.ui:937
+msgid "User Menu"
+msgstr "Opțiuni"
+
+#. TRANSLATORS: Generate a support log
+#: data/ui/preferences-window.ui:945 src/preferences/service.js:414
+msgid "Generate Support Log"
+msgstr "Generează jurnalul"
+
+#: data/ui/preferences-window.ui:953
+msgid "About Zorin Connect"
+msgstr "Despre Zorin Connect"
+
+#: data/ui/service-device-chooser.ui:15
+msgid "Select a Device"
+msgstr "Alege un aparat"
+
+#: data/ui/service-device-chooser.ui:33 data/ui/service-device-chooser.ui:38
+msgid "Select"
+msgstr "Alege"
+
+#. TRANSLATORS: No devices are known or available
+#: data/ui/service-device-chooser.ui:101 webextension/gettext.js:37
+msgid "No Device Found"
+msgstr "Niciun aparat"
+
+#: data/ui/service-device-chooser.ui:118
+msgid "Device List"
+msgstr "Lista aparatelor"
+
+#: data/ui/service-error-dialog.ui:39 data/ui/service-error-dialog.ui:47
+msgid "Report"
+msgstr "Raportează"
+
+#: data/ui/service-error-dialog.ui:79
+msgid "Something’s gone wrong"
+msgstr "Ceva nu a mers bine"
+
+#: data/ui/service-error-dialog.ui:91
+msgid "Zorin Connect encountered an unexpected error. Please report the problem and include any information that may help."
+msgstr "Zorin Connect a avut o problemă. Raportează problema și include orice informație care ar putea ajuta."
+
+#: data/ui/service-error-dialog.ui:125
+msgid "Technical Details"
+msgstr "Detalii tehnice"
+
+#. TRANSLATORS: Send to <device_name>, for file manager
+#. context menu
+#. TRANSLATORS: A phone number (eg. "Send to 555-5555")
+#. Update UI
+#: nautilus-extension/nautilus-zorin-connect.py:187 src/service/ui/contacts.js:518
+#: src/service/ui/contacts.js:533
+#, python-format, javascript-format
+msgid "Send to %s"
+msgstr "Trimite la %s"
+
+#. TRANSLATORS: Top-level context menu item for Zorin Connect
+#: nautilus-extension/nautilus-zorin-connect.py:195 webextension/gettext.js:33
+msgid "Send To Mobile Device"
+msgstr "Trimite la telefonul mobil"
+
+#: src/extension.js:49
+msgid "Sync between your devices"
+msgstr "Sincronizează între aparatele asociate"
+
+#: src/extension.js:158
+#, javascript-format
+msgid "%d Connected"
+msgid_plural "%d Connected"
+msgstr[0] "%d conectat"
+msgstr[1] "%d conectate"
+msgstr[2] "%d conectate"
+
+#: src/preferences/device.js:671 src/preferences/device.js:677
+msgid "Edit"
+msgstr "Modifică"
+
+#: src/preferences/device.js:686 src/preferences/device.js:692
+msgid "Remove"
+msgstr "Elimină"
+
+#: src/preferences/device.js:946 src/preferences/device.js:974
+msgid "Disabled"
+msgstr "Dezactivată"
+
+#. TRANSLATORS: Summary of a keyboard shortcut function
+#. Example: Enter a new shortcut to change Messaging
+#: src/preferences/keybindings.js:66
+#, javascript-format
+msgid "Enter a new shortcut to change <b>%s</b>"
+msgstr "Introdu o scurtătură nouă pentru <b>%s</b>"
+
+#. TRANSLATORS: When a keyboard shortcut is unavailable
+#. Example: [Ctrl]+[S] is already being used
+#: src/preferences/keybindings.js:132
+#, javascript-format
+msgid "%s is already being used"
+msgstr "%s este deja folosită"
+
+#: src/preferences/service.js:373
+msgid "A complete KDE Connect implementation for GNOME"
+msgstr "O implementare completă a KDE Connect pentru GNOME"
+
+#. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
+#: src/preferences/service.js:382
+msgid "translator-credits"
+msgstr "Antonio Marin <gnmer.6qxyg@slmail.me>"
+
+#: src/preferences/service.js:415
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr "Mesajele de depanare sunt înregistrate. Trebuie făcuți pașii necesari pentru a reproduce o problemă și apoi verificat jurnalul."
+
+#: src/preferences/service.js:418
+msgid "Review Log"
+msgstr "Verifică jurnalul"
+
+#: src/preferences/service.js:443
+msgid "Invalid Device Name"
+msgstr "Nume incorect"
+
+#. TRANSLATOR: %s is a list of forbidden characters
+#: src/preferences/service.js:445
+#, javascript-format
+msgid "Device name must not contain any of %s and have a length of 1-32 characters"
+msgstr "Numele aparatului nu trebuie să conțină %s și să aibă lungimea între 1-32 de caractere"
+
+#: src/preferences/service.js:516
+msgid "Laptop"
+msgstr "Calculator"
+
+#: src/preferences/service.js:518
+msgid "Smartphone"
+msgstr "Telefon"
+
+#: src/preferences/service.js:520
+msgid "Tablet"
+msgstr "Tabletă"
+
+#: src/preferences/service.js:522
+msgid "Television"
+msgstr "Televizor"
+
+#: src/preferences/service.js:544
+msgid "Unpaired"
+msgstr "Neasociat"
+
+#: src/preferences/service.js:548
+msgid "Disconnected"
+msgstr "Deconectat"
+
+#: src/preferences/service.js:552
+msgid "Connected"
+msgstr "Conectat"
+
+#: src/preferences/service.js:688
+msgid "Waiting for service…"
+msgstr "Se așteaptă serviciul…"
+
+#. Notify the user
+#: src/service/daemon.js:99
+msgid "Settings Migrated"
+msgstr "Preferințe migrate"
+
+#: src/service/daemon.js:100
+msgid "Zorin Connect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
+msgstr "Zorin Connect a fost actualizat pentru a fi compatibil cu modificările aduse protocolului KDE Connect. Poate că unele aparate trebuie reasociate."
+
+#: src/service/daemon.js:241
+msgid "Click for help troubleshooting"
+msgstr "Apasă pentru depanare"
+
+#: src/service/daemon.js:251
+msgid "Click for more information"
+msgstr "Apasă pentru mai multe informații"
+
+#: src/service/daemon.js:359
+msgid "Dial Number"
+msgstr "Formează numărul"
+
+#: src/service/daemon.js:365 src/service/daemon.js:554
+#: src/service/plugins/share.js:31
+msgid "Share File"
+msgstr "Trimite fișiere"
+
+#: src/service/daemon.js:416
+msgid "List available devices"
+msgstr "Lista aparatelor disponibile"
+
+#: src/service/daemon.js:425
+msgid "List all devices"
+msgstr "Lista tuturor aparatelor"
+
+#: src/service/daemon.js:434
+msgid "Target Device"
+msgstr "Aparatul de destinație"
+
+#: src/service/daemon.js:476
+msgid "Message Body"
+msgstr "Conținutul mesajului"
+
+#: src/service/daemon.js:488 src/service/plugins/notification.js:57
+msgid "Send Notification"
+msgstr "Trimite o notificare"
+
+#: src/service/daemon.js:497
+msgid "Notification App Name"
+msgstr "Numele aplicației de notificare"
+
+#: src/service/daemon.js:506
+msgid "Notification Body"
+msgstr "Conținutul notificării"
+
+#: src/service/daemon.js:515
+msgid "Notification Icon"
+msgstr "Simbolul notificării"
+
+#: src/service/daemon.js:524
+msgid "Notification ID"
+msgstr "ID-ul notificării"
+
+#: src/service/daemon.js:533 src/service/plugins/ping.js:13
+#: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
+msgid "Ping"
+msgstr "Probă de conectare"
+
+#: src/service/daemon.js:542 src/service/plugins/battery.js:247
+#: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
+#: src/service/plugins/findmyphone.js:22
+msgid "Ring"
+msgstr "Sună"
+
+#: src/service/daemon.js:563 src/service/plugins/share.js:47
+#: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
+msgid "Share Link"
+msgstr "Trimite legături"
+
+#: src/service/daemon.js:572 src/service/plugins/share.js:39
+msgid "Share Text"
+msgstr "Trimite text"
+
+#: src/service/daemon.js:584
+msgid "Show release version"
+msgstr "Arată versiunea"
+
+#. TRANSLATORS: Bluetooth address for remote device
+#: src/service/device.js:195
+#, javascript-format
+msgid "Bluetooth device at %s"
+msgstr "Aparat Bluetooth la %s"
+
+#. TRANSLATORS: Label for TLS connection verification key
+#.
+#. Example:
+#.
+#. Verification key: 0123456789abcdef000000000000000000000000
+#: src/service/device.js:223
+#, javascript-format
+msgid "Verification key: %s"
+msgstr "Cheie de verificare: %s"
+
+#. TRANSLATORS: eg. Pair Request from Google Pixel
+#: src/service/device.js:862
+#, javascript-format
+msgid "Pair Request from %s"
+msgstr "Cerere de asociere de la %s"
+
+#: src/service/device.js:869
+msgid "Reject"
+msgstr "Refuză"
+
+#: src/service/device.js:874
+msgid "Accept"
+msgstr "Acceptă"
+
+#. TRANSLATORS: eg. Failed to pair with Google Pixel
+#: src/service/device.js:960
+#, javascript-format
+msgid "Failed to pair with %s"
+msgstr "Nu s-a reușit asocierea cu %s"
+
+#: src/service/device.js:961
+msgid "Device clocks are out of sync"
+msgstr "Ceasurile aparatelor nu sunt sincronizate"
+
+#: src/service/manager.js:178
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Descoperirea a fost dezactivată din cauza numărului mare de aparate din această rețea."
+
+#: src/service/backends/lan.js:477
+msgid "Port already in use"
+msgstr "Portul este deja utilizat"
+
+#: src/service/plugins/battery.js:16
+msgid "Exchange battery information"
+msgstr "Obține informații despre baterie"
+
+#. TRANSLATORS: eg. Google Pixel: Battery is full
+#: src/service/plugins/battery.js:256
+#, javascript-format
+msgid "%s: Battery is full"
+msgstr "%s: Bateria e încărcată"
+
+#. TRANSLATORS: when the battery is fully charged
+#. TRANSLATORS: When the battery level is 100%
+#: src/service/plugins/battery.js:258 src/shell/device.js:119
+msgid "Fully Charged"
+msgstr "Încărcată complet"
+
+#. TRANSLATORS: eg. Google Pixel: Battery has reached custom charge level
+#: src/service/plugins/battery.js:285
+#, javascript-format
+msgid "%s: Battery has reached custom charge level"
+msgstr "%s: Bateria a atins nivelul de încărcare prestabilit"
+
+#. TRANSLATORS: when the battery has reached custom charge level
+#: src/service/plugins/battery.js:287
+#, javascript-format
+msgid "%d%% Charged"
+msgstr "Încărcată %d%%"
+
+#. TRANSLATORS: eg. Google Pixel: Battery is low
+#: src/service/plugins/battery.js:314
+#, javascript-format
+msgid "%s: Battery is low"
+msgstr "%s: Bateria este descărcată"
+
+#. TRANSLATORS: eg. 15% remaining
+#: src/service/plugins/battery.js:316
+#, javascript-format
+msgid "%d%% remaining"
+msgstr "A rămas %d%%"
+
+#: src/service/plugins/clipboard.js:12
+msgid "Clipboard"
+msgstr "Copiate"
+
+#: src/service/plugins/clipboard.js:13
+msgid "Share the clipboard content"
+msgstr "Distribuie conținutul copiat"
+
+#: src/service/plugins/clipboard.js:25
+msgid "Clipboard Push"
+msgstr "Trimite Copiate"
+
+#: src/service/plugins/clipboard.js:33
+msgid "Clipboard Pull"
+msgstr "Primește Copiate"
+
+#: src/service/plugins/contacts.js:29
+msgid "Access contacts of the paired device"
+msgstr "Acces la contactele aparatului asociat"
+
+#. Ensure we have a sender
+#. TRANSLATORS: No name or phone number
+#. Contact Name
+#: src/service/plugins/contacts.js:242 src/service/plugins/contacts.js:362
+#: src/service/plugins/telephony.js:156 src/service/plugins/telephony.js:175
+#: src/service/ui/contacts.js:620 src/service/ui/messaging.js:756
+msgid "Unknown Contact"
+msgstr "Contact necunoscut"
+
+#: src/service/plugins/findmyphone.js:15
+msgid "Find My Phone"
+msgstr "Găsește-mi telefonul"
+
+#: src/service/plugins/findmyphone.js:16
+msgid "Ring your paired device"
+msgstr "Face să sune aparatul asociat"
+
+#: src/service/plugins/mousepad.js:14
+msgid "Mousepad"
+msgstr "Panou tactil"
+
+#: src/service/plugins/mousepad.js:15
+msgid "Enables the paired device to act as a remote mouse and keyboard"
+msgstr "Permite folosirea aparatului asociat ca maus și tastatură"
+
+#: src/service/plugins/mousepad.js:29 src/service/ui/mousepad.js:107
+msgid "Remote Input"
+msgstr "Introducere de la distanță"
+
+#: src/service/plugins/mpris.js:18
+msgid "MPRIS"
+msgstr "MPRIS"
+
+#: src/service/plugins/mpris.js:19
+msgid "Bidirectional remote media playback control"
+msgstr "Control bidirecțional de redare multimedia"
+
+#: src/service/plugins/mpris.js:357
+msgid "Unknown"
+msgstr "Necunoscut"
+
+#: src/service/plugins/notification.js:19
+msgid "Share notifications with the paired device"
+msgstr "Distribuie notificări aparatului asociat"
+
+#: src/service/plugins/notification.js:33
+msgid "Cancel Notification"
+msgstr "Anulează notificarea"
+
+#: src/service/plugins/notification.js:41
+msgid "Close Notification"
+msgstr "Închide notificarea"
+
+#: src/service/plugins/notification.js:49
+msgid "Reply Notification"
+msgstr "Răspunde la notificare"
+
+#: src/service/plugins/notification.js:65
+msgid "Activate Notification"
+msgstr "Activează notificările"
+
+#: src/service/plugins/ping.js:14
+msgid "Send and receive pings"
+msgstr "Trimite și primește ping-uri"
+
+#. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
+#. eg. Ping: A message sent with ping
+#: src/service/plugins/ping.js:54
+#, javascript-format
+msgid "Ping: %s"
+msgstr "Ping: %s"
+
+#: src/service/plugins/presenter.js:12
+msgid "Presentation"
+msgstr "Prezentare"
+
+#: src/service/plugins/presenter.js:13
+msgid "Use the paired device as a presenter"
+msgstr "Folosește aparatul asociat ca prezentator"
+
+#: src/service/plugins/runcommand.js:13
+msgid "Run Commands"
+msgstr "Execută comenzi"
+
+#: src/service/plugins/runcommand.js:15
+msgid "Run commands on your paired device or let the device run predefined commands on this PC"
+msgstr "Execută comenzi pentru aparatul tău asociat sau permite aparatului asociat să execute comenzi pentru acest computer"
+
+#: src/service/plugins/sftp.js:15
+msgid "SFTP"
+msgstr "SFTP"
+
+#: src/service/plugins/sftp.js:17
+msgid "Browse the paired device filesystem"
+msgstr "Răsfoiește sistemul de fișiere al aparatului asociat"
+
+#: src/service/plugins/sftp.js:22
+msgid "Mount"
+msgstr "Montează"
+
+#: src/service/plugins/sftp.js:30
+msgid "Unmount"
+msgstr "Demontează"
+
+#: src/service/plugins/sftp.js:191
+#, javascript-format
+msgid "%s reported an error"
+msgstr "%s a raportat o eroare"
+
+#: src/service/plugins/share.js:16 src/service/plugins/share.js:23
+msgid "Share"
+msgstr "Distribuie"
+
+#: src/service/plugins/share.js:18
+msgid "Share files and URLs between devices"
+msgstr "Trimite fișiere și adrese URL altor aparate"
+
+#: src/service/plugins/share.js:148 src/service/plugins/share.js:227
+#: src/service/plugins/share.js:337
+msgid "Transfer Failed"
+msgstr "Transfer nereușit"
+
+#. TRANSLATORS: eg. Google Pixel is not allowed to upload files
+#: src/service/plugins/share.js:150
+#, javascript-format
+msgid "%s is not allowed to upload files"
+msgstr "%s nu are permisiunea să trimită fișiere"
+
+#: src/service/plugins/share.js:172 src/service/plugins/share.js:307
+msgid "Transferring File"
+msgstr "Transfer de fișiere"
+
+#. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
+#: src/service/plugins/share.js:174
+#, javascript-format
+msgid "Receiving “%s” from %s"
+msgstr "Se primește „%s” de la %s"
+
+#: src/service/plugins/share.js:193 src/service/plugins/share.js:327
+msgid "Transfer Successful"
+msgstr "Transfer efectuat cu succes"
+
+#. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
+#: src/service/plugins/share.js:195
+#, javascript-format
+msgid "Received “%s” from %s"
+msgstr "S-a primit „%s” de la %s"
+
+#: src/service/plugins/share.js:205
+msgid "Show File Location"
+msgstr "Arată locul fișierului"
+
+#: src/service/plugins/share.js:210
+msgid "Open File"
+msgstr "Deschide fișierul"
+
+#. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
+#: src/service/plugins/share.js:229
+#, javascript-format
+msgid "Failed to receive “%s” from %s"
+msgstr "Nu s-a putut primi „%s” de la %s"
+
+#: src/service/plugins/share.js:259
+#, javascript-format
+msgid "Text Shared By %s"
+msgstr "Text trimis de %s"
+
+#. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
+#: src/service/plugins/share.js:309
+#, javascript-format
+msgid "Sending “%s” to %s"
+msgstr "Se trimite „%s” la %s"
+
+#. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
+#: src/service/plugins/share.js:329
+#, javascript-format
+msgid "Sent “%s” to %s"
+msgstr "S-a trimis „%s” la %s"
+
+#. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
+#: src/service/plugins/share.js:339
+#, javascript-format
+msgid "Failed to send “%s” to %s"
+msgstr "Nu s-a putut trimite „%s” la %s"
+
+#. TRANSLATORS: eg. Send files to Google Pixel
+#: src/service/plugins/share.js:397
+#, javascript-format
+msgid "Send files to %s"
+msgstr "Trimite fișiere la %s"
+
+#. TRANSLATORS: Mark the file to be opened once completed
+#: src/service/plugins/share.js:401
+msgid "Open when done"
+msgstr "Deschide când e gata"
+
+#. TRANSLATORS: eg. Send a link to Google Pixel
+#: src/service/plugins/share.js:440
+#, javascript-format
+msgid "Send a link to %s"
+msgstr "Trimite o legătură la %s"
+
+#: src/service/plugins/sms.js:16
+msgid "SMS"
+msgstr "SMS"
+
+#: src/service/plugins/sms.js:17
+msgid "Send and read SMS of the paired device and be notified of new SMS"
+msgstr "Trimite și citește SMS-uri de pe aparatul asociat și primește notificări pentru SMS-uri noi"
+
+#: src/service/plugins/sms.js:38
+msgid "New SMS (URI)"
+msgstr "SMS nou (URI)"
+
+#: src/service/plugins/sms.js:46
+msgid "Reply SMS"
+msgstr "Răspunde la SMS"
+
+#: src/service/plugins/sms.js:70
+msgid "Share SMS"
+msgstr "Distribuie SMS"
+
+#: src/service/plugins/systemvolume.js:36
+msgid "System Volume"
+msgstr "Volumul sistemului"
+
+#: src/service/plugins/systemvolume.js:37
+msgid "Enable the paired device to control the system volume"
+msgstr "Permite aparatului asociat să controleze volumul sistemului"
+
+#: src/service/plugins/systemvolume.js:81
+msgid "PulseAudio not found"
+msgstr "PulseAudio nu a fost găsit"
+
+#: src/service/plugins/telephony.js:17
+msgid "Be notified about calls and adjust system volume during ringing/ongoing calls"
+msgstr "Primește notificări despre apeluri și reglează volumul sistemului în timpul apelurilor"
+
+#. TRANSLATORS: Silence the actively ringing call
+#: src/service/plugins/telephony.js:29
+msgid "Mute Call"
+msgstr "Apel silențios"
+
+#. TRANSLATORS: The phone is ringing
+#: src/service/plugins/telephony.js:194
+msgid "Incoming call"
+msgstr "Sună telefonul"
+
+#. TRANSLATORS: A phone call is active
+#: src/service/plugins/telephony.js:209
+msgid "Ongoing call"
+msgstr "Apel în curs"
+
+#. TRANSLATORS: A fax number
+#: src/service/ui/contacts.js:143
+msgid "Fax"
+msgstr "Fax"
+
+#. TRANSLATORS: A work or office phone number
+#: src/service/ui/contacts.js:147
+msgid "Work"
+msgstr "Serviciu"
+
+#. TRANSLATORS: A mobile or cellular phone number
+#: src/service/ui/contacts.js:151
+msgid "Mobile"
+msgstr "Mobil"
+
+#. TRANSLATORS: A home phone number
+#: src/service/ui/contacts.js:155
+msgid "Home"
+msgstr "De casă"
+
+#. TRANSLATORS: Less than a minute ago
+#: src/service/ui/messaging.js:105 src/service/ui/messaging.js:146
+msgid "Just now"
+msgstr "Chiar acum"
+
+#. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
+#: src/service/ui/messaging.js:114
+#, javascript-format
+msgid "Yesterday・%s"
+msgstr "Ieri・%s"
+
+#: src/service/ui/messaging.js:151
+#, javascript-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d minut"
+msgstr[1] "%d minute"
+msgstr[2] "%d de minute"
+
+#: src/service/ui/messaging.js:407
+msgid "Not available"
+msgstr "Indisponibil"
+
+#: src/service/ui/messaging.js:764
+msgid "Group Message"
+msgstr "Mesaj de grup"
+
+#. TRANSLATORS: An outgoing message body in a conversation summary
+#: src/service/ui/messaging.js:779
+#, javascript-format
+msgid "You: %s"
+msgstr "Tu: %s"
+
+#: src/service/ui/messaging.js:965
+#, javascript-format
+msgid "And %d other contact"
+msgid_plural "And %d others"
+msgstr[0] "Și %d alt contact"
+msgstr[1] "Și alte %d"
+msgstr[2] "Și alte %d"
+
+#. TRANSLATORS: Displayed when the remote keyboard is not ready to accept input
+#: src/service/ui/mousepad.js:115
+#, javascript-format
+msgid "Remote keyboard on %s is not active"
+msgstr "Tastatura de la distanță pe %s nu este activă"
+
+#. TRANSLATORS: When no time estimate for the battery is available
+#. EXAMPLE: 42% (Estimating…)
+#: src/shell/device.js:124
+#, javascript-format
+msgid "%d%% (Estimating…)"
+msgstr "%d%% (Estimare…)"
+
+#. TRANSLATORS: Estimated time until battery is charged
+#. EXAMPLE: 42% (1:15 Until Full)
+#: src/shell/device.js:133
+#, javascript-format
+msgid "%d%% (%d∶%02d Until Full)"
+msgstr "%d%% (%d∶%02d Până la încărcarea completă)"
+
+#. TRANSLATORS: Estimated time until battery is empty
+#. EXAMPLE: 42% (12:15 Remaining)
+#: src/shell/device.js:141
+#, javascript-format
+msgid "%d%% (%d∶%02d Remaining)"
+msgstr "%d%% (%d∶%02d Rămase)"
+
+#: src/shell/notification.js:73
+msgid "Reply"
+msgstr "Răspunde"
+
+#. TRANSLATORS: Chrome/Firefox WebExtension description
+#: webextension/gettext.js:31
+msgid "Share links with Zorin Connect, direct to the browser or by SMS."
+msgstr "Trimite adrese de internet prin Zorin Connect, direct din navigatorul web sau prin SMS."
+
+#. TRANSLATORS: WebExtension can't connect to Zorin Connect
+#: webextension/gettext.js:35
+msgid "Service Unavailable"
+msgstr "Serviciu indisponibil"
+
+#. TRANSLATORS: Open URL with the device's browser
+#: webextension/gettext.js:39
+msgid "Open in Browser"
+msgstr "Deschide în navigator"
+
+msgid "Mobile Application"
+msgstr "Aplicație mobilă"
