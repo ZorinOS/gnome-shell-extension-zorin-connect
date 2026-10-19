@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+# Manifests: 2-space indents
+[manifest.*.json]
+indent_style = space
+indent_size = 2
+
+# l10n message files: 4-space indents
+[_locales/**.json]
+indent_style = space
+indent_size = 4
+

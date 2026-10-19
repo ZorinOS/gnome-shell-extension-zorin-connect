@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="18" viewBox="0 0 24 24" width="18">
+    <style>
+        :root {
+            color-scheme: dark light;
+        }
+    </style>
+    <path d="M19.333 2.667h-16c-1.1 0-1.99.9-1.99 2l-.01 18 4-4h14c1.1 0 2-.9 2-2v-12c0-1.1-.9-2-2-2z" />
+</svg>
+

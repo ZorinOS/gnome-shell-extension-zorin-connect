@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="18" width="18">
+    <style>
+        :root {
+            color-scheme: dark light;
+        }
+    </style>
+    <defs>
+        <filter color-interpolation-filters="sRGB"><feBlend in2="BackgroundImage" mode="darken" /></filter>
+    </defs>
+    <g fill="currentColor">
+        <path
+            d="M3 .997s-1 0-1 1V5v8.997c0 1 1 1 1 1h10s1 0 1-1V10l-2-.003v2.997H4V2.996h8v3L14 6V1.997c0-1-1-1-1-1z"
+            transform="matrix(-1 0 0 -1 18 17.006)"
+        />
+        <path d="M7 12.007v-2H3v-2h4v-2l4.5 3z" />
+    </g>
+</svg>
+

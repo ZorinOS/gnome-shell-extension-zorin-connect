@@ -45,3 +45,9 @@ path = "webextension/images/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Zorin Connect Developers <>"
 SPDX-License-Identifier = "GPL-2.0-or-later"
+
+[[annotations]]
+path = "webextension-chrome/images/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Zorin Connect Developers <>"
+SPDX-License-Identifier = "GPL-2.0-or-later"

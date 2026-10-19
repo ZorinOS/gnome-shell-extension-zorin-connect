@@ -1,0 +1,55 @@
+/*
+ * SPDX-FileCopyrightText: Zorin Connect Developers https://github.com/ZorinOS/gnome-shell-extension-zorin-connect
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #eeeeee;
+    font-family: Inter, Roboto, Ubuntu, Cantrell, Arial, sans-serif;
+    font-size: 0.9em;
+}
+
+#popup {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 15em;
+    margin: 0.5em 0;
+}
+
+.device {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+.device-icon {
+    margin: 0.5em;
+}
+
+.device-name {
+    margin-right: auto;
+}
+
+.plugin-button {
+    border-radius: 3px;
+    margin-right: 6px;
+    padding: 4px;
+}
+
+.plugin-button:hover {
+    background-color: rgba(41, 41, 42, 0.0625);
+}
+
+.plugin-button:active {
+    background-color: rgba(41, 41, 42, 0.125);
+}
+
+.popup-menu-message {
+    font-style: italic;
+    text-align: center;
+}
+

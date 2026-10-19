@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="18" width="18">
+    <style>
+        :root {
+            color-scheme: dark light;
+        }
+    </style>
+    <defs>
+        <filter id="A" color-interpolation-filters="sRGB"><feBlend in2="BackgroundImage" mode="darken" /></filter>
+    </defs>
+    <g transform="translate(-305 101.003)" filter="url(#A)">
+        <path d="M310-100.003c-1 0-1 1-1 1v14s0 1 1 1h8c1 0 1-1 1-1v-14s0-1-1-1zM311-97h6v10h-6z" fill="currentColor" />
+    </g>
+</svg>
+

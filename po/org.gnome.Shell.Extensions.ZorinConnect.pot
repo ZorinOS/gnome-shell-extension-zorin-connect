@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.Zorin Connect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-13 14:44-0400\n"
+"POT-Creation-Date: 2026-08-09 19:53+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -81,7 +81,7 @@ msgstr ""
 msgid "And more…"
 msgstr ""
 
-#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:165
+#: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:183
 msgid "Zorin Connect in GNOME Shell"
 msgstr ""
 
@@ -98,8 +98,8 @@ msgstr ""
 #: data/ui/preferences-shortcut-editor.ui:19
 #: data/ui/service-device-chooser.ui:21 data/ui/service-device-chooser.ui:25
 #: data/ui/service-error-dialog.ui:20 data/ui/service-error-dialog.ui:28
-#: src/preferences/service.js:417 src/service/plugins/share.js:179
-#: src/service/plugins/share.js:314 src/service/plugins/share.js:445
+#: src/preferences/service.js:417 src/service/plugins/share.js:188
+#: src/service/plugins/share.js:323 src/service/plugins/share.js:454
 msgid "Cancel"
 msgstr ""
 
@@ -125,20 +125,20 @@ msgid "Type a phone number or name"
 msgstr ""
 
 #. TRANSLATORS: All other phone number types
-#: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:158
+#: data/ui/contacts-address-row.ui:71 src/service/ui/contacts.js:159
 msgid "Other"
 msgstr ""
 
 #. TRANSLATORS: Share URL by SMS
-#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:353
-#: src/service/daemon.js:467 src/service/plugins/sms.js:62
+#: data/ui/legacy-messaging-dialog.ui:15 src/service/daemon.js:359
+#: src/service/daemon.js:482 src/service/plugins/sms.js:62
 #: webextension/gettext.js:41
 msgid "Send SMS"
 msgstr ""
 
 #: data/ui/legacy-messaging-dialog.ui:32 data/ui/legacy-messaging-dialog.ui:36
 #: data/ui/notification-reply-dialog.ui:31
-#: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:446
+#: data/ui/notification-reply-dialog.ui:35 src/service/plugins/share.js:455
 msgid "Send"
 msgstr ""
 
@@ -151,7 +151,7 @@ msgstr ""
 msgid "Send Message"
 msgstr ""
 
-#: data/ui/messaging-conversation.ui:92 src/shell/notification.js:88
+#: data/ui/messaging-conversation.ui:92 src/shell/notification.js:89
 msgid "Type a message"
 msgstr ""
 
@@ -407,7 +407,7 @@ msgstr ""
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/ui/preferences-device-panel.ui:2624
-#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:446
+#: data/ui/preferences-device-panel.ui:2716 src/service/daemon.js:461
 msgid "Pair"
 msgstr ""
 
@@ -425,7 +425,7 @@ msgid "Encryption Info"
 msgstr ""
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:455
+#: data/ui/preferences-device-panel.ui:2722 src/service/daemon.js:470
 msgid "Unpair"
 msgstr ""
 
@@ -469,8 +469,14 @@ msgstr ""
 msgid "Set"
 msgstr ""
 
+#: data/ui/preferences-shortcut-editor.ui:59
+msgid ""
+"Note that you have to first disable any conflicting shortcuts in GNOME "
+"Settings."
+msgstr ""
+
 #. Keys for cancelling (␛) or resetting (␈) a shortcut
-#: data/ui/preferences-shortcut-editor.ui:80
+#: data/ui/preferences-shortcut-editor.ui:94
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
 msgstr ""
 
@@ -544,7 +550,7 @@ msgid ""
 "Use your distro's package manager to install it."
 msgstr ""
 
-#: data/ui/preferences-window.ui:874 src/service/init.js:361
+#: data/ui/preferences-window.ui:874 src/service/init.js:364
 msgid "OpenSSL not found"
 msgstr ""
 
@@ -615,8 +621,8 @@ msgstr ""
 #. context menu
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
-#: nautilus-extension/nautilus-zorin-connect.py:187 src/service/ui/contacts.js:518
-#: src/service/ui/contacts.js:533
+#: nautilus-extension/nautilus-zorin-connect.py:187 src/service/ui/contacts.js:519
+#: src/service/ui/contacts.js:534
 #, python-format, javascript-format
 msgid "Send to %s"
 msgstr ""
@@ -651,16 +657,9 @@ msgstr ""
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
-#: src/preferences/keybindings.js:66
+#: src/preferences/keybindings.js:65
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr ""
-
-#. TRANSLATORS: When a keyboard shortcut is unavailable
-#. Example: [Ctrl]+[S] is already being used
-#: src/preferences/keybindings.js:132
-#, javascript-format
-msgid "%s is already being used"
 msgstr ""
 
 #: src/preferences/service.js:373
@@ -726,90 +725,94 @@ msgid "Waiting for service…"
 msgstr ""
 
 #. Notify the user
-#: src/service/daemon.js:99
+#: src/service/daemon.js:104
 msgid "Settings Migrated"
 msgstr ""
 
-#: src/service/daemon.js:100
+#: src/service/daemon.js:105
 msgid ""
 "Zorin Connect has updated to support changes to the KDE Connect protocol. Some "
 "devices may need to be re-paired."
 msgstr ""
 
-#: src/service/daemon.js:241
+#: src/service/daemon.js:247
 msgid "Click for help troubleshooting"
 msgstr ""
 
-#: src/service/daemon.js:251
+#: src/service/daemon.js:257
 msgid "Click for more information"
 msgstr ""
 
-#: src/service/daemon.js:359
+#: src/service/daemon.js:365
 msgid "Dial Number"
 msgstr ""
 
-#: src/service/daemon.js:365 src/service/daemon.js:554
+#: src/service/daemon.js:371 src/service/daemon.js:569
 #: src/service/plugins/share.js:31
 msgid "Share File"
 msgstr ""
 
-#: src/service/daemon.js:416
+#: src/service/daemon.js:422
 msgid "List available devices"
 msgstr ""
 
-#: src/service/daemon.js:425
+#: src/service/daemon.js:431
 msgid "List all devices"
 msgstr ""
 
-#: src/service/daemon.js:434
+#: src/service/daemon.js:440
 msgid "Target Device"
 msgstr ""
 
-#: src/service/daemon.js:476
+#: src/service/daemon.js:449
+msgid "Target Device Name"
+msgstr ""
+
+#: src/service/daemon.js:491
 msgid "Message Body"
 msgstr ""
 
-#: src/service/daemon.js:488 src/service/plugins/notification.js:57
+#: src/service/daemon.js:503 src/service/plugins/notification.js:57
 msgid "Send Notification"
 msgstr ""
 
-#: src/service/daemon.js:497
+#: src/service/daemon.js:512
 msgid "Notification App Name"
 msgstr ""
 
-#: src/service/daemon.js:506
+#: src/service/daemon.js:521
 msgid "Notification Body"
 msgstr ""
 
-#: src/service/daemon.js:515
+#: src/service/daemon.js:530
 msgid "Notification Icon"
 msgstr ""
 
-#: src/service/daemon.js:524
+#: src/service/daemon.js:539
 msgid "Notification ID"
 msgstr ""
 
-#: src/service/daemon.js:533 src/service/plugins/ping.js:13
+#: src/service/daemon.js:548 src/service/plugins/ping.js:13
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:47
 msgid "Ping"
 msgstr ""
 
-#: src/service/daemon.js:542 src/service/plugins/battery.js:247
+#: src/service/daemon.js:557 src/service/plugins/battery.js:247
 #: src/service/plugins/battery.js:276 src/service/plugins/battery.js:305
 #: src/service/plugins/findmyphone.js:22
 msgid "Ring"
 msgstr ""
 
-#: src/service/daemon.js:563 src/service/plugins/share.js:47
+#: src/service/daemon.js:578 src/service/plugins/share.js:47
 #: src/service/ui/messaging.js:1257 src/service/ui/messaging.js:1265
 msgid "Share Link"
 msgstr ""
 
-#: src/service/daemon.js:572 src/service/plugins/share.js:39
+#: src/service/daemon.js:587 src/service/plugins/share.js:39
 msgid "Share Text"
 msgstr ""
 
-#: src/service/daemon.js:584
+#: src/service/daemon.js:599
 msgid "Show release version"
 msgstr ""
 
@@ -858,7 +861,7 @@ msgid ""
 "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
-#: src/service/backends/lan.js:477
+#: src/service/backends/lan.js:580
 msgid "Port already in use"
 msgstr ""
 
@@ -927,7 +930,7 @@ msgstr ""
 #. Contact Name
 #: src/service/plugins/contacts.js:242 src/service/plugins/contacts.js:362
 #: src/service/plugins/telephony.js:156 src/service/plugins/telephony.js:175
-#: src/service/ui/contacts.js:620 src/service/ui/messaging.js:756
+#: src/service/ui/contacts.js:621 src/service/ui/messaging.js:756
 msgid "Unknown Contact"
 msgstr ""
 
@@ -959,7 +962,7 @@ msgstr ""
 msgid "Bidirectional remote media playback control"
 msgstr ""
 
-#: src/service/plugins/mpris.js:357
+#: src/service/plugins/mpris.js:330
 msgid "Unknown"
 msgstr ""
 
@@ -981,6 +984,10 @@ msgstr ""
 
 #: src/service/plugins/notification.js:65
 msgid "Activate Notification"
+msgstr ""
+
+#: src/service/plugins/notification.js:73
+msgid "Copy Text"
 msgstr ""
 
 #: src/service/plugins/ping.js:14
@@ -1041,87 +1048,87 @@ msgstr ""
 msgid "Share files and URLs between devices"
 msgstr ""
 
-#: src/service/plugins/share.js:148 src/service/plugins/share.js:227
-#: src/service/plugins/share.js:337
+#: src/service/plugins/share.js:157 src/service/plugins/share.js:236
+#: src/service/plugins/share.js:346
 msgid "Transfer Failed"
 msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel is not allowed to upload files
-#: src/service/plugins/share.js:150
+#: src/service/plugins/share.js:159
 #, javascript-format
 msgid "%s is not allowed to upload files"
 msgstr ""
 
-#: src/service/plugins/share.js:172 src/service/plugins/share.js:307
+#: src/service/plugins/share.js:181 src/service/plugins/share.js:316
 msgid "Transferring File"
 msgstr ""
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:174
+#: src/service/plugins/share.js:183
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr ""
 
-#: src/service/plugins/share.js:193 src/service/plugins/share.js:327
+#: src/service/plugins/share.js:202 src/service/plugins/share.js:336
 msgid "Transfer Successful"
 msgstr ""
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:195
+#: src/service/plugins/share.js:204
 #, javascript-format
 msgid "Received “%s” from %s"
 msgstr ""
 
-#: src/service/plugins/share.js:205
+#: src/service/plugins/share.js:214
 msgid "Show File Location"
 msgstr ""
 
-#: src/service/plugins/share.js:210
+#: src/service/plugins/share.js:219
 msgid "Open File"
 msgstr ""
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:229
+#: src/service/plugins/share.js:238
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr ""
 
-#: src/service/plugins/share.js:259
+#: src/service/plugins/share.js:268
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:309
+#: src/service/plugins/share.js:318
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:329
+#: src/service/plugins/share.js:338
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:339
+#: src/service/plugins/share.js:348
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:397
+#: src/service/plugins/share.js:406
 #, javascript-format
 msgid "Send files to %s"
 msgstr ""
 
 #. TRANSLATORS: Mark the file to be opened once completed
-#: src/service/plugins/share.js:401
+#: src/service/plugins/share.js:410
 msgid "Open when done"
 msgstr ""
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:440
+#: src/service/plugins/share.js:449
 #, javascript-format
 msgid "Send a link to %s"
 msgstr ""
@@ -1146,15 +1153,15 @@ msgstr ""
 msgid "Share SMS"
 msgstr ""
 
-#: src/service/plugins/systemvolume.js:36
+#: src/service/plugins/systemvolume.js:14
 msgid "System Volume"
 msgstr ""
 
-#: src/service/plugins/systemvolume.js:37
+#: src/service/plugins/systemvolume.js:15
 msgid "Enable the paired device to control the system volume"
 msgstr ""
 
-#: src/service/plugins/systemvolume.js:81
+#: src/service/plugins/systemvolume.js:59
 msgid "PulseAudio not found"
 msgstr ""
 
@@ -1179,22 +1186,22 @@ msgid "Ongoing call"
 msgstr ""
 
 #. TRANSLATORS: A fax number
-#: src/service/ui/contacts.js:143
+#: src/service/ui/contacts.js:144
 msgid "Fax"
 msgstr ""
 
 #. TRANSLATORS: A work or office phone number
-#: src/service/ui/contacts.js:147
+#: src/service/ui/contacts.js:148
 msgid "Work"
 msgstr ""
 
 #. TRANSLATORS: A mobile or cellular phone number
-#: src/service/ui/contacts.js:151
+#: src/service/ui/contacts.js:152
 msgid "Mobile"
 msgstr ""
 
 #. TRANSLATORS: A home phone number
-#: src/service/ui/contacts.js:155
+#: src/service/ui/contacts.js:156
 msgid "Home"
 msgstr ""
 
@@ -1264,7 +1271,7 @@ msgstr ""
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr ""
 
-#: src/shell/notification.js:73
+#: src/shell/notification.js:74
 msgid "Reply"
 msgstr ""
 

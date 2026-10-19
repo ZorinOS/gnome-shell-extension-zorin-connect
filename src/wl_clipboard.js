@@ -3,9 +3,10 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gio from 'gi://Gio';
-import GjsPrivate from 'gi://GjsPrivate';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
+
+import * as DBus from './service/utils/dbus.js';
 
 // laucher for wl-clipboard
 const launcher = new Gio.SubprocessLauncher({
@@ -57,11 +58,9 @@ export const Clipboard = GObject.registerClass(
     {
         GTypeName: 'ZorinConnectShellClipboard',
     },
-    class ZorinConnectShellClipboard extends GjsPrivate.DBusImplementation {
+    class ZorinConnectShellClipboard extends GObject.Object {
         _init() {
-            super._init({
-                g_interface_info: DBUS_INFO,
-            });
+            super._init();
 
             this._transferring = false;
 
@@ -75,10 +74,7 @@ export const Clipboard = GObject.registerClass(
             ], Gio.SubprocessFlags.NONE);
 
             // Prepare DBus interface
-            this._handleMethodCallId = this.connect(
-                'handle-method-call',
-                this._onHandleMethodCall.bind(this)
-            );
+            this._dbus = DBus.wrapObject(DBUS_INFO, this);
 
             this._nameId = Gio.DBus.own_name(
                 Gio.BusType.SESSION,
@@ -92,7 +88,7 @@ export const Clipboard = GObject.registerClass(
 
         _onBusAcquired(connection, name) {
             try {
-                this.export(connection, DBUS_PATH);
+                this._dbus.export(connection, DBUS_PATH);
             } catch (e) {
                 logError(e);
             }
@@ -100,76 +96,21 @@ export const Clipboard = GObject.registerClass(
 
         _onNameLost(connection, name) {
             try {
-                this.unexport();
+                this._dbus.unexport();
             } catch (e) {
                 logError(e);
-            }
-        }
-
-        async _onHandleMethodCall(iface, name, param1, param2) {
-            let retval;
-            let invocation, parameters;
-
-            // GNOME 50+ changed the callback signature from
-            // (iface, name, parameters, invocation) to
-            // (iface, name, invocation, parameters)
-            // Detect which order is being used
-            if (param1 instanceof GLib.Variant) {
-                // Old order: parameters, invocation
-                parameters = param1;
-                invocation = param2;
-            } else {
-                // New order: invocation, parameters
-                invocation = param1;
-                parameters = param2;
-            }
-
-            try {
-                const args = parameters.recursiveUnpack();
-
-                retval = await this[name](...args);
-            } catch (e) {
-                if (e instanceof GLib.Error) {
-                    invocation.return_gerror(e);
-                } else {
-                    if (!e.name.includes('.'))
-                        e.name = `org.gnome.gjs.JSError.${e.name}`;
-
-                    invocation.return_dbus_error(e.name, e.message);
-                }
-
-                return;
-            }
-
-            if (retval === undefined)
-                retval = new GLib.Variant('()', []);
-
-            try {
-                if (!(retval instanceof GLib.Variant)) {
-                    const args = DBUS_INFO.lookup_method(name).out_args;
-                    retval = new GLib.Variant(
-                        `(${args.map((arg) => arg.signature).join('')})`,
-                        args.length === 1 ? [retval] : retval
-                    );
-                }
-
-                invocation.return_value(retval);
-
-                // Without a response, the client will wait for timeout
-            } catch {
-                invocation.return_dbus_error(
-                    'org.gnome.gjs.JSError.ValueError',
-                    'Service implementation returned an incorrect value type'
-                );
             }
         }
 
         /**
          * Get the available mimetypes of the current clipboard content
          *
-         * @returns {Promise<string[]>} A list of mime-types
+         * @param {Array} params - empty
+         * @param {Gio.DBusMethodInvocation} invocation - List of mime-types is
+         *  returned via. invocation
+         * @returns {Promise<void>}
          */
-        GetMimetypes() {
+        GetMimetypesAsync(params, invocation) {
             return new Promise((resolve, reject) => {
                 const proc = launcher.spawnv([
                     'wl-paste',
@@ -189,15 +130,19 @@ export const Clipboard = GObject.registerClass(
                         reject(e);
                     }
                 });
-            });
+            })
+            .then((value) => invocation.return_value(new GLib.Variant('(as)', [value])));
         }
 
         /**
          * Get the text content of the clipboard
          *
-         * @returns {Promise<string>} Text content of the clipboard
+         * @param {Array} params - empty
+         * @param {Gio.DBusMethodInvocation} invocation - Text content of the
+         *  clipboard is returned via. invocation
+         * @returns {Promise<void>}
          */
-        GetText() {
+        GetTextAsync(params, invocation) {
             return new Promise((resolve, reject) => {
                 this.GetMimetypes().then((mimetypes) => {
                     const mimetype = TEXT_MIMETYPES.find((type) =>
@@ -223,31 +168,25 @@ export const Clipboard = GObject.registerClass(
                         reject(new Error('text not available'));
                     }
                 });
-            });
+            })
+            .then((value) => invocation.return_value(new GLib.Variant('(s)', [value])));
         }
 
         /**
          * Set the text content of the clipboard
          *
          * @param {string} text - text content to set
-         * @returns {Promise} A promise for the operation
+         * @returns {void}
          */
         SetText(text) {
-            return new Promise((resolve, reject) => {
-                try {
-                    if (typeof text !== 'string') {
-                        throw new Gio.DBusError({
-                            code: Gio.DBusError.INVALID_ARGS,
-                            message: 'expected string',
-                        });
-                    }
+            if (typeof text !== 'string') {
+                throw new Gio.DBusError({
+                    code: Gio.DBusError.INVALID_ARGS,
+                    message: 'expected string',
+                });
+            }
 
-                    launcher.spawnv(['wl-copy', text]);
-                    resolve();
-                } catch (e) {
-                    reject(e);
-                }
-            });
+            launcher.spawnv(['wl-copy', text]);
         }
 
 
@@ -258,10 +197,10 @@ export const Clipboard = GObject.registerClass(
                 this._nameId = 0;
             }
 
-            if (this._handleMethodCallId > 0) {
-                this.disconnect(this._handleMethodCallId);
-                this._handleMethodCallId = 0;
-                this.unexport();
+            try {
+                this._dbus.unexport();
+            } catch (e) {
+                logError(e);
             }
             if (this.watcher)
                 this.watcher.force_exit();

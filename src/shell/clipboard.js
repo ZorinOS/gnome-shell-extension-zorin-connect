@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import Gio from 'gi://Gio';
-import GjsPrivate from 'gi://GjsPrivate';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 
 import Meta from 'gi://Meta';
+
+import * as DBus from '../service/utils/dbus.js';
 
 
 /*
@@ -63,12 +64,16 @@ const TEXT_MIMETYPES = [
  */
 export const Clipboard = GObject.registerClass({
     GTypeName: 'ZorinConnectShellClipboard',
-}, class ZorinConnectShellClipboard extends GjsPrivate.DBusImplementation {
+    Signals: {
+        'OwnerChange': {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [],
+        },
+    },
+}, class ZorinConnectShellClipboard extends GObject.Object {
 
     _init(params = {}) {
-        super._init({
-            g_interface_info: DBUS_INFO,
-        });
+        super._init();
 
         this._transferring = false;
 
@@ -80,10 +85,7 @@ export const Clipboard = GObject.registerClass({
         );
 
         // Prepare DBus interface
-        this._handleMethodCallId = this.connect(
-            'handle-method-call',
-            this._onHandleMethodCall.bind(this)
-        );
+        this._dbus = DBus.wrapObject(DBUS_INFO, this);
 
         this._nameId = Gio.DBus.own_name(
             Gio.BusType.SESSION,
@@ -114,7 +116,7 @@ export const Clipboard = GObject.registerClass({
          * we'll end up with the previous selection's content.
          */
         GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
-            this.emit_signal('OwnerChange', null);
+            this.emit('OwnerChange');
             this._transferring = false;
 
             return GLib.SOURCE_REMOVE;
@@ -123,7 +125,7 @@ export const Clipboard = GObject.registerClass({
 
     _onBusAcquired(connection, name) {
         try {
-            this.export(connection, DBUS_PATH);
+            this._dbus.export(connection, DBUS_PATH);
         } catch (e) {
             logError(e);
         }
@@ -131,95 +133,34 @@ export const Clipboard = GObject.registerClass({
 
     _onNameLost(connection, name) {
         try {
-            this.unexport();
+            this._dbus.unexport();
         } catch (e) {
             logError(e);
-        }
-    }
-
-    async _onHandleMethodCall(iface, name, param1, param2) {
-        let retval;
-        let invocation, parameters;
-
-        // GNOME 50+ changed the callback signature from
-        // (iface, name, parameters, invocation) to
-        // (iface, name, invocation, parameters)
-        // Detect which order is being used
-        if (param1 instanceof GLib.Variant) {
-            // Old order: parameters, invocation
-            parameters = param1;
-            invocation = param2;
-        } else {
-            // New order: invocation, parameters
-            invocation = param1;
-            parameters = param2;
-        }
-
-        try {
-            const args = parameters.recursiveUnpack();
-
-            retval = await this[name](...args);
-        } catch (e) {
-            if (e instanceof GLib.Error) {
-                invocation.return_gerror(e);
-            } else {
-                if (!e.name.includes('.'))
-                    e.name = `org.gnome.gjs.JSError.${e.name}`;
-
-                invocation.return_dbus_error(e.name, e.message);
-            }
-
-            return;
-        }
-
-        if (retval === undefined)
-            retval = new GLib.Variant('()', []);
-
-        try {
-            if (!(retval instanceof GLib.Variant)) {
-                const args = DBUS_INFO.lookup_method(name).out_args;
-                retval = new GLib.Variant(
-                    `(${args.map(arg => arg.signature).join('')})`,
-                    (args.length === 1) ? [retval] : retval
-                );
-            }
-
-            invocation.return_value(retval);
-
-        // Without a response, the client will wait for timeout
-        } catch {
-            invocation.return_dbus_error(
-                'org.gnome.gjs.JSError.ValueError',
-                'Service implementation returned an incorrect value type'
-            );
         }
     }
 
     /**
      * Get the available mimetypes of the current clipboard content
      *
-     * @returns {Promise<string[]>} A list of mime-types
+     * @returns {string[]} A list of mime-types
      */
     GetMimetypes() {
-        return new Promise((resolve, reject) => {
-            try {
-                const mimetypes = this._selection.get_mimetypes(
-                    Meta.SelectionType.SELECTION_CLIPBOARD
-                );
+        const mimetypes = this._selection.get_mimetypes(
+            Meta.SelectionType.SELECTION_CLIPBOARD
+        );
 
-                resolve(mimetypes);
-            } catch (e) {
-                reject(e);
-            }
-        });
+        return mimetypes;
     }
 
     /**
      * Get the text content of the clipboard
      *
-     * @returns {Promise<string>} Text content of the clipboard
+     * @param {Array} params - empty
+     * @param {Gio.DBusMethodInvocation} invocation - Text content of the
+     *  clipboard is returned via. invocation
+     * @returns {Promise<void>}
      */
-    GetText() {
+    GetTextAsync(params, invocation) {
         return new Promise((resolve, reject) => {
             const mimetypes = this._selection.get_mimetypes(
                 Meta.SelectionType.SELECTION_CLIPBOARD);
@@ -249,45 +190,41 @@ export const Clipboard = GObject.registerClass({
             } else {
                 reject(new Error('text not available'));
             }
-        });
+        })
+        .then((value) => invocation.return_value(new GLib.Variant('(s)', [value])));
     }
 
     /**
      * Set the text content of the clipboard
      *
      * @param {string} text - text content to set
-     * @returns {Promise} A promise for the operation
+     * @returns {void}
      */
     SetText(text) {
-        return new Promise((resolve, reject) => {
-            try {
-                if (typeof text !== 'string') {
-                    throw new Gio.DBusError({
-                        code: Gio.DBusError.INVALID_ARGS,
-                        message: 'expected string',
-                    });
-                }
+        if (typeof text !== 'string') {
+            throw new Gio.DBusError({
+                code: Gio.DBusError.INVALID_ARGS,
+                message: 'expected string',
+            });
+        }
 
-                const source = Meta.SelectionSourceMemory.new(
-                    'text/plain;charset=utf-8', GLib.Bytes.new(text));
+        const source = Meta.SelectionSourceMemory.new(
+            'text/plain;charset=utf-8', GLib.Bytes.new(text));
 
-                this._selection.set_owner(
-                    Meta.SelectionType.SELECTION_CLIPBOARD, source);
-
-                resolve();
-            } catch (e) {
-                reject(e);
-            }
-        });
+        this._selection.set_owner(
+            Meta.SelectionType.SELECTION_CLIPBOARD, source);
     }
 
     /**
-     * Get the content of the clipboard with the type {@link mimetype}.
+     * Get the content of the clipboard with the type {@link params}.
      *
-     * @param {string} mimetype - the mimetype to request
-     * @returns {Promise<Uint8Array>} The content of the clipboard
+     * @param {Array} params - [mimetype]
+     * @param {Gio.DBusMethodInvocation} invocation - The content of the
+     *  clipboard is returned via. invocation
+     * @returns {Promise<void>}
      */
-    GetValue(mimetype) {
+    GetValueAsync(params, invocation) {
+        const mimetype = params.mimetype;
         return new Promise((resolve, reject) => {
             const stream = Gio.MemoryOutputStream.new_resizable();
 
@@ -307,7 +244,8 @@ export const Clipboard = GObject.registerClass({
                     }
                 }
             );
-        });
+        })
+        .then((value) => invocation.return_value(new GLib.Variant('(ay)', [value])));
     }
 
     /**
@@ -316,22 +254,14 @@ export const Clipboard = GObject.registerClass({
      *
      * @param {Uint8Array} value - the value to set
      * @param {string} mimetype - the mimetype of the value
-     * @returns {Promise} - A promise for the operation
+     * @returns {void}
      */
     SetValue(value, mimetype) {
-        return new Promise((resolve, reject) => {
-            try {
-                const source = Meta.SelectionSourceMemory.new(mimetype,
-                    GLib.Bytes.new(value));
+        const source = Meta.SelectionSourceMemory.new(mimetype,
+            GLib.Bytes.new(value));
 
-                this._selection.set_owner(
-                    Meta.SelectionType.SELECTION_CLIPBOARD, source);
-
-                resolve();
-            } catch (e) {
-                reject(e);
-            }
-        });
+        this._selection.set_owner(
+            Meta.SelectionType.SELECTION_CLIPBOARD, source);
     }
 
     destroy() {
@@ -345,10 +275,10 @@ export const Clipboard = GObject.registerClass({
             this._nameId = 0;
         }
 
-        if (this._handleMethodCallId > 0) {
-            this.disconnect(this._handleMethodCallId);
-            this._handleMethodCallId = 0;
-            this.unexport();
+        try {
+            this._dbus.unexport();
+        } catch (e) {
+            logError(e);
         }
     }
 });
