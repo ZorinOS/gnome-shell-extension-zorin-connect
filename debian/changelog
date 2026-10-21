@@ -1,3 +1,9 @@
+gnome-shell-extension-zorin-connect (74.1.2) noble; urgency=medium
+
+  * Add support for Brave Origin
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Wed, 21 Oct 2026 20:15:08 +0100
+
 gnome-shell-extension-zorin-connect (74.1.1) noble; urgency=medium
 
   * Corrected additional codebase and packaging errors
