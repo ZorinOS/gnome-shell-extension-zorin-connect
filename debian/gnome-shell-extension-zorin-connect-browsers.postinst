@@ -6,7 +6,7 @@ set -e
 
 mkdir -p /etc/opt/chrome/native-messaging-hosts
 if [ ! -e /etc/opt/chrome/native-messaging-hosts/org.gnome.shell.extensions.zorin_connect.json ]; then
-  ln -sf /usr/share/chrome-gnome-shell/org.gnome.shell.extensions.zorin_connect.json /etc/opt/chrome/native-messaging-hosts/
+  ln -sf /usr/share/gnome-shell-extension-zorin-connect/org.gnome.shell.extensions.zorin_connect.json /etc/opt/chrome/native-messaging-hosts/
 fi
 
 exit 0

@@ -21,7 +21,7 @@ msgstr ""
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:12
 #: webextension/gettext.js:29
 msgid "Zorin Connect"
-msgstr "جی‌اس‌کانکت"
+msgstr "Zorin Connect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:13
 msgid "KDE Connect implementation for GNOME"
@@ -29,15 +29,15 @@ msgstr "پیاده‌سازی کی‌دی‌ای کانکت برای گنوم"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:24
 msgid "Zorin Connect Team"
-msgstr "گروه جی‌اس‌کانکت"
+msgstr "گروه Zorin Connect"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:41
 msgid "Zorin Connect is a complete implementation of KDE Connect especially for GNOME Shell with Nautilus, Chrome and Firefox integration. The KDE Connect team has applications for Linux, BSD, Android, Sailfish, iOS, macOS and Windows."
-msgstr "جی‌اس‌کانکت، پیاده‌سازی کاملی از کی‌دی‌ای کانکت، مخصوص پوستهٔ گنوم با یکپارچگی ناتیلوس، کروم و فایرفاکس است. گروه کی‌دی‌ای کانکت، برنامه‌هایی برای گنو/لینوکس، بی‌اس‌دی، اندروید، سیل‌فیش، آی‌اواس، مک‌او‌اس و ویندوز دارند."
+msgstr "Zorin Connect، پیاده‌سازی کاملی از کی‌دی‌ای کانکت، مخصوص پوستهٔ گنوم با یکپارچگی ناتیلوس، کروم و فایرفاکس است. گروه کی‌دی‌ای کانکت، برنامه‌هایی برای گنو/لینوکس، بی‌اس‌دی، اندروید، سیل‌فیش، آی‌اواس، مک‌او‌اس و ویندوز دارند."
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:44
 msgid "With Zorin Connect you can securely connect to mobile devices and other desktops to:"
-msgstr "با جی‌اس‌کانکت می‌توانید به صورت امن به افزاره‌های همراه و دیگر میزکارهایتان وصل شوید تا:"
+msgstr "با Zorin Connect می‌توانید به صورت امن به افزاره‌های همراه و دیگر میزکارهایتان وصل شوید تا:"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:48
 msgid "Share files, links and text"
@@ -77,7 +77,7 @@ msgstr "و بیش‌تر…"
 
 #: data/metainfo/org.gnome.Shell.Extensions.ZorinConnect.metainfo.xml.in:183
 msgid "Zorin Connect in GNOME Shell"
-msgstr "جی‌اس‌کانکت در پوستهٔ گنوم"
+msgstr "Zorin Connect در پوستهٔ گنوم"
 
 #: data/ui/connect-dialog.ui:20
 msgid "Connect to…"
@@ -512,7 +512,7 @@ msgstr "تنظیمات افزونه"
 
 #: data/ui/preferences-window.ui:390
 msgid "Zorin Connect remains active when GNOME Shell is locked"
-msgstr "جی‌اس‌کانکت هنگام قفل بودن پوستهٔ گنوم فعّال می‌ماند"
+msgstr "Zorin Connect هنگام قفل بودن پوستهٔ گنوم فعّال می‌ماند"
 
 #: data/ui/preferences-window.ui:410
 msgid "Browser Add-Ons"
@@ -569,7 +569,7 @@ msgstr "ایجاد گزارش پشتیبانی"
 
 #: data/ui/preferences-window.ui:953
 msgid "About Zorin Connect"
-msgstr "دربارهٔ جی‌اس‌کانکت"
+msgstr "دربارهٔ Zorin Connect"
 
 #: data/ui/service-device-chooser.ui:15
 msgid "Select a Device"
@@ -598,7 +598,7 @@ msgstr "چیزی اشتباه شد"
 
 #: data/ui/service-error-dialog.ui:91
 msgid "Zorin Connect encountered an unexpected error. Please report the problem and include any information that may help."
-msgstr "جی‌ای‌کانکت با خطایی غیرمنتظره روبه‌رو شد. لطفاً مشکل را گزارش داده و هر اطّلاعاتی که ممکن است کمک کند را بدهید."
+msgstr "Zorin Connect با خطایی غیرمنتظره روبه‌رو شد. لطفاً مشکل را گزارش داده و هر اطّلاعاتی که ممکن است کمک کند را بدهید."
 
 #: data/ui/service-error-dialog.ui:125
 msgid "Technical Details"
@@ -722,7 +722,7 @@ msgstr "تنظمیات مهاجرت داده شدند"
 
 #: src/service/daemon.js:104
 msgid "Zorin Connect has updated to support changes to the KDE Connect protocol. Some devices may need to be re-paired."
-msgstr "جی‌اس‌کانکت برا یپشتیبانی از تغییرات در شیوه‌نامهٔ کی‌دی‌ای کانکت به‌روز شد. شاید برخی افزاره‌ها نیاز به جفت شدن دوباره داشته باشند."
+msgstr "Zorin Connect برا یپشتیبانی از تغییرات در شیوه‌نامهٔ کی‌دی‌ای کانکت به‌روز شد. شاید برخی افزاره‌ها نیاز به جفت شدن دوباره داشته باشند."
 
 #: src/service/daemon.js:246
 msgid "Click for help troubleshooting"
@@ -1259,7 +1259,7 @@ msgstr "پاسخ"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with Zorin Connect, direct to the browser or by SMS."
-msgstr "با جی‌اس کانکت، پیوندها را با پیامک یا مستقیماً در مرورگر هم‌رسانی کنید."
+msgstr "با Zorin Connect، پیوندها را با پیامک یا مستقیماً در مرورگر هم‌رسانی کنید."
 
 #. TRANSLATORS: WebExtension can't connect to Zorin Connect
 #: webextension/gettext.js:35

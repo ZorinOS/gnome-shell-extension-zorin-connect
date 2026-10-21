@@ -12,7 +12,6 @@ https://github.com/Bajoja/indicator-kdeconnect/blob/master/data/extensions/kdeco
 """
 
 import gettext
-import os.path
 import sys
 
 import gi
@@ -41,16 +40,14 @@ SERVICE_NAME = "org.gnome.Shell.Extensions.ZorinConnect"
 SERVICE_PATH = "/org/gnome/Shell/Extensions/ZorinConnect"
 
 try:
-    i18n = gettext.translation('zorin-connect',
-                               '/usr/share/locale',
-                               fallback=True)
+    i18n = gettext.translation(SERVICE_NAME, '/usr/share/locale', fallback=True)
     _ = i18n.gettext
 
 except (IOError, OSError) as e:
     print("Zorin Connect: {0}".format(str(e)))
-    i18n = gettext.translation('zorin-connect',
-                               '/usr/share/locale',
-                               fallback=True)
+    i18n = gettext.translation(
+        SERVICE_NAME, '/usr/share/locale', fallback=True
+    )
     _ = i18n.gettext
 
 

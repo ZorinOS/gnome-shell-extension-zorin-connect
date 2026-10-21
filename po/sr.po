@@ -1258,7 +1258,7 @@ msgstr ""
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:31
 msgid "Share links with Zorin Connect, direct to the browser or by SMS."
-msgstr "Дели везе ГСКонектом, директно у преглдач или путем СМС-а."
+msgstr "Дели везе Zorin Connect, директно у преглдач или путем СМС-а."
 
 #. TRANSLATORS: WebExtension can't connect to Zorin Connect
 #: webextension/gettext.js:35

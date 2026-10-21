@@ -1,3 +1,15 @@
+gnome-shell-extension-zorin-connect (74.1.1) noble; urgency=medium
+
+  * Corrected additional codebase and packaging errors
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Wed, 21 Oct 2026 15:38:26 +0100
+
+gnome-shell-extension-zorin-connect (74.1) noble; urgency=medium
+
+  * Corrected verious bugs and refreshed dependencies
+
+ -- Artyom Zorin <azorin@zoringroup.com>  Wed, 21 Oct 2026 13:18:09 +0100
+
 gnome-shell-extension-zorin-connect (74) noble; urgency=medium
 
   * Rebased on upstream release version 74

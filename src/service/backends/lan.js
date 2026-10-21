@@ -578,7 +578,7 @@ export const ChannelService = GObject.registerClass({
             // Known case of another application using the protocol defined port
             if (e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.ADDRESS_IN_USE)) {
                 e.name = _('Port already in use');
-                e.url = `${Config.PACKAGE_URL}/wiki/Error#port-already-in-use`;
+                e.url = `https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Error#port-already-in-use`;
             }
 
             throw e;

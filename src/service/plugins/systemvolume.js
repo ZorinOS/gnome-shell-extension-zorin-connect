@@ -5,7 +5,6 @@
 import GObject from 'gi://GObject';
 
 import * as Components from '../components/index.js';
-import Config from '../../config.js';
 import * as Core from '../core.js';
 import Plugin from '../plugin.js';
 
@@ -57,7 +56,7 @@ const SystemVolumePlugin = GObject.registerClass({
         // Modify the error to redirect to the wiki
         } catch (e) {
             e.name = _('PulseAudio not found');
-            e.url = `${Config.PACKAGE_URL}/wiki/Error#pulseaudio-not-found`;
+            e.url = `https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Error#pulseaudio-not-found`;
             throw e;
         }
     }

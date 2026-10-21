@@ -8,14 +8,13 @@ Build-Depends: debhelper-compat (= 13),
                gtk-update-icon-cache,
                libglib2.0-dev,
                libxml2-utils,
-               meson (>= 0.46.0),
+               meson (>= 0.59.0),
 Standards-Version: 4.7.0
 Rules-Requires-Root: no
 
 Package: gnome-shell-extension-zorin-connect
 Architecture: all
-Depends: ${shlibs:Depends},
-         ${misc:Depends},
+Depends: ${misc:Depends},
          python3,
          gjs,
          gnome-shell (>= 46),
@@ -24,11 +23,15 @@ Depends: ${shlibs:Depends},
          gir1.2-glib-2.0,
          gir1.2-gtk-3.0,
          libglib2.0-bin,
+         openssl,
          zorin-connect
 Recommends: sshfs,
             libfolks-eds26,
             python3-nautilus,
             gir1.2-atspi-2.0,
+            gir1.2-ebook-1.2,
+            gir1.2-ebookcontacts-1.2,
+            gir1.2-edataserver-1.2,
             gir1.2-gdata-0.0,
             gir1.2-folks-0.7,
             gir1.2-goa-1.0,
@@ -45,10 +48,9 @@ Description: Connect your mobile device with your Zorin OS computer
 
 Package: gnome-shell-extension-zorin-connect-browsers
 Architecture: all
-Depends: ${shlibs:Depends},
-         ${misc:Depends},
+Depends: ${misc:Depends},
          gnome-shell-extension-zorin-connect (= ${binary:Version}),
-Suggests: firefox-esr | firefox | chromium-browser | chromium
+Suggests: firefox-esr | firefox | chromium-browser | chromium | brave-browser | brave-origin
 Enhances: gnome-shell-extension-zorin-connect
 Description: Browser support for Zorin Connect
  This extension enables you to connect your phone or other devices to your

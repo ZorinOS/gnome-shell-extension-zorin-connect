@@ -37,6 +37,8 @@ endif
 # Configuration
 extconfig = configuration_data()
 extconfig.set('PACKAGE_VERSION', meson.project_version())
+extconfig.set('PACKAGE_URL', 'https://github.com/ZorinOS/gnome-shell-extension-zorin-connect')
+extconfig.set('PACKAGE_BUGREPORT', 'https://github.com/ZorinOS/gnome-shell-extension-zorin-connect/issues/new')
 extconfig.set('PACKAGE_DATADIR', extdatadir)
 extconfig.set('PACKAGE_LOCALEDIR', localedir)
 extconfig.set('GSETTINGS_SCHEMA_DIR', gschemadir)

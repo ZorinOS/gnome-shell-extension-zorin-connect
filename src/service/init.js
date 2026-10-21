@@ -362,6 +362,7 @@ Gio.TlsCertificate.new_for_paths = function (certPath, keyPath, commonName = nul
     if (GLib.find_program_in_path(Config.OPENSSL_PATH) === null) {
         const error = new MissingOpensslError();
         error.name = _('OpenSSL not found');
+        error.url = `https://github.com/GSConnect/gnome-shell-extension-gsconnect/wiki/Error#openssl-not-found`;
         throw error;
     }
 
